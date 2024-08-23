@@ -1,0 +1,3 @@
+public enum TokenType {
+    VARIABLE, FUNCTION, TEXT, NUMBER, RESERVED_KEYWORD, INVALID
+}
