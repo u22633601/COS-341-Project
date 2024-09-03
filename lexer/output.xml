@@ -1,0 +1,32 @@
+<TOKENSTREAM>
+<TOK>
+  <ID>1</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>main</WORD>
+</TOK>
+<TOK>
+  <ID>2</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>begin</WORD>
+</TOK>
+<TOK>
+  <ID>3</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>skip</WORD>
+</TOK>
+<TOK>
+  <ID>4</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>;</WORD>
+</TOK>
+<TOK>
+  <ID>5</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>end</WORD>
+</TOK>
+<TOK>
+  <ID>6</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>$</WORD>
+</TOK>
+</TOKENSTREAM>

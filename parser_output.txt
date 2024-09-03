@@ -1,0 +1,1202 @@
+
+Original grammar input:
+
+S -> PROG
+PROG -> main GLOBVARS ALGO FUNCTIONS
+GLOBVARS -> ε
+GLOBVARS -> VTYP VNAME , GLOBVARS
+VTYP -> num
+VTYP -> text
+VNAME -> V
+ALGO -> begin INSTRUC end
+INSTRUC -> ε
+INSTRUC -> COMMAND ; INSTRUC
+COMMAND -> skip
+COMMAND -> halt
+COMMAND -> return ATOMIC
+COMMAND -> ASSIGN
+COMMAND -> CALL
+COMMAND -> BRANCH
+ATOMIC -> VNAME
+ATOMIC -> CONST
+CONST -> N
+CONST -> T
+ASSIGN -> VNAME < input
+ASSIGN -> VNAME = TERM
+CALL -> FNAME ( ATOMIC , ATOMIC , ATOMIC )
+BRANCH -> if COND then ALGO else ALGO
+TERM -> ATOMIC
+TERM -> CALL
+TERM -> OP
+OP -> UNOP ( ARG )
+OP -> BINOP ( ARG , ARG )
+ARG -> ATOMIC
+ARG -> OP
+COND -> SIMPLE
+COND -> COMPOSIT
+SIMPLE -> BINOP ( ATOMIC , ATOMIC )
+COMPOSIT -> BINOP ( SIMPLE , SIMPLE )
+COMPOSIT -> UNOP ( SIMPLE )
+UNOP -> not
+UNOP -> sqrt
+BINOP -> or
+BINOP -> and
+BINOP -> eq
+BINOP -> grt
+BINOP -> add
+BINOP -> sub
+BINOP -> mul
+BINOP -> div
+FNAME -> F
+FUNCTIONS -> ε
+FUNCTIONS -> DECL FUNCTIONS
+DECL -> HEADER BODY
+HEADER -> FTYP FNAME ( VNAME , VNAME , VNAME )
+FTYP -> num
+FTYP -> void
+BODY -> PROLOG LOCVARS ALGO EPILOG SUBFUNCS end
+PROLOG -> {
+EPILOG -> }
+LOCVARS -> VTYP VNAME , VTYP VNAME , VTYP VNAME ,
+SUBFUNCS -> FUNCTIONS
+
+Grammar after Augmentation: 
+
+S' -> . S
+S -> . PROG
+PROG -> . main GLOBVARS ALGO FUNCTIONS
+GLOBVARS -> . ε
+GLOBVARS -> . VTYP VNAME , GLOBVARS
+VTYP -> . num
+VTYP -> . text
+VNAME -> . V
+ALGO -> . begin INSTRUC end
+INSTRUC -> . ε
+INSTRUC -> . COMMAND ; INSTRUC
+COMMAND -> . skip
+COMMAND -> . halt
+COMMAND -> . return ATOMIC
+COMMAND -> . ASSIGN
+COMMAND -> . CALL
+COMMAND -> . BRANCH
+ATOMIC -> . VNAME
+ATOMIC -> . CONST
+CONST -> . N
+CONST -> . T
+ASSIGN -> . VNAME < input
+ASSIGN -> . VNAME = TERM
+CALL -> . FNAME ( ATOMIC , ATOMIC , ATOMIC )
+BRANCH -> . if COND then ALGO else ALGO
+TERM -> . ATOMIC
+TERM -> . CALL
+TERM -> . OP
+OP -> . UNOP ( ARG )
+OP -> . BINOP ( ARG , ARG )
+ARG -> . ATOMIC
+ARG -> . OP
+COND -> . SIMPLE
+COND -> . COMPOSIT
+SIMPLE -> . BINOP ( ATOMIC , ATOMIC )
+COMPOSIT -> . BINOP ( SIMPLE , SIMPLE )
+COMPOSIT -> . UNOP ( SIMPLE )
+UNOP -> . not
+UNOP -> . sqrt
+BINOP -> . or
+BINOP -> . and
+BINOP -> . eq
+BINOP -> . grt
+BINOP -> . add
+BINOP -> . sub
+BINOP -> . mul
+BINOP -> . div
+FNAME -> . F
+FUNCTIONS -> . ε
+FUNCTIONS -> . DECL FUNCTIONS
+DECL -> . HEADER BODY
+HEADER -> . FTYP FNAME ( VNAME , VNAME , VNAME )
+FTYP -> . num
+FTYP -> . void
+BODY -> . PROLOG LOCVARS ALGO EPILOG SUBFUNCS end
+PROLOG -> . {
+EPILOG -> . }
+LOCVARS -> . VTYP VNAME , VTYP VNAME , VTYP VNAME ,
+SUBFUNCS -> . FUNCTIONS
+
+Calculated closure: I0
+
+S' -> . S
+S -> . PROG
+PROG -> . main GLOBVARS ALGO FUNCTIONS
+
+States Generated: 
+
+State = I0
+S' -> . S
+S -> . PROG
+PROG -> . main GLOBVARS ALGO FUNCTIONS
+
+State = I1
+S' -> S .
+
+State = I2
+S -> PROG .
+
+State = I3
+PROG -> main . GLOBVARS ALGO FUNCTIONS
+GLOBVARS -> . ε
+GLOBVARS -> . VTYP VNAME , GLOBVARS
+VTYP -> . num
+VTYP -> . text
+
+State = I4
+PROG -> main GLOBVARS . ALGO FUNCTIONS
+ALGO -> . begin INSTRUC end
+
+State = I5
+GLOBVARS -> ε .
+
+State = I6
+GLOBVARS -> VTYP . VNAME , GLOBVARS
+VNAME -> . V
+
+State = I7
+VTYP -> num .
+
+State = I8
+VTYP -> text .
+
+State = I9
+PROG -> main GLOBVARS ALGO . FUNCTIONS
+FUNCTIONS -> . ε
+FUNCTIONS -> . DECL FUNCTIONS
+DECL -> . HEADER BODY
+HEADER -> . FTYP FNAME ( VNAME , VNAME , VNAME )
+FTYP -> . num
+FTYP -> . void
+
+State = I10
+ALGO -> begin . INSTRUC end
+INSTRUC -> . ε
+INSTRUC -> . COMMAND ; INSTRUC
+COMMAND -> . skip
+COMMAND -> . halt
+COMMAND -> . return ATOMIC
+COMMAND -> . ASSIGN
+COMMAND -> . CALL
+COMMAND -> . BRANCH
+ASSIGN -> . VNAME < input
+ASSIGN -> . VNAME = TERM
+CALL -> . FNAME ( ATOMIC , ATOMIC , ATOMIC )
+BRANCH -> . if COND then ALGO else ALGO
+VNAME -> . V
+FNAME -> . F
+
+State = I11
+GLOBVARS -> VTYP VNAME . , GLOBVARS
+
+State = I12
+VNAME -> V .
+
+State = I13
+PROG -> main GLOBVARS ALGO FUNCTIONS .
+
+State = I14
+FUNCTIONS -> ε .
+
+State = I15
+FUNCTIONS -> DECL . FUNCTIONS
+FUNCTIONS -> . ε
+FUNCTIONS -> . DECL FUNCTIONS
+DECL -> . HEADER BODY
+HEADER -> . FTYP FNAME ( VNAME , VNAME , VNAME )
+FTYP -> . num
+FTYP -> . void
+
+State = I16
+DECL -> HEADER . BODY
+BODY -> . PROLOG LOCVARS ALGO EPILOG SUBFUNCS end
+PROLOG -> . {
+
+State = I17
+HEADER -> FTYP . FNAME ( VNAME , VNAME , VNAME )
+FNAME -> . F
+
+State = I18
+FTYP -> num .
+
+State = I19
+FTYP -> void .
+
+State = I20
+ALGO -> begin INSTRUC . end
+
+State = I21
+INSTRUC -> ε .
+
+State = I22
+INSTRUC -> COMMAND . ; INSTRUC
+
+State = I23
+COMMAND -> skip .
+
+State = I24
+COMMAND -> halt .
+
+State = I25
+COMMAND -> return . ATOMIC
+ATOMIC -> . VNAME
+ATOMIC -> . CONST
+VNAME -> . V
+CONST -> . N
+CONST -> . T
+
+State = I26
+COMMAND -> ASSIGN .
+
+State = I27
+COMMAND -> CALL .
+
+State = I28
+COMMAND -> BRANCH .
+
+State = I29
+ASSIGN -> VNAME . < input
+ASSIGN -> VNAME . = TERM
+
+State = I30
+CALL -> FNAME . ( ATOMIC , ATOMIC , ATOMIC )
+
+State = I31
+BRANCH -> if . COND then ALGO else ALGO
+COND -> . SIMPLE
+COND -> . COMPOSIT
+SIMPLE -> . BINOP ( ATOMIC , ATOMIC )
+COMPOSIT -> . BINOP ( SIMPLE , SIMPLE )
+COMPOSIT -> . UNOP ( SIMPLE )
+BINOP -> . or
+BINOP -> . and
+BINOP -> . eq
+BINOP -> . grt
+BINOP -> . add
+BINOP -> . sub
+BINOP -> . mul
+BINOP -> . div
+UNOP -> . not
+UNOP -> . sqrt
+
+State = I32
+FNAME -> F .
+
+State = I33
+GLOBVARS -> VTYP VNAME , . GLOBVARS
+GLOBVARS -> . ε
+GLOBVARS -> . VTYP VNAME , GLOBVARS
+VTYP -> . num
+VTYP -> . text
+
+State = I34
+FUNCTIONS -> DECL FUNCTIONS .
+
+State = I35
+DECL -> HEADER BODY .
+
+State = I36
+BODY -> PROLOG . LOCVARS ALGO EPILOG SUBFUNCS end
+LOCVARS -> . VTYP VNAME , VTYP VNAME , VTYP VNAME ,
+VTYP -> . num
+VTYP -> . text
+
+State = I37
+PROLOG -> { .
+
+State = I38
+HEADER -> FTYP FNAME . ( VNAME , VNAME , VNAME )
+
+State = I39
+ALGO -> begin INSTRUC end .
+
+State = I40
+INSTRUC -> COMMAND ; . INSTRUC
+INSTRUC -> . ε
+INSTRUC -> . COMMAND ; INSTRUC
+COMMAND -> . skip
+COMMAND -> . halt
+COMMAND -> . return ATOMIC
+COMMAND -> . ASSIGN
+COMMAND -> . CALL
+COMMAND -> . BRANCH
+ASSIGN -> . VNAME < input
+ASSIGN -> . VNAME = TERM
+CALL -> . FNAME ( ATOMIC , ATOMIC , ATOMIC )
+BRANCH -> . if COND then ALGO else ALGO
+VNAME -> . V
+FNAME -> . F
+
+State = I41
+COMMAND -> return ATOMIC .
+
+State = I42
+ATOMIC -> VNAME .
+
+State = I43
+ATOMIC -> CONST .
+
+State = I44
+CONST -> N .
+
+State = I45
+CONST -> T .
+
+State = I46
+ASSIGN -> VNAME < . input
+
+State = I47
+ASSIGN -> VNAME = . TERM
+TERM -> . ATOMIC
+TERM -> . CALL
+TERM -> . OP
+ATOMIC -> . VNAME
+ATOMIC -> . CONST
+CALL -> . FNAME ( ATOMIC , ATOMIC , ATOMIC )
+OP -> . UNOP ( ARG )
+OP -> . BINOP ( ARG , ARG )
+VNAME -> . V
+CONST -> . N
+CONST -> . T
+FNAME -> . F
+UNOP -> . not
+UNOP -> . sqrt
+BINOP -> . or
+BINOP -> . and
+BINOP -> . eq
+BINOP -> . grt
+BINOP -> . add
+BINOP -> . sub
+BINOP -> . mul
+BINOP -> . div
+
+State = I48
+CALL -> FNAME ( . ATOMIC , ATOMIC , ATOMIC )
+ATOMIC -> . VNAME
+ATOMIC -> . CONST
+VNAME -> . V
+CONST -> . N
+CONST -> . T
+
+State = I49
+BRANCH -> if COND . then ALGO else ALGO
+
+State = I50
+COND -> SIMPLE .
+
+State = I51
+COND -> COMPOSIT .
+
+State = I52
+SIMPLE -> BINOP . ( ATOMIC , ATOMIC )
+COMPOSIT -> BINOP . ( SIMPLE , SIMPLE )
+
+State = I53
+COMPOSIT -> UNOP . ( SIMPLE )
+
+State = I54
+BINOP -> or .
+
+State = I55
+BINOP -> and .
+
+State = I56
+BINOP -> eq .
+
+State = I57
+BINOP -> grt .
+
+State = I58
+BINOP -> add .
+
+State = I59
+BINOP -> sub .
+
+State = I60
+BINOP -> mul .
+
+State = I61
+BINOP -> div .
+
+State = I62
+UNOP -> not .
+
+State = I63
+UNOP -> sqrt .
+
+State = I64
+GLOBVARS -> VTYP VNAME , GLOBVARS .
+
+State = I65
+BODY -> PROLOG LOCVARS . ALGO EPILOG SUBFUNCS end
+ALGO -> . begin INSTRUC end
+
+State = I66
+LOCVARS -> VTYP . VNAME , VTYP VNAME , VTYP VNAME ,
+VNAME -> . V
+
+State = I67
+HEADER -> FTYP FNAME ( . VNAME , VNAME , VNAME )
+VNAME -> . V
+
+State = I68
+INSTRUC -> COMMAND ; INSTRUC .
+
+State = I69
+ASSIGN -> VNAME < input .
+
+State = I70
+ASSIGN -> VNAME = TERM .
+
+State = I71
+TERM -> ATOMIC .
+
+State = I72
+TERM -> CALL .
+
+State = I73
+TERM -> OP .
+
+State = I74
+OP -> UNOP . ( ARG )
+
+State = I75
+OP -> BINOP . ( ARG , ARG )
+
+State = I76
+CALL -> FNAME ( ATOMIC . , ATOMIC , ATOMIC )
+
+State = I77
+BRANCH -> if COND then . ALGO else ALGO
+ALGO -> . begin INSTRUC end
+
+State = I78
+SIMPLE -> BINOP ( . ATOMIC , ATOMIC )
+COMPOSIT -> BINOP ( . SIMPLE , SIMPLE )
+ATOMIC -> . VNAME
+ATOMIC -> . CONST
+SIMPLE -> . BINOP ( ATOMIC , ATOMIC )
+VNAME -> . V
+CONST -> . N
+CONST -> . T
+BINOP -> . or
+BINOP -> . and
+BINOP -> . eq
+BINOP -> . grt
+BINOP -> . add
+BINOP -> . sub
+BINOP -> . mul
+BINOP -> . div
+
+State = I79
+COMPOSIT -> UNOP ( . SIMPLE )
+SIMPLE -> . BINOP ( ATOMIC , ATOMIC )
+BINOP -> . or
+BINOP -> . and
+BINOP -> . eq
+BINOP -> . grt
+BINOP -> . add
+BINOP -> . sub
+BINOP -> . mul
+BINOP -> . div
+
+State = I80
+BODY -> PROLOG LOCVARS ALGO . EPILOG SUBFUNCS end
+EPILOG -> . }
+
+State = I81
+LOCVARS -> VTYP VNAME . , VTYP VNAME , VTYP VNAME ,
+
+State = I82
+HEADER -> FTYP FNAME ( VNAME . , VNAME , VNAME )
+
+State = I83
+OP -> UNOP ( . ARG )
+ARG -> . ATOMIC
+ARG -> . OP
+ATOMIC -> . VNAME
+ATOMIC -> . CONST
+OP -> . UNOP ( ARG )
+OP -> . BINOP ( ARG , ARG )
+VNAME -> . V
+CONST -> . N
+CONST -> . T
+UNOP -> . not
+UNOP -> . sqrt
+BINOP -> . or
+BINOP -> . and
+BINOP -> . eq
+BINOP -> . grt
+BINOP -> . add
+BINOP -> . sub
+BINOP -> . mul
+BINOP -> . div
+
+State = I84
+OP -> BINOP ( . ARG , ARG )
+ARG -> . ATOMIC
+ARG -> . OP
+ATOMIC -> . VNAME
+ATOMIC -> . CONST
+OP -> . UNOP ( ARG )
+OP -> . BINOP ( ARG , ARG )
+VNAME -> . V
+CONST -> . N
+CONST -> . T
+UNOP -> . not
+UNOP -> . sqrt
+BINOP -> . or
+BINOP -> . and
+BINOP -> . eq
+BINOP -> . grt
+BINOP -> . add
+BINOP -> . sub
+BINOP -> . mul
+BINOP -> . div
+
+State = I85
+CALL -> FNAME ( ATOMIC , . ATOMIC , ATOMIC )
+ATOMIC -> . VNAME
+ATOMIC -> . CONST
+VNAME -> . V
+CONST -> . N
+CONST -> . T
+
+State = I86
+BRANCH -> if COND then ALGO . else ALGO
+
+State = I87
+SIMPLE -> BINOP ( ATOMIC . , ATOMIC )
+
+State = I88
+COMPOSIT -> BINOP ( SIMPLE . , SIMPLE )
+
+State = I89
+SIMPLE -> BINOP . ( ATOMIC , ATOMIC )
+
+State = I90
+COMPOSIT -> UNOP ( SIMPLE . )
+
+State = I91
+BODY -> PROLOG LOCVARS ALGO EPILOG . SUBFUNCS end
+SUBFUNCS -> . FUNCTIONS
+FUNCTIONS -> . ε
+FUNCTIONS -> . DECL FUNCTIONS
+DECL -> . HEADER BODY
+HEADER -> . FTYP FNAME ( VNAME , VNAME , VNAME )
+FTYP -> . num
+FTYP -> . void
+
+State = I92
+EPILOG -> } .
+
+State = I93
+LOCVARS -> VTYP VNAME , . VTYP VNAME , VTYP VNAME ,
+VTYP -> . num
+VTYP -> . text
+
+State = I94
+HEADER -> FTYP FNAME ( VNAME , . VNAME , VNAME )
+VNAME -> . V
+
+State = I95
+OP -> UNOP ( ARG . )
+
+State = I96
+ARG -> ATOMIC .
+
+State = I97
+ARG -> OP .
+
+State = I98
+OP -> BINOP ( ARG . , ARG )
+
+State = I99
+CALL -> FNAME ( ATOMIC , ATOMIC . , ATOMIC )
+
+State = I100
+BRANCH -> if COND then ALGO else . ALGO
+ALGO -> . begin INSTRUC end
+
+State = I101
+SIMPLE -> BINOP ( ATOMIC , . ATOMIC )
+ATOMIC -> . VNAME
+ATOMIC -> . CONST
+VNAME -> . V
+CONST -> . N
+CONST -> . T
+
+State = I102
+COMPOSIT -> BINOP ( SIMPLE , . SIMPLE )
+SIMPLE -> . BINOP ( ATOMIC , ATOMIC )
+BINOP -> . or
+BINOP -> . and
+BINOP -> . eq
+BINOP -> . grt
+BINOP -> . add
+BINOP -> . sub
+BINOP -> . mul
+BINOP -> . div
+
+State = I103
+SIMPLE -> BINOP ( . ATOMIC , ATOMIC )
+ATOMIC -> . VNAME
+ATOMIC -> . CONST
+VNAME -> . V
+CONST -> . N
+CONST -> . T
+
+State = I104
+COMPOSIT -> UNOP ( SIMPLE ) .
+
+State = I105
+BODY -> PROLOG LOCVARS ALGO EPILOG SUBFUNCS . end
+
+State = I106
+SUBFUNCS -> FUNCTIONS .
+
+State = I107
+LOCVARS -> VTYP VNAME , VTYP . VNAME , VTYP VNAME ,
+VNAME -> . V
+
+State = I108
+HEADER -> FTYP FNAME ( VNAME , VNAME . , VNAME )
+
+State = I109
+OP -> UNOP ( ARG ) .
+
+State = I110
+OP -> BINOP ( ARG , . ARG )
+ARG -> . ATOMIC
+ARG -> . OP
+ATOMIC -> . VNAME
+ATOMIC -> . CONST
+OP -> . UNOP ( ARG )
+OP -> . BINOP ( ARG , ARG )
+VNAME -> . V
+CONST -> . N
+CONST -> . T
+UNOP -> . not
+UNOP -> . sqrt
+BINOP -> . or
+BINOP -> . and
+BINOP -> . eq
+BINOP -> . grt
+BINOP -> . add
+BINOP -> . sub
+BINOP -> . mul
+BINOP -> . div
+
+State = I111
+CALL -> FNAME ( ATOMIC , ATOMIC , . ATOMIC )
+ATOMIC -> . VNAME
+ATOMIC -> . CONST
+VNAME -> . V
+CONST -> . N
+CONST -> . T
+
+State = I112
+BRANCH -> if COND then ALGO else ALGO .
+
+State = I113
+SIMPLE -> BINOP ( ATOMIC , ATOMIC . )
+
+State = I114
+COMPOSIT -> BINOP ( SIMPLE , SIMPLE . )
+
+State = I115
+BODY -> PROLOG LOCVARS ALGO EPILOG SUBFUNCS end .
+
+State = I116
+LOCVARS -> VTYP VNAME , VTYP VNAME . , VTYP VNAME ,
+
+State = I117
+HEADER -> FTYP FNAME ( VNAME , VNAME , . VNAME )
+VNAME -> . V
+
+State = I118
+OP -> BINOP ( ARG , ARG . )
+
+State = I119
+CALL -> FNAME ( ATOMIC , ATOMIC , ATOMIC . )
+
+State = I120
+SIMPLE -> BINOP ( ATOMIC , ATOMIC ) .
+
+State = I121
+COMPOSIT -> BINOP ( SIMPLE , SIMPLE ) .
+
+State = I122
+LOCVARS -> VTYP VNAME , VTYP VNAME , . VTYP VNAME ,
+VTYP -> . num
+VTYP -> . text
+
+State = I123
+HEADER -> FTYP FNAME ( VNAME , VNAME , VNAME . )
+
+State = I124
+OP -> BINOP ( ARG , ARG ) .
+
+State = I125
+CALL -> FNAME ( ATOMIC , ATOMIC , ATOMIC ) .
+
+State = I126
+LOCVARS -> VTYP VNAME , VTYP VNAME , VTYP . VNAME ,
+VNAME -> . V
+
+State = I127
+HEADER -> FTYP FNAME ( VNAME , VNAME , VNAME ) .
+
+State = I128
+LOCVARS -> VTYP VNAME , VTYP VNAME , VTYP VNAME . ,
+
+State = I129
+LOCVARS -> VTYP VNAME , VTYP VNAME , VTYP VNAME , .
+
+Result of GOTO computation:
+
+GOTO ( I0 , S ) = I1
+GOTO ( I0 , PROG ) = I2
+GOTO ( I0 , main ) = I3
+GOTO ( I3 , GLOBVARS ) = I4
+GOTO ( I3 , ε ) = I5
+GOTO ( I3 , VTYP ) = I6
+GOTO ( I3 , num ) = I7
+GOTO ( I3 , text ) = I8
+GOTO ( I4 , ALGO ) = I9
+GOTO ( I4 , begin ) = I10
+GOTO ( I6 , VNAME ) = I11
+GOTO ( I6 , V ) = I12
+GOTO ( I9 , FUNCTIONS ) = I13
+GOTO ( I9 , ε ) = I14
+GOTO ( I9 , DECL ) = I15
+GOTO ( I9 , HEADER ) = I16
+GOTO ( I9 , FTYP ) = I17
+GOTO ( I9 , num ) = I18
+GOTO ( I9 , void ) = I19
+GOTO ( I10 , INSTRUC ) = I20
+GOTO ( I10 , ε ) = I21
+GOTO ( I10 , COMMAND ) = I22
+GOTO ( I10 , skip ) = I23
+GOTO ( I10 , halt ) = I24
+GOTO ( I10 , return ) = I25
+GOTO ( I10 , ASSIGN ) = I26
+GOTO ( I10 , CALL ) = I27
+GOTO ( I10 , BRANCH ) = I28
+GOTO ( I10 , VNAME ) = I29
+GOTO ( I10 , FNAME ) = I30
+GOTO ( I10 , if ) = I31
+GOTO ( I10 , V ) = I12
+GOTO ( I10 , F ) = I32
+GOTO ( I11 , , ) = I33
+GOTO ( I15 , FUNCTIONS ) = I34
+GOTO ( I15 , ε ) = I14
+GOTO ( I15 , DECL ) = I15
+GOTO ( I15 , HEADER ) = I16
+GOTO ( I15 , FTYP ) = I17
+GOTO ( I15 , num ) = I18
+GOTO ( I15 , void ) = I19
+GOTO ( I16 , BODY ) = I35
+GOTO ( I16 , PROLOG ) = I36
+GOTO ( I16 , { ) = I37
+GOTO ( I17 , FNAME ) = I38
+GOTO ( I17 , F ) = I32
+GOTO ( I20 , end ) = I39
+GOTO ( I22 , ; ) = I40
+GOTO ( I25 , ATOMIC ) = I41
+GOTO ( I25 , VNAME ) = I42
+GOTO ( I25 , CONST ) = I43
+GOTO ( I25 , V ) = I12
+GOTO ( I25 , N ) = I44
+GOTO ( I25 , T ) = I45
+GOTO ( I29 , < ) = I46
+GOTO ( I29 , = ) = I47
+GOTO ( I30 , ( ) = I48
+GOTO ( I31 , COND ) = I49
+GOTO ( I31 , SIMPLE ) = I50
+GOTO ( I31 , COMPOSIT ) = I51
+GOTO ( I31 , BINOP ) = I52
+GOTO ( I31 , UNOP ) = I53
+GOTO ( I31 , or ) = I54
+GOTO ( I31 , and ) = I55
+GOTO ( I31 , eq ) = I56
+GOTO ( I31 , grt ) = I57
+GOTO ( I31 , add ) = I58
+GOTO ( I31 , sub ) = I59
+GOTO ( I31 , mul ) = I60
+GOTO ( I31 , div ) = I61
+GOTO ( I31 , not ) = I62
+GOTO ( I31 , sqrt ) = I63
+GOTO ( I33 , GLOBVARS ) = I64
+GOTO ( I33 , ε ) = I5
+GOTO ( I33 , VTYP ) = I6
+GOTO ( I33 , num ) = I7
+GOTO ( I33 , text ) = I8
+GOTO ( I36 , LOCVARS ) = I65
+GOTO ( I36 , VTYP ) = I66
+GOTO ( I36 , num ) = I7
+GOTO ( I36 , text ) = I8
+GOTO ( I38 , ( ) = I67
+GOTO ( I40 , INSTRUC ) = I68
+GOTO ( I40 , ε ) = I21
+GOTO ( I40 , COMMAND ) = I22
+GOTO ( I40 , skip ) = I23
+GOTO ( I40 , halt ) = I24
+GOTO ( I40 , return ) = I25
+GOTO ( I40 , ASSIGN ) = I26
+GOTO ( I40 , CALL ) = I27
+GOTO ( I40 , BRANCH ) = I28
+GOTO ( I40 , VNAME ) = I29
+GOTO ( I40 , FNAME ) = I30
+GOTO ( I40 , if ) = I31
+GOTO ( I40 , V ) = I12
+GOTO ( I40 , F ) = I32
+GOTO ( I46 , input ) = I69
+GOTO ( I47 , TERM ) = I70
+GOTO ( I47 , ATOMIC ) = I71
+GOTO ( I47 , CALL ) = I72
+GOTO ( I47 , OP ) = I73
+GOTO ( I47 , VNAME ) = I42
+GOTO ( I47 , CONST ) = I43
+GOTO ( I47 , FNAME ) = I30
+GOTO ( I47 , UNOP ) = I74
+GOTO ( I47 , BINOP ) = I75
+GOTO ( I47 , V ) = I12
+GOTO ( I47 , N ) = I44
+GOTO ( I47 , T ) = I45
+GOTO ( I47 , F ) = I32
+GOTO ( I47 , not ) = I62
+GOTO ( I47 , sqrt ) = I63
+GOTO ( I47 , or ) = I54
+GOTO ( I47 , and ) = I55
+GOTO ( I47 , eq ) = I56
+GOTO ( I47 , grt ) = I57
+GOTO ( I47 , add ) = I58
+GOTO ( I47 , sub ) = I59
+GOTO ( I47 , mul ) = I60
+GOTO ( I47 , div ) = I61
+GOTO ( I48 , ATOMIC ) = I76
+GOTO ( I48 , VNAME ) = I42
+GOTO ( I48 , CONST ) = I43
+GOTO ( I48 , V ) = I12
+GOTO ( I48 , N ) = I44
+GOTO ( I48 , T ) = I45
+GOTO ( I49 , then ) = I77
+GOTO ( I52 , ( ) = I78
+GOTO ( I53 , ( ) = I79
+GOTO ( I65 , ALGO ) = I80
+GOTO ( I65 , begin ) = I10
+GOTO ( I66 , VNAME ) = I81
+GOTO ( I66 , V ) = I12
+GOTO ( I67 , VNAME ) = I82
+GOTO ( I67 , V ) = I12
+GOTO ( I74 , ( ) = I83
+GOTO ( I75 , ( ) = I84
+GOTO ( I76 , , ) = I85
+GOTO ( I77 , ALGO ) = I86
+GOTO ( I77 , begin ) = I10
+GOTO ( I78 , ATOMIC ) = I87
+GOTO ( I78 , SIMPLE ) = I88
+GOTO ( I78 , VNAME ) = I42
+GOTO ( I78 , CONST ) = I43
+GOTO ( I78 , BINOP ) = I89
+GOTO ( I78 , V ) = I12
+GOTO ( I78 , N ) = I44
+GOTO ( I78 , T ) = I45
+GOTO ( I78 , or ) = I54
+GOTO ( I78 , and ) = I55
+GOTO ( I78 , eq ) = I56
+GOTO ( I78 , grt ) = I57
+GOTO ( I78 , add ) = I58
+GOTO ( I78 , sub ) = I59
+GOTO ( I78 , mul ) = I60
+GOTO ( I78 , div ) = I61
+GOTO ( I79 , SIMPLE ) = I90
+GOTO ( I79 , BINOP ) = I89
+GOTO ( I79 , or ) = I54
+GOTO ( I79 , and ) = I55
+GOTO ( I79 , eq ) = I56
+GOTO ( I79 , grt ) = I57
+GOTO ( I79 , add ) = I58
+GOTO ( I79 , sub ) = I59
+GOTO ( I79 , mul ) = I60
+GOTO ( I79 , div ) = I61
+GOTO ( I80 , EPILOG ) = I91
+GOTO ( I80 , } ) = I92
+GOTO ( I81 , , ) = I93
+GOTO ( I82 , , ) = I94
+GOTO ( I83 , ARG ) = I95
+GOTO ( I83 , ATOMIC ) = I96
+GOTO ( I83 , OP ) = I97
+GOTO ( I83 , VNAME ) = I42
+GOTO ( I83 , CONST ) = I43
+GOTO ( I83 , UNOP ) = I74
+GOTO ( I83 , BINOP ) = I75
+GOTO ( I83 , V ) = I12
+GOTO ( I83 , N ) = I44
+GOTO ( I83 , T ) = I45
+GOTO ( I83 , not ) = I62
+GOTO ( I83 , sqrt ) = I63
+GOTO ( I83 , or ) = I54
+GOTO ( I83 , and ) = I55
+GOTO ( I83 , eq ) = I56
+GOTO ( I83 , grt ) = I57
+GOTO ( I83 , add ) = I58
+GOTO ( I83 , sub ) = I59
+GOTO ( I83 , mul ) = I60
+GOTO ( I83 , div ) = I61
+GOTO ( I84 , ARG ) = I98
+GOTO ( I84 , ATOMIC ) = I96
+GOTO ( I84 , OP ) = I97
+GOTO ( I84 , VNAME ) = I42
+GOTO ( I84 , CONST ) = I43
+GOTO ( I84 , UNOP ) = I74
+GOTO ( I84 , BINOP ) = I75
+GOTO ( I84 , V ) = I12
+GOTO ( I84 , N ) = I44
+GOTO ( I84 , T ) = I45
+GOTO ( I84 , not ) = I62
+GOTO ( I84 , sqrt ) = I63
+GOTO ( I84 , or ) = I54
+GOTO ( I84 , and ) = I55
+GOTO ( I84 , eq ) = I56
+GOTO ( I84 , grt ) = I57
+GOTO ( I84 , add ) = I58
+GOTO ( I84 , sub ) = I59
+GOTO ( I84 , mul ) = I60
+GOTO ( I84 , div ) = I61
+GOTO ( I85 , ATOMIC ) = I99
+GOTO ( I85 , VNAME ) = I42
+GOTO ( I85 , CONST ) = I43
+GOTO ( I85 , V ) = I12
+GOTO ( I85 , N ) = I44
+GOTO ( I85 , T ) = I45
+GOTO ( I86 , else ) = I100
+GOTO ( I87 , , ) = I101
+GOTO ( I88 , , ) = I102
+GOTO ( I89 , ( ) = I103
+GOTO ( I90 , ) ) = I104
+GOTO ( I91 , SUBFUNCS ) = I105
+GOTO ( I91 , FUNCTIONS ) = I106
+GOTO ( I91 , ε ) = I14
+GOTO ( I91 , DECL ) = I15
+GOTO ( I91 , HEADER ) = I16
+GOTO ( I91 , FTYP ) = I17
+GOTO ( I91 , num ) = I18
+GOTO ( I91 , void ) = I19
+GOTO ( I93 , VTYP ) = I107
+GOTO ( I93 , num ) = I7
+GOTO ( I93 , text ) = I8
+GOTO ( I94 , VNAME ) = I108
+GOTO ( I94 , V ) = I12
+GOTO ( I95 , ) ) = I109
+GOTO ( I98 , , ) = I110
+GOTO ( I99 , , ) = I111
+GOTO ( I100 , ALGO ) = I112
+GOTO ( I100 , begin ) = I10
+GOTO ( I101 , ATOMIC ) = I113
+GOTO ( I101 , VNAME ) = I42
+GOTO ( I101 , CONST ) = I43
+GOTO ( I101 , V ) = I12
+GOTO ( I101 , N ) = I44
+GOTO ( I101 , T ) = I45
+GOTO ( I102 , SIMPLE ) = I114
+GOTO ( I102 , BINOP ) = I89
+GOTO ( I102 , or ) = I54
+GOTO ( I102 , and ) = I55
+GOTO ( I102 , eq ) = I56
+GOTO ( I102 , grt ) = I57
+GOTO ( I102 , add ) = I58
+GOTO ( I102 , sub ) = I59
+GOTO ( I102 , mul ) = I60
+GOTO ( I102 , div ) = I61
+GOTO ( I103 , ATOMIC ) = I87
+GOTO ( I103 , VNAME ) = I42
+GOTO ( I103 , CONST ) = I43
+GOTO ( I103 , V ) = I12
+GOTO ( I103 , N ) = I44
+GOTO ( I103 , T ) = I45
+GOTO ( I105 , end ) = I115
+GOTO ( I107 , VNAME ) = I116
+GOTO ( I107 , V ) = I12
+GOTO ( I108 , , ) = I117
+GOTO ( I110 , ARG ) = I118
+GOTO ( I110 , ATOMIC ) = I96
+GOTO ( I110 , OP ) = I97
+GOTO ( I110 , VNAME ) = I42
+GOTO ( I110 , CONST ) = I43
+GOTO ( I110 , UNOP ) = I74
+GOTO ( I110 , BINOP ) = I75
+GOTO ( I110 , V ) = I12
+GOTO ( I110 , N ) = I44
+GOTO ( I110 , T ) = I45
+GOTO ( I110 , not ) = I62
+GOTO ( I110 , sqrt ) = I63
+GOTO ( I110 , or ) = I54
+GOTO ( I110 , and ) = I55
+GOTO ( I110 , eq ) = I56
+GOTO ( I110 , grt ) = I57
+GOTO ( I110 , add ) = I58
+GOTO ( I110 , sub ) = I59
+GOTO ( I110 , mul ) = I60
+GOTO ( I110 , div ) = I61
+GOTO ( I111 , ATOMIC ) = I119
+GOTO ( I111 , VNAME ) = I42
+GOTO ( I111 , CONST ) = I43
+GOTO ( I111 , V ) = I12
+GOTO ( I111 , N ) = I44
+GOTO ( I111 , T ) = I45
+GOTO ( I113 , ) ) = I120
+GOTO ( I114 , ) ) = I121
+GOTO ( I116 , , ) = I122
+GOTO ( I117 , VNAME ) = I123
+GOTO ( I117 , V ) = I12
+GOTO ( I118 , ) ) = I124
+GOTO ( I119 , ) ) = I125
+GOTO ( I122 , VTYP ) = I126
+GOTO ( I122 , num ) = I7
+GOTO ( I122 , text ) = I8
+GOTO ( I123 , ) ) = I127
+GOTO ( I126 , VNAME ) = I128
+GOTO ( I126 , V ) = I12
+GOTO ( I128 , , ) = I129
+
+SLR(1) parsing table:
+
+      main     num    text       V   begin     end    skip    halt  return       N       T   input      if    then    else     not    sqrt      or     and      eq     grt     add     sub     mul     div       F    void       {       }       (       )       ,       ;       =       <       $       S    PROG GLOB VARS    VTYP   VNAME    ALGO INSTRUC COMMAND  ATOMIC   CONST  ASSIGN    CALL  BRANCH    TERM      OP     ARG    COND  SIMPLE COMPOSIT    UNOP   BINOP   FNAME FUNCTIONS    DECL  HEADER    FTYP    BODY  PROLOG  EPILOG LOCVARS SUBFUNCS 
+
+ I0      S3                                                                                                                                                                                                                                                                                               1       2                                                                                                                                                                                                                                         
+ I1                                                                                                                                                                                                                                                                                           Accept                                                                                                                                                                                                                                                        
+ I2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+ I3              S7      S8                                                                                                                                                                                                                                                                                               4       6                                                                                                                                                                                                                         
+ I4                                     S10                                                                                                                                                                                                                                                                                                       9                                                                                                                                                                                                         
+ I5                                      R3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+ I6                             S12                                                                                                                                                                                                                                                                                                      11                                                                                                                                                                                                                 
+ I7                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+ I8                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+ I9             S18                                                                                                                                                                                                     S19                                                                                                                                                                                                                                                              13      15      16      17                                         
+I10                             S12                     S23     S24     S25                             S31                                                                                                     S32                                                                                                                      29              20      22                      26      27      28                                                                      30                                                                         
+I11                                                                                                                                                                                                                                                             S33                                                                                                                                                                                                                                                                                         
+I12                                                                                                                                                                                                                                                      R7      R7      R7      R7      R7                                                                                                                                                                                                                                                                 
+I13                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I14                                             R48                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I15             S18                                                                                                                                                                                                     S19                                                                                                                                                                                                                                                              34      15      16      17                                         
+I16                                                                                                                                                                                                                             S37                                                                                                                                                                                                                                                                                      35      36                         
+I17                                                                                                                                                                                                             S32                                                                                                                                                                                                                                                              38                                                                         
+I18                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I19                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I20                                             S39                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I21                                              R9                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I22                                                                                                                                                                                                                                                                     S40                                                                                                                                                                                                                                                                                 
+I23                                                                                                                                                                                                                                                                     R11                                                                                                                                                                                                                                                                                 
+I24                                                                                                                                                                                                                                                                     R12                                                                                                                                                                                                                                                                                 
+I25                             S12                                             S44     S45                                                                                                                                                                                                                                              42                              41      43                                                                                                                                                                         
+I26                                                                                                                                                                                                                                                                     R14                                                                                                                                                                                                                                                                                 
+I27                                                                                                                                                                                                                                                                     R15                                                                                                                                                                                                                                                                                 
+I28                                                                                                                                                                                                                                                                     R16                                                                                                                                                                                                                                                                                 
+I29                                                                                                                                                                                                                                                                             S47     S46                                                                                                                                                                                                                                                                 
+I30                                                                                                                                                                                                                                             S48                                                                                                                                                                                                                                                                                                         
+I31                                                                                                                             S62     S63     S54     S55     S56     S57     S58     S59     S60     S61                                                                                                                                                                                                                              49      50      51      53      52                                                                                 
+I32                                                                                                                                                                                                                                             R47                                                                                                                                                                                                                                                                                                         
+I33              S7      S8                                                                                                                                                                                                                                                                                              64       6                                                                                                                                                                                                                         
+I34                                             R49                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I35                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I36              S7      S8                                                                                                                                                                                                                                                                                                      66                                                                                                                                                                                                              65         
+I37                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I38                                                                                                                                                                                                                                             S67                                                                                                                                                                                                                                                                                                         
+I39                                                                                                                      R8                                                                                                                                              R8                                                                                                                                                                                                                                                                                 
+I40                             S12                     S23     S24     S25                             S31                                                                                                     S32                                                                                                                      29              68      22                      26      27      28                                                                      30                                                                         
+I41                                                                                                                                                                                                                                                                     R13                                                                                                                                                                                                                                                                                 
+I42                                                                                                                                                                                                                                                     R17     R17     R17                                                                                                                                                                                                                                                                                 
+I43                                                                                                                                                                                                                                                     R18     R18     R18                                                                                                                                                                                                                                                                                 
+I44                                                                                                                                                                                                                                                     R19     R19     R19                                                                                                                                                                                                                                                                                 
+I45                                                                                                                                                                                                                                                     R20     R20     R20                                                                                                                                                                                                                                                                                 
+I46                                                                                             S69                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I47                             S12                                             S44     S45                                     S62     S63     S54     S55     S56     S57     S58     S59     S60     S61     S32                                                                                                                      42                              71      43              72              70      73                                      74      75      30                                                                         
+I48                             S12                                             S44     S45                                                                                                                                                                                                                                              42                              76      43                                                                                                                                                                         
+I49                                                                                                             S77                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I50                                                                                                             R32                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I51                                                                                                             R33                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I52                                                                                                                                                                                                                                             S78                                                                                                                                                                                                                                                                                                         
+I53                                                                                                                                                                                                                                             S79                                                                                                                                                                                                                                                                                                         
+I54                                                                                                                                                                                                                                             R39                                                                                                                                                                                                                                                                                                         
+I55                                                                                                                                                                                                                                             R40                                                                                                                                                                                                                                                                                                         
+I56                                                                                                                                                                                                                                             R41                                                                                                                                                                                                                                                                                                         
+I57                                                                                                                                                                                                                                             R42                                                                                                                                                                                                                                                                                                         
+I58                                                                                                                                                                                                                                             R43                                                                                                                                                                                                                                                                                                         
+I59                                                                                                                                                                                                                                             R44                                                                                                                                                                                                                                                                                                         
+I60                                                                                                                                                                                                                                             R45                                                                                                                                                                                                                                                                                                         
+I61                                                                                                                                                                                                                                             R46                                                                                                                                                                                                                                                                                                         
+I62                                                                                                                                                                                                                                             R37                                                                                                                                                                                                                                                                                                         
+I63                                                                                                                                                                                                                                             R38                                                                                                                                                                                                                                                                                                         
+I64                                      R4                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+I65                                     S10                                                                                                                                                                                                                                                                                                      80                                                                                                                                                                                                         
+I66                             S12                                                                                                                                                                                                                                                                                                      81                                                                                                                                                                                                                 
+I67                             S12                                                                                                                                                                                                                                                                                                      82                                                                                                                                                                                                                 
+I68                                             R10                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I69                                                                                                                                                                                                                                                                     R21                                                                                                                                                                                                                                                                                 
+I70                                                                                                                                                                                                                                                                     R22                                                                                                                                                                                                                                                                                 
+I71                                                                                                                                                                                                                                                                     R25                                                                                                                                                                                                                                                                                 
+I72                                                                                                                                                                                                                                                                     R26                                                                                                                                                                                                                                                                                 
+I73                                                                                                                                                                                                                                                                     R27                                                                                                                                                                                                                                                                                 
+I74                                                                                                                                                                                                                                             S83                                                                                                                                                                                                                                                                                                         
+I75                                                                                                                                                                                                                                             S84                                                                                                                                                                                                                                                                                                         
+I76                                                                                                                                                                                                                                                             S85                                                                                                                                                                                                                                                                                         
+I77                                     S10                                                                                                                                                                                                                                                                                                      86                                                                                                                                                                                                         
+I78                             S12                                             S44     S45                                                     S54     S55     S56     S57     S58     S59     S60     S61                                                                                                                              42                              87      43                                                              88                      89                                                                                 
+I79                                                                                                                                             S54     S55     S56     S57     S58     S59     S60     S61                                                                                                                                                                                                                                      90                      89                                                                                 
+I80                                                                                                                                                                                                                                     S92                                                                                                                                                                                                                                                                                              91                 
+I81                                                                                                                                                                                                                                                             S93                                                                                                                                                                                                                                                                                         
+I82                                                                                                                                                                                                                                                             S94                                                                                                                                                                                                                                                                                         
+I83                             S12                                             S44     S45                                     S62     S63     S54     S55     S56     S57     S58     S59     S60     S61                                                                                                                              42                              96      43                                      97      95                              74      75                                                                                 
+I84                             S12                                             S44     S45                                     S62     S63     S54     S55     S56     S57     S58     S59     S60     S61                                                                                                                              42                              96      43                                      97      98                              74      75                                                                                 
+I85                             S12                                             S44     S45                                                                                                                                                                                                                                              42                              99      43                                                                                                                                                                         
+I86                                                                                                                    S100                                                                                                                                                                                                                                                                                                                                                                                                                                 
+I87                                                                                                                                                                                                                                                            S101                                                                                                                                                                                                                                                                                         
+I88                                                                                                                                                                                                                                                            S102                                                                                                                                                                                                                                                                                         
+I89                                                                                                                                                                                                                                            S103                                                                                                                                                                                                                                                                                                         
+I90                                                                                                                                                                                                                                                    S104                                                                                                                                                                                                                                                                                                 
+I91             S18                                                                                                                                                                                                     S19                                                                                                                                                                                                                                                             106      15      16      17                                     105 
+I92                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I93              S7      S8                                                                                                                                                                                                                                                                                                     107                                                                                                                                                                                                                         
+I94                             S12                                                                                                                                                                                                                                                                                                     108                                                                                                                                                                                                                 
+I95                                                                                                                                                                                                                                                    S109                                                                                                                                                                                                                                                                                                 
+I96                                                                                                                                                                                                                                                     R30     R30                                                                                                                                                                                                                                                                                         
+I97                                                                                                                                                                                                                                                     R31     R31                                                                                                                                                                                                                                                                                         
+I98                                                                                                                                                                                                                                                            S110                                                                                                                                                                                                                                                                                         
+I99                                                                                                                                                                                                                                                            S111                                                                                                                                                                                                                                                                                         
+I100                                     S10                                                                                                                                                                                                                                                                                                     112                                                                                                                                                                                                         
+I101                             S12                                             S44     S45                                                                                                                                                                                                                                              42                             113      43                                                                                                                                                                         
+I102                                                                                                                                             S54     S55     S56     S57     S58     S59     S60     S61                                                                                                                                                                                                                                     114                      89                                                                                 
+I103                             S12                                             S44     S45                                                                                                                                                                                                                                              42                              87      43                                                                                                                                                                         
+I104                                                                                                             R36                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I105                                            S115                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I106                                             R58                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I107                             S12                                                                                                                                                                                                                                                                                                     116                                                                                                                                                                                                                 
+I108                                                                                                                                                                                                                                                            S117                                                                                                                                                                                                                                                                                         
+I109                                                                                                                                                                                                                                                     R28     R28     R28                                                                                                                                                                                                                                                                                 
+I110                             S12                                             S44     S45                                     S62     S63     S54     S55     S56     S57     S58     S59     S60     S61                                                                                                                              42                              96      43                                      97     118                              74      75                                                                                 
+I111                             S12                                             S44     S45                                                                                                                                                                                                                                              42                             119      43                                                                                                                                                                         
+I112                                                                                                                                                                                                                                                                     R24                                                                                                                                                                                                                                                                                 
+I113                                                                                                                                                                                                                                                    S120                                                                                                                                                                                                                                                                                                 
+I114                                                                                                                                                                                                                                                    S121                                                                                                                                                                                                                                                                                                 
+I115                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I116                                                                                                                                                                                                                                                            S122                                                                                                                                                                                                                                                                                         
+I117                             S12                                                                                                                                                                                                                                                                                                     123                                                                                                                                                                                                                 
+I118                                                                                                                                                                                                                                                    S124                                                                                                                                                                                                                                                                                                 
+I119                                                                                                                                                                                                                                                    S125                                                                                                                                                                                                                                                                                                 
+I120                                                                                                             R34                                                                                                                                     R34     R34                                                                                                                                                                                                                                                                                         
+I121                                                                                                             R35                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I122              S7      S8                                                                                                                                                                                                                                                                                                     126                                                                                                                                                                                                                         
+I123                                                                                                                                                                                                                                                    S127                                                                                                                                                                                                                                                                                                 
+I124                                                                                                                                                                                                                                                     R29     R29     R29                                                                                                                                                                                                                                                                                 
+I125                                                                                                                                                                                                                                                                     R23                                                                                                                                                                                                                                                                                 
+I126                             S12                                                                                                                                                                                                                                                                                                     128                                                                                                                                                                                                                 
+I127                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+I128                                                                                                                                                                                                                                                            S129                                                                                                                                                                                                                                                                                         
+I129                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         

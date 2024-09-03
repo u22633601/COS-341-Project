@@ -1,6 +1,0 @@
-main
-num    V_x
-begin
-    V_x = 5  +   3   * 2
-    print   V_x
-end
