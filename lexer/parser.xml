@@ -99,10 +99,5 @@
       <UNID>10</UNID>
       <TERMINAL>end</TERMINAL>
     </LEAF>
-    <LEAF>
-      <PARENT>14</PARENT>
-      <UNID>15</UNID>
-      <TERMINAL>$</TERMINAL>
-    </LEAF>
   </LEAFNODES>
 </SYNTREE>
