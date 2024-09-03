@@ -149,16 +149,17 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals("begin")) return "s9";
                 break;
             case 5:
-                if (tokenType.equals("V"))
+                if (tokenType.equals("text") && tokenValue.startsWith("V"))
                     return "s11";
                 break;
             case 6:
-                if (tokenType.equals("V"))
+                if (tokenType.equals("text") && tokenValue.startsWith("V"))
                     return "r4";
                 break;
             case 7:
                 if (tokenType.equals("text") && tokenValue.startsWith("V"))
                     return "s11"; // VNAME
+
                 break;
             case 8:
                 if (tokenValue.equals("$")) return "r47";
@@ -635,6 +636,8 @@ private String getAction(int state, Token token) {
             case 5:
                 if (nonTerminal.equals("VNAME"))
                     return 10;
+                if (nonTerminal.equals("GLOBVARS"))
+                    return 52;
                 break;
             case 6:
             case 7:
@@ -672,6 +675,10 @@ private String getAction(int state, Token token) {
                     return 25;
                 if (nonTerminal.equals("BRANCH"))
                     return 26;
+                break;
+            case 10:
+                if (nonTerminal.equals("GLOBVARS"))
+                    return 52;
                 break;
             case 12:
                 if (nonTerminal.equals("PROG"))

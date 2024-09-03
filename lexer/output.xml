@@ -7,25 +7,55 @@
 <TOK>
   <ID>2</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>begin</WORD>
+  <WORD>text</WORD>
 </TOK>
 <TOK>
   <ID>3</ID>
-  <CLASS>reserved_keyword</CLASS>
-  <WORD>skip</WORD>
+  <CLASS>text</CLASS>
+  <WORD>V</WORD>
 </TOK>
 <TOK>
   <ID>4</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>;</WORD>
+  <WORD>,</WORD>
 </TOK>
 <TOK>
   <ID>5</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>end</WORD>
+  <WORD>num</WORD>
 </TOK>
 <TOK>
   <ID>6</ID>
+  <CLASS>text</CLASS>
+  <WORD>V</WORD>
+</TOK>
+<TOK>
+  <ID>7</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>,</WORD>
+</TOK>
+<TOK>
+  <ID>8</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>begin</WORD>
+</TOK>
+<TOK>
+  <ID>9</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>halt</WORD>
+</TOK>
+<TOK>
+  <ID>10</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>;</WORD>
+</TOK>
+<TOK>
+  <ID>11</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>end</WORD>
+</TOK>
+<TOK>
+  <ID>12</ID>
   <CLASS>reserved_keyword</CLASS>
   <WORD>$</WORD>
 </TOK>

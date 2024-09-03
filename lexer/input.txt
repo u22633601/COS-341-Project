@@ -1,1 +1,1 @@
-main begin skip ; end $
+main text V , num V , begin halt ; end $
