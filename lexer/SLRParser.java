@@ -172,7 +172,10 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals("skip")) return "s20";
                 if (tokenValue.equals("halt")) return "s21";
                 if (tokenValue.equals("return")) return "s22";
-                if (tokenType.equals("V")) return "s11";
+                if (tokenType.equals("text") && tokenValue.startsWith("V"))
+                    return "s11"; // VNAME for assignment
+                if (tokenType.equals("text") && tokenValue.startsWith("F"))
+                    return "s27";
                 if (tokenValue.equals("if")) return "s28";
                 break;
             case 10:
@@ -224,9 +227,9 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals(";")) return "r11";
                 break;
             case 22:
-                if (tokenType.equals("V"))
+                if (tokenType.equals("text") && tokenValue.startsWith("V"))
                     return "s11";
-                if (tokenType.equals("N"))
+                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
                     return "s40";
                 if (tokenType.equals("T"))
                     return "s41";
@@ -234,6 +237,8 @@ private String getAction(int state, Token token) {
             case 23:
             case 24:
             case 25:
+                if (tokenValue.equals(";"))
+                    return "s36";
                 if (tokenValue.equals(";")) return "r13";
                 if (tokenValue.equals(";")) return "r14";
                 if (tokenValue.equals(";")) return "r15";
@@ -243,12 +248,14 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals("=")) return "s43";
                 break;
             case 27:
-                if (tokenType.equals("V"))
+                if (tokenType.equals("text") && tokenValue.startsWith("V"))
                     return "s11";
-                if (tokenType.equals("N"))
+                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
                     return "s40";
                 if (tokenType.equals("T"))
                     return "s41";
+                if (tokenValue.equals("("))
+                    return "s34";
                 break;
             case 28:
                 if (tokenValue.equals("not")) return "s50";
@@ -282,7 +289,8 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals("text")) return "r54";
                 break;
             case 34:
-                if (tokenType.equals("V")) return "s11";
+                if (tokenType.equals("text") && tokenValue.startsWith("V"))
+                    return "s11";
                 break;
             case 35:
                 if (tokenValue.equals("$")) return "r7";
@@ -295,7 +303,7 @@ private String getAction(int state, Token token) {
             case 36:
                 if (tokenValue.equals("end"))
                     return "r8";
-                if (tokenType.equals("V")) return "s11";
+                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
                 if (tokenValue.equals("skip")) return "s20";
                 if (tokenValue.equals("halt")) return "s21";
                 if (tokenValue.equals("return")) return "s22";
@@ -304,9 +312,38 @@ private String getAction(int state, Token token) {
             case 37:
                 if (tokenValue.equals(";")) return "r12";
                 break;
+            case 40:
+                if (tokenValue.equals(","))
+                    return "r19"; // CONST -> T
+                if (tokenValue.equals(")"))
+                    return "r19";
+                if (tokenValue.equals(","))
+                    return "r16";
+                if (tokenValue.equals(";"))
+                    return "r16";
+                if (tokenValue.equals(")"))
+                    return "r16";
+                if (tokenValue.equals(","))
+                    return "r17";
+                if (tokenValue.equals(";"))
+                    return "r17";
+                if (tokenValue.equals(")"))
+                    return "r17";
+                if (tokenValue.equals(","))
+                    return "r18";
+                if (tokenValue.equals(";"))
+                    return "r18";
+                if (tokenValue.equals(")"))
+                    return "r18";
+                if (tokenValue.equals(","))
+                    return "r19";
+                if (tokenValue.equals(";"))
+                    return "r19";
+                if (tokenValue.equals(")"))
+                    return "r19";
+                break;
             case 38:
             case 39:
-            case 40:
             case 41:
                 if (tokenValue.equals(",")) return "r16";
                 if (tokenValue.equals(";")) return "r16";
@@ -325,8 +362,9 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals("(")) return "s57";
                 break;
             case 43:
-                if (tokenType.equals("V")) return "s11";
-                if (tokenType.equals("N")) return "s40";
+                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
+                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
+                    return "s40";
                 if (tokenType.equals("T")) return "s41";
                 if (tokenValue.equals("(")) return "s27";
                 if (tokenValue.equals("not")) return "s62";
@@ -344,8 +382,9 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals("then")) return "r32";
                 break;
             case 48:
-                if (tokenType.equals("V")) return "s11";
-                if (tokenType.equals("N")) return "s40";
+                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
+                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
+                    return "s40";
                 if (tokenType.equals("T")) return "s41";
                 if (tokenValue.equals("not")) return "s68";
                 break;
@@ -364,7 +403,7 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals("begin")) return "s9";
                 break;
             case 54:
-                if (tokenType.equals("V")) return "s11";
+                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
                 break;
             case 55:
                 if (tokenValue.equals(",")) return "s72";
@@ -389,17 +428,22 @@ private String getAction(int state, Token token) {
                 break;
             case 62:
             case 63:
-                if (tokenType.equals("V")) return "s11";
-                if (tokenType.equals("N")) return "s40";
+                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
+                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
+                    return "s40";
                 if (tokenType.equals("T")) return "s41";
                 if (tokenValue.equals("(")) return "s62";
                 if (tokenValue.equals("not")) return "s62";
                 if (tokenValue.equals("sqrt")) return "s63";
                 break;
             case 64:
-                if (tokenType.equals("V")) return "s11";
-                if (tokenType.equals("N")) return "s40";
-                if (tokenType.equals("T")) return "s41";
+                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
+                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
+                    return "s40";
+                if (tokenType.equals("T"))
+                    return "s41";
+                if (tokenValue.equals(")"))
+                    return "s88";
                 break;
             case 65:
                 if (tokenValue.equals("begin")) return "s9";
@@ -411,8 +455,9 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals(",")) return "s80";
                 break;
             case 68:
-                if (tokenType.equals("V")) return "s11";
-                if (tokenType.equals("N")) return "s40";
+                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
+                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
+                    return "s40";
                 if (tokenType.equals("T")) return "s41";
                 break;
             case 69:
@@ -425,7 +470,7 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals(",")) return "s84";
                 break;
             case 72:
-                if (tokenType.equals("V")) return "s11";
+                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
                 break;
             case 73:
                 if (tokenValue.equals(")")) return "s86";
@@ -446,12 +491,23 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals(",")) return "s88";
                 break;
             case 78:
-                if (tokenValue.equals("else")) return "s89";
+                if (tokenValue.equals("else"))
+                    return "s89";
+                if (tokenValue.equals(","))
+                    return "s87"; // Comma between function arguments
+                if (tokenValue.equals(")"))
+                    return "r27";
                 break;
             case 79:
-                if (tokenType.equals("V")) return "s11";
-                if (tokenType.equals("N")) return "s40";
-                if (tokenType.equals("T")) return "s41";
+                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
+                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
+                    return "s40";
+                if (tokenType.equals("T"))
+                    return "s41";
+                if (tokenValue.equals(","))
+                    return "s87"; // Comma between function arguments
+                if (tokenValue.equals(")"))
+                    return "r27";
                 break;
             case 80:
                 if (tokenValue.equals("not")) return "s68";
@@ -485,17 +541,22 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals(")")) return "r27";
                 break;
             case 87:
-                if (tokenType.equals("V")) return "s11";
-                if (tokenType.equals("N")) return "s40";
+                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
+                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
+                    return "s40";
                 if (tokenType.equals("T")) return "s41";
                 if (tokenValue.equals("(")) return "s62";
                 if (tokenValue.equals("not")) return "s62";
                 if (tokenValue.equals("sqrt")) return "s63";
                 break;
             case 88:
-                if (tokenType.equals("V")) return "s11";
-                if (tokenType.equals("N")) return "s40";
-                if (tokenType.equals("T")) return "s41";
+                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
+                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
+                    return "s40";
+                if (tokenType.equals("T"))
+                    return "s41";
+                if (tokenValue.equals(";"))
+                    return "r22";
                 break;
             case 89:
                 if (tokenValue.equals("begin")) return "s9";
@@ -516,14 +577,18 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals("}")) return "r57";
                 break;
             case 95:
-                if (tokenType.equals("V"))
+                if (tokenType.equals("text") && tokenValue.startsWith("V"))
                     return "s11";
                 break;
             case 96:
-                if (tokenType.equals("V"))
+                if (tokenType.equals("text") && tokenValue.startsWith("V"))
                     return "s11";
                 break;
             case 97:
+                if (tokenValue.equals(","))
+                    return "s87"; // Comma between function arguments
+                if (tokenValue.equals(")"))
+                    return "r27";
                 if (tokenValue.equals(")"))
                     return "s105";
                 break;
@@ -592,7 +657,7 @@ private String getAction(int state, Token token) {
                     return "r50";
                 break;
             case 109:
-                if (tokenType.equals("V"))
+                if (tokenType.equals("text") && tokenValue.startsWith("V"))
                     return "s11";
                 break;
             case 110:
@@ -618,6 +683,8 @@ private String getAction(int state, Token token) {
                     return 1;
                 if (nonTerminal.equals("PROG"))
                     return 1;
+                if (nonTerminal.equals("GLOBVARS"))
+                    return 4;
                 break;
             case 2:
                 if (nonTerminal.equals("GLOBVARS"))
@@ -675,6 +742,16 @@ private String getAction(int state, Token token) {
                     return 25;
                 if (nonTerminal.equals("BRANCH"))
                     return 26;
+                if (nonTerminal.equals("FNAME"))
+                    return 27;
+                if (nonTerminal.equals("ARG"))
+                    return 64;
+                if (nonTerminal.equals("VNAME"))
+                    return 78;
+                if (nonTerminal.equals("CONST"))
+                    return 79;
+                if (nonTerminal.equals("TERM"))
+                    return 97;
                 break;
             case 10:
                 if (nonTerminal.equals("GLOBVARS"))
@@ -733,6 +810,20 @@ private String getAction(int state, Token token) {
             case 32:
                 if (nonTerminal.equals("VTYP"))
                     return 54;
+                break;
+            case 34:
+                if (nonTerminal.equals("ARG"))
+                    return 64;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 77;
+                if (nonTerminal.equals("VNAME"))
+                    return 78;
+                if (nonTerminal.equals("CONST"))
+                    return 79;
+                if (nonTerminal.equals("TERM"))
+                    return 97;
+                if (nonTerminal.equals("CALL"))
+                    return 25;
                 break;
             case 36:
                 if (nonTerminal.equals("INSTRUC"))
@@ -802,6 +893,12 @@ private String getAction(int state, Token token) {
                     return 38;
                 if (nonTerminal.equals("VNAME"))
                     return 39;
+                if (nonTerminal.equals("ARG"))
+                    return 64;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 77;
+                if (nonTerminal.equals("CALL"))
+                    return 25;
                 break;
             case 65:
                 if (nonTerminal.equals("ALGO"))
@@ -866,6 +963,12 @@ private String getAction(int state, Token token) {
                     return 60;
                 if (nonTerminal.equals("BINOP"))
                     return 61;
+                if (nonTerminal.equals("ARG"))
+                    return 64;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 77;
+                if (nonTerminal.equals("CALL"))
+                    return 25;
                 break;
             case 88:
                 if (nonTerminal.equals("TERM"))

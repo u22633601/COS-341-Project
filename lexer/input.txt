@@ -1,1 +1,1 @@
-main text V , num V , begin halt ; end $
+main text V , begin halt ; end $

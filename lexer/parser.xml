@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <SYNTREE>
   <ROOT>
-    <UNID>26</UNID>
+    <UNID>19</UNID>
     <SYMB>PROG</SYMB>
     <CHILDREN>
-      <ID>25</ID>
+      <ID>18</ID>
     </CHILDREN>
   </ROOT>
   <INNERNODES>
@@ -16,114 +16,78 @@
         <ID>4</ID>
       </CHILDREN>
     </IN>
-    <IN symbol="VTYP">
-      <PARENT>6</PARENT>
-      <UNID>7</UNID>
-      <SYMB>VTYP</SYMB>
-      <CHILDREN>
-        <ID>7</ID>
-      </CHILDREN>
-    </IN>
-    <IN symbol="VNAME">
-      <PARENT>8</PARENT>
-      <UNID>9</UNID>
-      <SYMB>VNAME</SYMB>
-      <CHILDREN>
-        <ID>9</ID>
-      </CHILDREN>
-    </IN>
     <IN symbol="GLOBVARS">
-      <PARENT>10</PARENT>
-      <UNID>11</UNID>
+      <PARENT>5</PARENT>
+      <UNID>6</UNID>
       <SYMB>GLOBVARS</SYMB>
       <CHILDREN/>
     </IN>
     <IN symbol="GLOBVARS">
-      <PARENT>11</PARENT>
-      <UNID>12</UNID>
+      <PARENT>6</PARENT>
+      <UNID>7</UNID>
       <SYMB>GLOBVARS</SYMB>
       <CHILDREN>
-        <ID>10</ID>
-        <ID>11</ID>
-        <ID>12</ID>
+        <ID>5</ID>
+        <ID>6</ID>
+        <ID>7</ID>
       </CHILDREN>
     </IN>
-    <IN symbol="GLOBVARS">
+    <IN symbol="COMMAND">
+      <PARENT>9</PARENT>
+      <UNID>10</UNID>
+      <SYMB>COMMAND</SYMB>
+      <CHILDREN>
+        <ID>10</ID>
+      </CHILDREN>
+    </IN>
+    <IN symbol="INSTRUC">
+      <PARENT>11</PARENT>
+      <UNID>12</UNID>
+      <SYMB>INSTRUC</SYMB>
+      <CHILDREN/>
+    </IN>
+    <IN symbol="INSTRUC">
       <PARENT>12</PARENT>
       <UNID>13</UNID>
-      <SYMB>GLOBVARS</SYMB>
+      <SYMB>INSTRUC</SYMB>
       <CHILDREN>
-        <ID>11</ID>
         <ID>12</ID>
         <ID>13</ID>
       </CHILDREN>
     </IN>
-    <IN symbol="GLOBVARS">
+    <IN symbol="INSTRUC">
       <PARENT>13</PARENT>
       <UNID>14</UNID>
-      <SYMB>GLOBVARS</SYMB>
+      <SYMB>INSTRUC</SYMB>
       <CHILDREN>
-        <ID>12</ID>
         <ID>13</ID>
         <ID>14</ID>
       </CHILDREN>
     </IN>
-    <IN symbol="COMMAND">
-      <PARENT>16</PARENT>
-      <UNID>17</UNID>
-      <SYMB>COMMAND</SYMB>
-      <CHILDREN>
-        <ID>17</ID>
-      </CHILDREN>
-    </IN>
-    <IN symbol="INSTRUC">
-      <PARENT>18</PARENT>
-      <UNID>19</UNID>
-      <SYMB>INSTRUC</SYMB>
-      <CHILDREN/>
-    </IN>
-    <IN symbol="INSTRUC">
-      <PARENT>19</PARENT>
-      <UNID>20</UNID>
-      <SYMB>INSTRUC</SYMB>
-      <CHILDREN>
-        <ID>19</ID>
-        <ID>20</ID>
-      </CHILDREN>
-    </IN>
-    <IN symbol="INSTRUC">
-      <PARENT>20</PARENT>
-      <UNID>21</UNID>
-      <SYMB>INSTRUC</SYMB>
-      <CHILDREN>
-        <ID>20</ID>
-        <ID>21</ID>
-      </CHILDREN>
-    </IN>
     <IN symbol="ALGO">
-      <PARENT>22</PARENT>
-      <UNID>23</UNID>
+      <PARENT>15</PARENT>
+      <UNID>16</UNID>
       <SYMB>ALGO</SYMB>
       <CHILDREN>
-        <ID>21</ID>
-        <ID>22</ID>
-        <ID>23</ID>
+        <ID>14</ID>
+        <ID>15</ID>
+        <ID>16</ID>
       </CHILDREN>
     </IN>
     <IN symbol="FUNCTIONS">
-      <PARENT>23</PARENT>
-      <UNID>24</UNID>
+      <PARENT>16</PARENT>
+      <UNID>17</UNID>
       <SYMB>FUNCTIONS</SYMB>
       <CHILDREN/>
     </IN>
     <IN symbol="PROG">
-      <PARENT>24</PARENT>
-      <UNID>25</UNID>
+      <PARENT>17</PARENT>
+      <UNID>18</UNID>
       <SYMB>PROG</SYMB>
       <CHILDREN>
-        <ID>23</ID>
-        <ID>24</ID>
-        <ID>25</ID>
+        <ID>16</ID>
+        <ID>17</ID>
+        <ID>18</ID>
       </CHILDREN>
     </IN>
   </INNERNODES>
@@ -149,38 +113,23 @@
       <TERMINAL>,</TERMINAL>
     </LEAF>
     <LEAF>
-      <PARENT>5</PARENT>
-      <UNID>6</UNID>
-      <TERMINAL>num</TERMINAL>
-    </LEAF>
-    <LEAF>
       <PARENT>7</PARENT>
       <UNID>8</UNID>
-      <TERMINAL>V</TERMINAL>
+      <TERMINAL>begin</TERMINAL>
     </LEAF>
     <LEAF>
-      <PARENT>9</PARENT>
-      <UNID>10</UNID>
-      <TERMINAL>,</TERMINAL>
+      <PARENT>8</PARENT>
+      <UNID>9</UNID>
+      <TERMINAL>halt</TERMINAL>
+    </LEAF>
+    <LEAF>
+      <PARENT>10</PARENT>
+      <UNID>11</UNID>
+      <TERMINAL>;</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>14</PARENT>
       <UNID>15</UNID>
-      <TERMINAL>begin</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>15</PARENT>
-      <UNID>16</UNID>
-      <TERMINAL>halt</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>17</PARENT>
-      <UNID>18</UNID>
-      <TERMINAL>;</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>21</PARENT>
-      <UNID>22</UNID>
       <TERMINAL>end</TERMINAL>
     </LEAF>
   </LEAFNODES>
