@@ -525,148 +525,244 @@ private String getAction(int state, Token token) {
                     return "r26";
                 break;
             case 71:
-                if (tokenValue.equals(",")) return "s84";
+                if (tokenValue.equals(")")) return "s80";
                 break;
             case 72:
-                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
+                if (tokenValue.equals(")"))
+                    return "s81";
                 break;
             case 73:
-                if (tokenValue.equals(")")) return "s86";
+                if (tokenValue.equals(","))
+                    return "s82";
                 break;
             case 74:
+                if (tokenValue.equals("begin"))
+                    return "s9";
             case 75:
-                if (tokenValue.equals(",")) return "r29";
-                if (tokenValue.equals(";")) return "r29";
-                if (tokenValue.equals(")")) return "r29";
-                if (tokenValue.equals(",")) return "r30";
-                if (tokenValue.equals(";")) return "r30";
-                if (tokenValue.equals(")")) return "r30";
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
+                if (tokenValue.equals("or"))
+                    return "s51";
+                if (tokenValue.equals("and"))
+                    return "s52";
+                if (tokenValue.equals("eq"))
+                    return "s53";
+                if (tokenValue.equals("grt"))
+                    return "s54";
+                if (tokenValue.equals("add"))
+                    return "s55";
+                if (tokenValue.equals("sub"))
+                    return "s56";
+                if (tokenValue.equals("mul"))
+                    return "s57";
+                if (tokenValue.equals("div"))
+                    return "s58";
                 break;
             case 76:
-                if (tokenValue.equals(",")) return "s87";
+                if (tokenValue.equals("or"))
+                    return "s51";
+                if (tokenValue.equals("and"))
+                    return "s52";
+                if (tokenValue.equals("eq"))
+                    return "s53";
+                if (tokenValue.equals("grt"))
+                    return "s54";
+                if (tokenValue.equals("add"))
+                    return "s55";
+                if (tokenValue.equals("sub"))
+                    return "s56";
+                if (tokenValue.equals("mul"))
+                    return "s57";
+                if (tokenValue.equals("div"))
+                    return "s58";
                 break;
             case 77:
-                if (tokenValue.equals(",")) return "s88";
+                if (tokenValue.equals("}"))
+                    return "s89";
                 break;
             case 78:
-                if (tokenValue.equals("else"))
-                    return "s89";
                 if (tokenValue.equals(","))
-                    return "s87"; // Comma between function arguments
-                if (tokenValue.equals(")"))
-                    return "r27";
+                    return "s90";
                 break;
             case 79:
-                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
-                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
-                    return "s40";
-                if (tokenType.equals("T"))
-                    return "s41";
                 if (tokenValue.equals(","))
-                    return "s87"; // Comma between function arguments
-                if (tokenValue.equals(")"))
-                    return "r27";
+                    return "s91"; // Comma between function arguments
                 break;
             case 80:
-                if (tokenValue.equals("not")) return "s68";
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
+                if (tokenValue.equals("not"))
+                    return "s59";
+                if (tokenValue.equals("sqrt"))
+                    return "s60";
+                if (tokenValue.equals("or"))
+                    return "s51";
+                if (tokenValue.equals("and"))
+                    return "s52";
+                if (tokenValue.equals("eq"))
+                    return "s53";
+                if (tokenValue.equals("grt"))
+                    return "s54";
+                if (tokenValue.equals("add"))
+                    return "s55";
+                if (tokenValue.equals("sub"))
+                    return "s56";
+                if (tokenValue.equals("mul"))
+                    return "s57";
+                if (tokenValue.equals("div"))
+                    return "s58";
                 break;
             case 81:
-                if (tokenValue.equals(")")) return "s92";
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
+                if (tokenValue.equals("not"))
+                    return "s59";
+                if (tokenValue.equals("sqrt"))
+                    return "s60";
+                if (tokenValue.equals("or"))
+                    return "s51";
+                if (tokenValue.equals("and"))
+                    return "s52";
+                if (tokenValue.equals("eq"))
+                    return "s53";
+                if (tokenValue.equals("grt"))
+                    return "s54";
+                if (tokenValue.equals("add"))
+                    return "s55";
+                if (tokenValue.equals("sub"))
+                    return "s56";
+                if (tokenValue.equals("mul"))
+                    return "s57";
+                if (tokenValue.equals("div"))
+                    return "s58";
                 break;
             case 82:
-                if (tokenValue.equals("$")) return "r47";
-                if (tokenValue.equals("num")) return "s16";
-                if (tokenValue.equals("void")) return "s17";
-                if (tokenValue.equals("}")) return "r47";
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
                 break;
             case 83:
-                if (tokenValue.equals("num")) return "r55";
-                if (tokenValue.equals("text")) return "r55";
-                if (tokenValue.equals("$")) return "r55";
-                if (tokenValue.equals("void")) return "r55";
-                if (tokenValue.equals("}")) return "r55";
+                if (tokenValue.equals("else"))
+                    return "s97";
                 break;
             case 84:
-                if (tokenValue.equals("num")) return "s6";
-                if (tokenValue.equals("text")) return "s7";
+                if (tokenValue.equals(","))
+                    return "s98";
                 break;
             case 85:
-                if (tokenValue.equals(",")) return "s96";
+                if (tokenValue.equals(",")) return "s99";
                 break;
             case 86:
-                if (tokenValue.equals(",")) return "r27";
-                if (tokenValue.equals(";")) return "r27";
-                if (tokenValue.equals(")")) return "r27";
+                if (tokenValue.equals("(")) return "s100";
                 break;
             case 87:
-                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
-                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
-                    return "s40";
-                if (tokenType.equals("T")) return "s41";
-                if (tokenValue.equals("(")) return "s62";
-                if (tokenValue.equals("not")) return "s62";
-                if (tokenValue.equals("sqrt")) return "s63";
-                break;
-            case 88:
-                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
-                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
-                    return "s40";
-                if (tokenType.equals("T"))
-                    return "s41";
-                if (tokenValue.equals(";"))
-                    return "r22";
-                break;
-            case 89:
-                if (tokenValue.equals("begin")) return "s9";
-                break;
-            case 90:
-                if (tokenValue.equals(")")) return "s100";
-                break;
-            case 91:
                 if (tokenValue.equals(")")) return "s101";
                 break;
+            case 88:
+                if (tokenValue.equals("$"))
+                    return "r47";
+                if (tokenValue.equals("num"))
+                    return "s16";
+                if (tokenValue.equals("end"))
+                    return "r47";
+                if (tokenValue.equals("void"))
+                    return "s17";
+                break;
+            case 89:
+                if (tokenValue.equals("$"))
+                    return "r55";
+                if (tokenValue.equals("num"))
+                    return "r55";
+                if (tokenValue.equals("end"))
+                    return "r55";
+                if (tokenValue.equals("void"))
+                    return "r55";
+                break;
+            case 90:
+                if (tokenValue.equals("num"))
+                    return "s6";
+                if (tokenValue.equals("text"))
+                    return "s7";
+                break;
+            case 91:
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                break;
             case 92:
-                if (tokenValue.equals("then")) return "r35";
+                if (tokenValue.equals(")")) return "s106";
                 break;
             case 93:
-                if (tokenValue.equals("}")) return "s102";
+                if (tokenValue.equals(","))
+                    return "r29";
+                if (tokenValue.equals(")"))
+                    return "r29";
                 break;
             case 94:
-                if (tokenValue.equals("}")) return "r57";
+                if (tokenValue.equals(","))
+                    return "r30";
+                if (tokenValue.equals(")"))
+                    return "r30";
                 break;
             case 95:
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
-                    return "s11";
+                if (tokenValue.equals(","))
+                    return "s107";
                 break;
             case 96:
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
-                    return "s11";
+                if (tokenValue.equals(","))
+                    return "s108";
                 break;
             case 97:
-                if (tokenValue.equals(","))
-                    return "s87"; // Comma between function arguments
-                if (tokenValue.equals(")"))
-                    return "r27";
-                if (tokenValue.equals(")"))
-                    return "s105";
+                if (tokenValue.equals("begin"))
+                    return "s9";
                 break;
             case 98:
-                if (tokenValue.equals(")"))
-                    return "s106";
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
                 break;
             case 99:
-                if (tokenValue.equals(";"))
-                    return "r23";
+                if (tokenValue.equals("or"))
+                    return "s51";
+                if (tokenValue.equals("and"))
+                    return "s52";
+                if (tokenValue.equals("eq"))
+                    return "s53";
+                if (tokenValue.equals("grt"))
+                    return "s54";
+                if (tokenValue.equals("add"))
+                    return "s55";
+                if (tokenValue.equals("sub"))
+                    return "s56";
+                if (tokenValue.equals("mul"))
+                    return "s57";
+                if (tokenValue.equals("div"))
+                    return "s58";
                 break;
             case 100:
-                if (tokenValue.equals(","))
-                    return "r33";
-                if (tokenValue.equals(";"))
-                    return "r33";
-                if (tokenValue.equals(")"))
-                    return "r33";
-                if (tokenValue.equals("then"))
-                    return "r33";
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
                 break;
             case 101:
                 if (tokenValue.equals("then"))
