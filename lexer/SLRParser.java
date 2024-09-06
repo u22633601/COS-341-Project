@@ -1074,99 +1074,125 @@ private String getAction(int state, Token token) {
                 if (nonTerminal.equals("VNAME"))
                     return 81;
                 break;
-            case 68:
-                if (nonTerminal.equals("TERM"))
-                    return 90;
-                if (nonTerminal.equals("CONST"))
-                    return 38;
+            case 72:
                 if (nonTerminal.equals("VNAME"))
                     return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 83;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                if (nonTerminal.equals("OP"))
+                    return 84;
+                if (nonTerminal.equals("ARG"))
+                    return 82;
                 break;
-            case 69:
-                if (nonTerminal.equals("COND"))
-                    return 91;
+            case 73:
+                if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 83;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                if (nonTerminal.equals("OP"))
+                    return 84;
+                if (nonTerminal.equals("ARG"))
+                    return 85;
+                break;
+            case 74:
+                if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 83;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                break;
+            case 75:
+                if (nonTerminal.equals("ALGO"))
+                    return 87;
+                break;
+            case 77:
                 if (nonTerminal.equals("SIMPLE"))
-                    return 46;
-                if (nonTerminal.equals("COMPOSIT"))
-                    return 47;
+                    return 89;
+                break;
+            case 78:
+                if (nonTerminal.equals("SIMPLE"))
+                    return 90;
                 break;
             case 79:
-                if (nonTerminal.equals("TERM"))
-                    return 98;
+                if (nonTerminal.equals("EPILOG"))
+                    return 91;
+                break;
+            case 88:
+                if (nonTerminal.equals("ATOMIC"))
+                    return 99;
                 if (nonTerminal.equals("CONST"))
-                    return 38;
+                    return 40;
                 if (nonTerminal.equals("VNAME"))
                     return 39;
                 break;
-            case 80:
-                if (nonTerminal.equals("COND"))
-                    return 91;
-                if (nonTerminal.equals("SIMPLE"))
-                    return 46;
-                if (nonTerminal.equals("COMPOSIT"))
-                    return 47;
-                break;
-            case 82:
+            case 91:
                 if (nonTerminal.equals("FUNCTIONS"))
-                    return 94;
+                    return 103;
                 if (nonTerminal.equals("DECL"))
                     return 13;
                 if (nonTerminal.equals("HEADER"))
                     return 14;
-                if (nonTerminal.equals("FNAME"))
+                if (nonTerminal.equals("FTYP"))
                     return 15;
+                if (nonTerminal.equals("SUBFUNCS"))
+                    return 102;
                 break;
-            case 84:
+            case 93:
                 if (nonTerminal.equals("VTYP"))
-                    return 95;
+                    return 104;
                 break;
-            case 87:
-                if (nonTerminal.equals("TERM"))
-                    return 97;
-                if (nonTerminal.equals("CONST"))
-                    return 38;
+            case 94:
                 if (nonTerminal.equals("VNAME"))
-                    return 39;
-                if (nonTerminal.equals("OP"))
-                    return 73;
-                if (nonTerminal.equals("UNOP"))
-                    return 60;
-                if (nonTerminal.equals("BINOP"))
-                    return 61;
-                if (nonTerminal.equals("ARG"))
-                    return 64;
-                if (nonTerminal.equals("ATOMIC"))
-                    return 77;
-                if (nonTerminal.equals("CALL"))
-                    return 25;
-                break;
-            case 88:
-                if (nonTerminal.equals("TERM"))
-                    return 98;
-                if (nonTerminal.equals("CONST"))
-                    return 38;
-                if (nonTerminal.equals("VNAME"))
-                    return 39;
-                break;
-            case 89:
-                if (nonTerminal.equals("ALGO"))
-                    return 99;
-                break;
-            case 95:
-                if (nonTerminal.equals("VNAME"))
-                    return 103;
+                    return 105;
                 break;
             case 96:
                 if (nonTerminal.equals("VNAME"))
-                    return 104;
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 83;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                if (nonTerminal.equals("OP"))
+                    return 84;
+                if (nonTerminal.equals("ARG"))
+                    return 106;
                 break;
-            case 107:
-                if (nonTerminal.equals("VTYP"))
-                    return 109;
-                break;
-            case 109:
+            case 97:
                 if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 107;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                break;
+            case 98:
+                if (nonTerminal.equals("ALGO"))
+                    return 108;
+                break;
+            case 100:
+                if (nonTerminal.equals("SIMPLE"))
                     return 110;
+                break;
+            case 104:
+                if (nonTerminal.equals("VNAME"))
+                    return 112;
+                break;
+            case 113:
+                if (nonTerminal.equals("VNAME"))
+                    return 118;
+                break;
+            case 117:
+                if (nonTerminal.equals("VTYP"))
+                    return 119;
+                break;
+            case 119:
+                if (nonTerminal.equals("VNAME"))
+                    return 121;
                 break;
             default:
                 break;
@@ -1179,40 +1205,42 @@ private String getAction(int state, Token token) {
 
     private Reduction reduce(int ruleNumber) {
         switch (ruleNumber) {
+            case 0:
+                return new Reduction("S", 2);////is it really 2????????????
             case 1:
-                return new Reduction("PROG", 3); // PROG -> main GLOBVARS ALGO
+                return new Reduction("PROG", 4); // PROG -> main GLOBVARS ALGO FUNCTIONS
             case 2:
                 return new Reduction("GLOBVARS", 0); // GLOBVARS -> ε
             case 3:
-                return new Reduction("GLOBVARS", 3); // GLOBVARS -> GLOBVARS VTYP VNAME ,
+                return new Reduction("GLOBVARS", 4); // GLOBVARS -> VTYP VNAME , GLOBVARS
             case 4:
                 return new Reduction("VTYP", 1); // VTYP -> num
             case 5:
                 return new Reduction("VTYP", 1); // VTYP -> text
             case 6:
-                return new Reduction("VNAME", 1); // VNAME -> variable
+                return new Reduction("VNAME", 1); // VNAME -> v
             case 7:
                 return new Reduction("ALGO", 3); // ALGO -> begin INSTRUC end
             case 8:
                 return new Reduction("INSTRUC", 0); // INSTRUC -> ε
             case 9:
-                return new Reduction("INSTRUC", 2); // INSTRUC -> INSTRUC COMMAND ;
+                return new Reduction("INSTRUC", 3); // INSTRUC -> COMMAND ; INSTRUC
             case 10:
                 return new Reduction("COMMAND", 1); // COMMAND -> skip //here
             case 11:
                 return new Reduction("COMMAND", 1); // COMMAND -> halt
             case 12:
-                return new Reduction("COMMAND", 1); // COMMAND -> ATOMIC
+                return new Reduction("COMMAND", 2); // COMMAND -> return ATOMIC
             case 13:
-                return new Reduction("ATOMIC", 1); // ATOMIC -> ASSIGN
+                return new Reduction("COMMAND", 1); // COMMAND -> ASSIGN
             case 14:
-                return new Reduction("ATOMIC", 1); // ATOMIC -> CALL
+                return new Reduction("COMMAND", 1); // COMMAND -> CALL
             case 15:
-                return new Reduction("ATOMIC", 1); // ATOMIC -> BRANCH
+                return new Reduction("COMMAND", 1); // COMMAND -> BRANCH
             case 16:
-                return new Reduction("TERM", 1); // TERM -> CONST
+                return new Reduction("ATOMIC", 1); // ATOMIC -> VNAME
             case 17:
-                return new Reduction("TERM", 1); // TERM -> VNAME
+                return new Reduction("ATOMIC", 1); // ATOMIC -> CONST
             case 18:
                 return new Reduction("CONST", 1); // CONST -> N
             case 19:
@@ -1222,33 +1250,33 @@ private String getAction(int state, Token token) {
             case 21:
                 return new Reduction("ASSIGN", 3); // ASSIGN -> VNAME = OP
             case 22:
-                return new Reduction("CALL", 4); // CALL -> FNAME ( ARG )
+                return new Reduction("CALL", 8); // CALL -> FNAME ( ATOMIC , ATOMIC, ATOMIC )
             case 23:
-                return new Reduction("BRANCH", 5); // BRANCH -> if COND then ALGO else ALGO
+                return new Reduction("BRANCH", 6); // BRANCH -> if COND then ALGO else ALGO
             case 24:
-                return new Reduction("OP", 1); // OP -> TERM
+                return new Reduction("TERM", 1); // TERM -> ATOMIC
             case 25:
-                return new Reduction("OP", 1); // OP -> UNOP
+                return new Reduction("TERM", 1); // TERM -> CALL
             case 26:
-                return new Reduction("OP", 1); // OP -> BINOP
+                return new Reduction("TERM", 1); // TERM -> OP
             case 27:
-                return new Reduction("ARG", 1); // ARG -> TERM
+                return new Reduction("OP", 4); // OP -> UNOP (ARG)
             case 28:
-                return new Reduction("ARG", 3); // ARG -> ARG , TERM
+                return new Reduction("OP", 6); // OP -> BINOP (ARG , ARG )
             case 29:
-                return new Reduction("UNOP", 4); // UNOP -> not ( TERM )
+                return new Reduction("ARG", 1); // ARG -> ATOMIC
             case 30:
-                return new Reduction("UNOP", 4); // UNOP -> sqrt ( TERM )
+                return new Reduction("ARG", 1); // ARG -> OP
             case 31:
                 return new Reduction("COND", 1); // COND -> SIMPLE
             case 32:
                 return new Reduction("COND", 1); // COND -> COMPOSIT
             case 33:
-                return new Reduction("SIMPLE", 3); // SIMPLE -> TERM < TERM
+                return new Reduction("SIMPLE", 6); // SIMPLE -> BINOP ( ATOMIC , ATOMIC)
             case 34:
-                return new Reduction("COMPOSIT", 3); // COMPOSIT -> ( COND )
+                return new Reduction("COMPOSIT", 6); // COMPOSIT -> BINOP ( SIMPLE , SIMPLE)
             case 35:
-                return new Reduction("COMPOSIT", 3); // COMPOSIT -> not COND
+                return new Reduction("COMPOSIT", 4); // COMPOSIT -> UNOP (SIMPLE)
             case 36:
                 return new Reduction("UNOP", 1); // UNOP -> not
             case 37:
@@ -1278,21 +1306,21 @@ private String getAction(int state, Token token) {
             case 49:
                 return new Reduction("DECL", 2); // DECL -> HEADER BODY
             case 50:
-                return new Reduction("HEADER", 4); // HEADER -> FNAME ( FTYP )
+                return new Reduction("HEADER", 9); // HEADER -> FTYP FNAME (VNAME , VNAME , VNAME)
             case 51:
                 return new Reduction("FTYP", 1); // FTYP -> num
             case 52:
                 return new Reduction("FTYP", 1); // FTYP -> void
             case 53:
-                return new Reduction("BODY", 3); // BODY -> { PROLOG EPILOG }
+                return new Reduction("BODY", 6); // BODY -> PROLOG LOCVARS ALGO EPILOG SUBFUNCS end
             case 54:
-                return new Reduction("PROLOG", 0); // PROLOG -> ε
+                return new Reduction("PROLOG", 1); // PROLOG -> {
             case 55:
-                return new Reduction("PROLOG", 2); // PROLOG -> PROLOG LOCVARS
+                return new Reduction("EPILOG", 1); // EPILOG -> }
             case 56:
-                return new Reduction("LOCVARS", 3); // LOCVARS -> VTYP VNAME ,
+                return new Reduction("LOCVARS", 9); // LOCVARS -> VTYP VNAME , VTYP VNAME , VTYP VNAME
             case 57:
-                return new Reduction("EPILOG", 1); // EPILOG -> SUBFUNCS
+                return new Reduction("SUBFUNCS", 1); //SUBFUNCS -> FUNCTIONS
             default:
                 throw new RuntimeException("Unknown rule number: " + ruleNumber);
         }
