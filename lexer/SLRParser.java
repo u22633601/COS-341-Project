@@ -968,7 +968,7 @@ private String getAction(int state, Token token) {
                 break;
             case 13:
                 if (nonTerminal.equals("FUNCTIONS"))
-                    return 30;
+                    return 31;
                 if (nonTerminal.equals("DECL"))
                     return 13;
                 if (nonTerminal.equals("HEADER"))
@@ -978,13 +978,13 @@ private String getAction(int state, Token token) {
                 break;
             case 14:
                 if (nonTerminal.equals("BODY"))
-                    return 31;
-                if (nonTerminal.equals("PROLOG"))
                     return 32;
+                if (nonTerminal.equals("PROLOG"))
+                    return 33;
                 break;
             case 15:
                 if (nonTerminal.equals("FNAME"))
-                    return 34;
+                    return 35;
                 break;
             case 22:
                 if (nonTerminal.equals("ATOMIC"))
@@ -994,14 +994,14 @@ private String getAction(int state, Token token) {
                 if (nonTerminal.equals("VNAME"))
                     return 39;
                 break;
-            case 27:
-                if (nonTerminal.equals("ATOMIC"))
-                    return 45;
-                if (nonTerminal.equals("CONST"))
-                    return 40;
-                if (nonTerminal.equals("VNAME"))
-                    return 39;
-                break;
+            // case 27:
+            //     if (nonTerminal.equals("ATOMIC"))
+            //         return 45;
+            //     if (nonTerminal.equals("CONST"))
+            //         return 40;
+            //     if (nonTerminal.equals("VNAME"))
+            //         return 39;
+            //     break;
             case 28:
                 if (nonTerminal.equals("COND"))
                     return 46;
@@ -1010,27 +1010,27 @@ private String getAction(int state, Token token) {
                 if (nonTerminal.equals("COMPOSIT"))
                     return 48;
                 if (nonTerminal.equals("UNOP"))
-                    return 51;
-                if (nonTerminal.equals("BINOP"))
                     return 50;
+                if (nonTerminal.equals("BINOP"))
+                    return 49;
                 break;
-            case 29:
+            case 30:
                 if (nonTerminal.equals("GLOBVARS"))
-                    return 62;
+                    return 61;
                 if (nonTerminal.equals("VTYP"))
                     return 5;
                 break;
-            case 32:
+            case 33:
                 if (nonTerminal.equals("VTYP"))
-                    return 64;
-                if (nonTerminal.equals("LOCVARS"))
                     return 63;
+                if (nonTerminal.equals("LOCVARS"))
+                    return 62;
                 break;
             case 37:
                 if (nonTerminal.equals("VNAME"))
                     return 26;
                 if (nonTerminal.equals("INSTRUC"))
-                    return 66;
+                    return 65;
                 if (nonTerminal.equals("COMMAND"))
                     return 19;
                 if (nonTerminal.equals("ASSIGN"))
@@ -1039,98 +1039,156 @@ private String getAction(int state, Token token) {
                     return 24;
                 if (nonTerminal.equals("BRANCH"))
                     return 25;
+                if (nonTerminal.equals("FNAME"))
+                    return 27;
                 break;
             case 44:
                 if (nonTerminal.equals("ATOMIC"))
-                    return 69;
+                    return 68;
                 if (nonTerminal.equals("CONST"))
                     return 40;
                 if (nonTerminal.equals("VNAME"))
                     return 39;
                 if (nonTerminal.equals("CALL"))
-                    return 70;
+                    return 69;
                 if (nonTerminal.equals("TERM"))
-                    return 68;
+                    return 67;
                 if (nonTerminal.equals("OP"))
+                    return 70;
+                if (nonTerminal.equals("UNOP"))
                     return 71;
+                if (nonTerminal.equals("BINOP"))
+                    return 72;
+                if (nonTerminal.equals("FNAME"))
+                    return 27;
                 break;
-            case 49:
+            case 45:
                 if (nonTerminal.equals("ATOMIC"))
-                    return 76;
+                    return 73;
                 if (nonTerminal.equals("CONST"))
                     return 40;
                 if (nonTerminal.equals("VNAME"))
                     return 39;
                 break;
-            case 63:
+            case 62:
                 if (nonTerminal.equals("ALGO"))
-                    return 79;
+                    return 77;
+                break;
+            case 63:
+                if (nonTerminal.equals("VNAME"))
+                    return 78;
                 break;
             case 64:
                 if (nonTerminal.equals("VNAME"))
-                    return 80;
+                    return 79;
                 break;
-            case 65:
-                if (nonTerminal.equals("VNAME"))
-                    return 81;
-                break;
-            case 72:
-                if (nonTerminal.equals("VNAME"))
-                    return 39;
-                if (nonTerminal.equals("ATOMIC"))
-                    return 83;
-                if (nonTerminal.equals("CONST"))
-                    return 40;
-                if (nonTerminal.equals("OP"))
-                    return 84;
-                if (nonTerminal.equals("ARG"))
-                    return 82;
-                break;
-            case 73:
-                if (nonTerminal.equals("VNAME"))
-                    return 39;
-                if (nonTerminal.equals("ATOMIC"))
-                    return 83;
-                if (nonTerminal.equals("CONST"))
-                    return 40;
-                if (nonTerminal.equals("OP"))
-                    return 84;
-                if (nonTerminal.equals("ARG"))
-                    return 85;
-                break;
+            // case 72:
+            //     if (nonTerminal.equals("VNAME"))
+            //         return 39;
+            //     if (nonTerminal.equals("ATOMIC"))
+            //         return 83;
+            //     if (nonTerminal.equals("CONST"))
+            //         return 40;
+            //     if (nonTerminal.equals("OP"))
+            //         return 84;
+            //     if (nonTerminal.equals("ARG"))
+            //         return 82;
+            //     break;
+            // case 73:
+            //     if (nonTerminal.equals("VNAME"))
+            //         return 39;
+            //     if (nonTerminal.equals("ATOMIC"))
+            //         return 83;
+            //     if (nonTerminal.equals("CONST"))
+            //         return 40;
+            //     if (nonTerminal.equals("OP"))
+            //         return 84;
+            //     if (nonTerminal.equals("ARG"))
+            //         return 85;
+            //     break;
+            // case 74:
+            //     if (nonTerminal.equals("VNAME"))
+            //         return 39;
+            //     if (nonTerminal.equals("ATOMIC"))
+            //         return 83;
+            //     if (nonTerminal.equals("CONST"))
+            //         return 40;
+            //     break;
             case 74:
-                if (nonTerminal.equals("VNAME"))
-                    return 39;
-                if (nonTerminal.equals("ATOMIC"))
+                if (nonTerminal.equals("ALGO"))
                     return 83;
-                if (nonTerminal.equals("CONST"))
-                    return 40;
                 break;
             case 75:
-                if (nonTerminal.equals("ALGO"))
-                    return 87;
-                break;
-            case 77:
-                if (nonTerminal.equals("SIMPLE"))
-                    return 89;
-                break;
-            case 78:
-                if (nonTerminal.equals("SIMPLE"))
-                    return 90;
-                break;
-            case 79:
-                if (nonTerminal.equals("EPILOG"))
-                    return 91;
-                break;
-            case 88:
-                if (nonTerminal.equals("ATOMIC"))
-                    return 99;
-                if (nonTerminal.equals("CONST"))
-                    return 40;
                 if (nonTerminal.equals("VNAME"))
                     return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 84;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                if (nonTerminal.equals("SIMPLE"))
+                    return 85;
+                if (nonTerminal.equals("BINOP"))
+                    return 86;
                 break;
-            case 91:
+            case 76:
+                if (nonTerminal.equals("SIMPLE"))
+                    return 87;
+                if (nonTerminal.equals("BINOP"))
+                    return 86;
+                break;
+            case 77:
+                if (nonTerminal.equals("EPILOG"))
+                    return 88;
+                break;
+            case 80:
+                if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 93;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                if (nonTerminal.equals("OP"))
+                    return 94;
+                if (nonTerminal.equals("ARG"))
+                    return 92;
+                if (nonTerminal.equals("UNOP"))
+                    return 71;
+                if (nonTerminal.equals("BINOP"))
+                    return 72;
+                break;
+            case 81:
+                if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 93;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                if (nonTerminal.equals("OP"))
+                    return 94;
+                if (nonTerminal.equals("ARG"))
+                    return 95;
+                if (nonTerminal.equals("UNOP"))
+                    return 71;
+                if (nonTerminal.equals("BINOP"))
+                    return 72;
+                break;
+            case 82:
+                if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 96;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                break;
+            // case 88:
+            //     if (nonTerminal.equals("ATOMIC"))
+            //         return 99;
+            //     if (nonTerminal.equals("CONST"))
+            //         return 40;
+            //     if (nonTerminal.equals("VNAME"))
+            //         return 39;
+            //     break;
+            case 88:
                 if (nonTerminal.equals("FUNCTIONS"))
                     return 103;
                 if (nonTerminal.equals("DECL"))
@@ -1142,57 +1200,99 @@ private String getAction(int state, Token token) {
                 if (nonTerminal.equals("SUBFUNCS"))
                     return 102;
                 break;
-            case 93:
+            case 90:
                 if (nonTerminal.equals("VTYP"))
                     return 104;
                 break;
-            case 94:
+            case 91:
                 if (nonTerminal.equals("VNAME"))
                     return 105;
                 break;
-            case 96:
-                if (nonTerminal.equals("VNAME"))
-                    return 39;
-                if (nonTerminal.equals("ATOMIC"))
-                    return 83;
-                if (nonTerminal.equals("CONST"))
-                    return 40;
-                if (nonTerminal.equals("OP"))
-                    return 84;
-                if (nonTerminal.equals("ARG"))
-                    return 106;
-                break;
+            // case 96:
+            //     if (nonTerminal.equals("VNAME"))
+            //         return 39;
+            //     if (nonTerminal.equals("ATOMIC"))
+            //         return 83;
+            //     if (nonTerminal.equals("CONST"))
+            //         return 40;
+            //     if (nonTerminal.equals("OP"))
+            //         return 84;
+            //     if (nonTerminal.equals("ARG"))
+            //         return 106;
+            //     break;
+            // case 97:
+            //     if (nonTerminal.equals("VNAME"))
+            //         return 39;
+            //     if (nonTerminal.equals("ATOMIC"))
+            //         return 107;
+            //     if (nonTerminal.equals("CONST"))
+            //         return 40;
+            //     break;
             case 97:
-                if (nonTerminal.equals("VNAME"))
-                    return 39;
-                if (nonTerminal.equals("ATOMIC"))
-                    return 107;
-                if (nonTerminal.equals("CONST"))
-                    return 40;
+                if (nonTerminal.equals("ALGO"))
+                    return 109;
                 break;
             case 98:
-                if (nonTerminal.equals("ALGO"))
-                    return 108;
+                if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 110;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                break;
+            case 99:
+                if (nonTerminal.equals("SIMPLE"))
+                    return 111;
+                if (nonTerminal.equals("BINOP"))
+                    return 86;
                 break;
             case 100:
-                if (nonTerminal.equals("SIMPLE"))
-                    return 110;
+                if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 84;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
                 break;
             case 104:
                 if (nonTerminal.equals("VNAME"))
-                    return 112;
+                    return 113;
                 break;
-            case 113:
+            case 107:
                 if (nonTerminal.equals("VNAME"))
-                    return 118;
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 93;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                if (nonTerminal.equals("OP"))
+                    return 94;
+                if (nonTerminal.equals("ARG"))
+                    return 115;
+                if (nonTerminal.equals("UNOP"))
+                    return 71;
+                if (nonTerminal.equals("BINOP"))
+                    return 72;
                 break;
-            case 117:
-                if (nonTerminal.equals("VTYP"))
-                    return 119;
+            case 108:
+                if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 116;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                break;
+            case 114:
+                if (nonTerminal.equals("VNAME"))
+                    return 120;
                 break;
             case 119:
+                if (nonTerminal.equals("VTYP"))
+                    return 123;
+                break;
+            case 123:
                 if (nonTerminal.equals("VNAME"))
-                    return 121;
+                    return 125;
                 break;
             default:
                 break;
