@@ -283,7 +283,7 @@ private String getAction(int state, Token token) {
                         return "s58";
                 break;
             case 29:
-                if (tokenValue.equals(")"))
+                if (tokenValue.equals("(")) // was )
                     return "r46";
                 break;
             case 30:
@@ -321,7 +321,7 @@ private String getAction(int state, Token token) {
                     return "r54";
                 break;
             case 35:
-                if (tokenValue.equals(")"))
+                if (tokenValue.equals("(")) //was )
                     return "s64";
                 break;
             case 36:
@@ -525,10 +525,10 @@ private String getAction(int state, Token token) {
                     return "r26";
                 break;
             case 71:
-                if (tokenValue.equals(")")) return "s80";
+                if (tokenValue.equals("(")) return "s80"; //tess [was ) ]
                 break;
             case 72:
-                if (tokenValue.equals(")"))
+                if (tokenValue.equals("(")) //tess [was ) ]
                     return "s81";
                 break;
             case 73:
@@ -893,7 +893,7 @@ private String getAction(int state, Token token) {
                     return "r28";
                 if (tokenValue.equals(";"))
                     return "r28";
-                if (tokenValue.equals(";"))
+                if (tokenValue.equals(")")) // was ;
                     return "r28";
                 break;
             case 122:
