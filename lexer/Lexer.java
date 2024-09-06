@@ -37,10 +37,10 @@ public class Lexer {
     
 
     private TokenType identifyTokenType(String word) {
-        if (word.matches(VARIABLE_REGEX)) return TokenType.VARIABLE;
-        if (word.matches(FUNCTION_REGEX)) return TokenType.FUNCTION;
-        if (word.matches(TEXT_REGEX)) return TokenType.TEXT;
-        if (word.matches(NUMBER_REGEX)) return TokenType.NUMBER;
+        if (word.matches(VARIABLE_REGEX)) return TokenType.V;
+        if (word.matches(FUNCTION_REGEX)) return TokenType.F;
+        if (word.matches(TEXT_REGEX)) return TokenType.T;
+        if (word.matches(NUMBER_REGEX)) return TokenType.N;
         if (word.matches(RESERVED_KEYWORDS_REGEX)) return TokenType.RESERVED_KEYWORD;
         if (word.matches(OPERATORS_REGEX)) return TokenType.RESERVED_KEYWORD; // Operators treated as reserved keywords
         return TokenType.INVALID;

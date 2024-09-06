@@ -134,7 +134,7 @@ private String getAction(int state, Token token) {
                 break;
             case 1:
                 if (tokenValue.equals("$"))
-                    return "acc";
+                    return "s3";
                 break;
             case 2:
                 if (tokenValue.equals("num")) return "s6";
@@ -149,71 +149,78 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals("begin")) return "s9";
                 break;
             case 5:
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
                     return "s11";
                 break;
             case 6:
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
                     return "r4";
                 break;
             case 7:
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
-                    return "s11"; // VNAME
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "r5";
 
                 break;
             case 8:
                 if (tokenValue.equals("$")) return "r47";
-                if (tokenValue.equals("num")) return "s16";
+                if (tokenValue.equals("num"))
+                    return "s16";
+                if (tokenValue.equals("end"))
+                    return "r47";
                 if (tokenValue.equals("void")) return "s17";
-                if (tokenValue.equals("}")) return "r47";
                 break;
             case 9:
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
                 if (tokenValue.equals("end")) return "r8";
                 if (tokenValue.equals("skip")) return "s20";
                 if (tokenValue.equals("halt")) return "s21";
-                if (tokenValue.equals("return")) return "s22";
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
-                    return "s11"; // VNAME for assignment
-                if (tokenType.equals("text") && tokenValue.startsWith("F"))
-                    return "s27";
-                if (tokenValue.equals("if")) return "s28";
+                if (tokenValue.equals("return"))
+                    return "s22";
+                if (tokenValue.equals("if"))
+                    return "s28";
+                if (tokenType.equals("f") && tokenValue.startsWith("F_"))
+                    return "s29";
                 break;
             case 10:
                 if (tokenValue.equals(","))
-                    return "s29";
-                if (tokenValue.equals("begin"))
-                    return "r3";
+                    return "s30";
                 break;
             case 11:
                 if (tokenValue.equals(","))
-                    return "r6"; // VNAME -> V
-                if (tokenValue.equals("begin"))
                     return "r6";
-                if (tokenValue.equals(";")) return "r6";
-                if (tokenValue.equals("=")) return "r6";
-                if (tokenValue.equals("input"))
+                if (tokenValue.equals(";"))
                     return "r6";
-                return "r6";
+                if (tokenValue.equals("<"))
+                    return "r6";
+                if (tokenValue.equals("="))
+                    return "r6";
+                if (tokenValue.equals(")"))
+                    return "r6";
+                break;
             case 12:
                 if (tokenValue.equals("$")) return "r1";
-                if (tokenValue.equals("}")) return "r1";
                 break;
             case 13:
                 if (tokenValue.equals("$")) return "r47";
-                if (tokenValue.equals("num")) return "s16";
+                if (tokenValue.equals("num"))
+                    return "s16";
+                if (tokenValue.equals("end")) return "r47";
                 if (tokenValue.equals("void")) return "s17";
-                if (tokenValue.equals("}")) return "r47";
                 break;
             case 14:
-                if (tokenValue.equals("{")) return "s33";
+                if (tokenValue.equals("{")) return "s34";
                 break;
             case 15:
-                if (tokenValue.equals("(")) return "s34";
+                if (tokenType.equals("f") && tokenValue.startsWith("F_"))
+                    return "s29";
                 break;
             case 16:
+                if (tokenType.equals("f") && tokenValue.startsWith("F_"))
+                    return "r51";
             case 17:
-                if (tokenValue.equals("(")) return "r51";
-                if (tokenValue.equals("(")) return "r52";
+                if (tokenType.equals("f") && tokenValue.startsWith("F_"))
+                    return "r52";
                 break;
             case 18:
                 if (tokenValue.equals("end")) return "s35";
