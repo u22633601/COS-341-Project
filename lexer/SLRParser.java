@@ -95,7 +95,11 @@ public class SLRParser {
                 }
                 int gotoState = getGotoState(stack.peek(), reduction.lhs);
                 if (gotoState == -1) {
-                    throw new Exception("Invalid GOTO state for " + reduction.lhs + " in state " + stack.peek());
+                    //throw new Exception("Invalid GOTO state for " + reduction.lhs + " in state " + stack.peek());
+                    if (gotoState == -1) {
+                        throw new Exception("Invalid GOTO state for non-terminal '" + reduction.lhs + "' after reducing using rule " + ruleNumber + " in state " + stack.peek());
+                    }
+                    
                 }
                 stack.push(gotoState);
                 System.out.println("  Reduce using rule " + ruleNumber + ": " + reduction.lhs + " -> "
@@ -105,8 +109,10 @@ public class SLRParser {
                 System.out.println("  Accept");
                 break;
             } else {
-                System.out.println("  Error: Unexpected action");
-                throw new Exception("Parsing error at token: " + token.value + " in state " + state);
+                // System.out.println("  Error: Unexpected action");
+                // throw new Exception("Parsing error at token: " + token.value + " in state " + state);
+                System.out.println(" Error: Unexpected action " + action + "' for token '" + token.value + "' (Type: " + token.type + ") at position " + currentTokenIndex + " in state " + state);
+                throw new Exception("Parsing error at token '" + token.value + "' (Type: " + token.type + ") at position " + currentTokenIndex + " in state " + state + ". No valid action found.");
             }
 
             System.out.println("  Stack: " + stack);
@@ -916,10 +922,10 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals("begin"))
                     return "r56";
                 break;
-            default:
-                break;
+                default:
+                return "\n Error: Unexpected token '" + token.value + "' (Type: " + token.type + ") at position " + currentTokenIndex + " in state " + state;
         }
-        return "error";
+        return "\n Error: No valid action found for token '" + token.value + "' (Type: " + token.type + ") at position " + currentTokenIndex + " in state " + state;
     }
 
     private int getGotoState(int state, String nonTerminal) {
@@ -1522,7 +1528,7 @@ private String getAction(int state, Token token) {
             System.out.println("Parsing completed successfully. Output written to " + args[1]);
         } catch (Exception e) {
             System.err.println("Error during parsing: " + e.getMessage());
-            e.printStackTrace();
+           // e.printStackTrace();  took this out so the error looks more cute ;)
         }
     }
 }
