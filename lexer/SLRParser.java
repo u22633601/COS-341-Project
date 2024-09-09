@@ -191,7 +191,7 @@ private String getAction(int state, Token token) {
                     return "r6";
                 if (tokenValue.equals(";"))
                     return "r6";
-                if (tokenValue.equals("<"))
+                if (tokenValue.equals("lst"))
                     return "r6";
                 if (tokenValue.equals("="))
                     return "r6";
@@ -254,7 +254,7 @@ private String getAction(int state, Token token) {
                     return "r15";
                 break;
             case 26:
-                if (tokenValue.equals("<")) return "s43";
+                if (tokenValue.equals("lst")) return "s43";
                 if (tokenValue.equals("=")) return "s44";
                 break;
             case 27:

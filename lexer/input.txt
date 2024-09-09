@@ -1,1 +1,34 @@
-main text V , num V , begin halt ; end $
+main
+num V_x , num V_y , num V_result ,
+begin
+  V_x < input ;
+  V_y < input ;
+  if and ( grt ( V_x , 0 ) , grt ( V_y , 0 ) ) then
+    begin
+      V_result = F_average ( V_x , V_y , 0 ) ;
+      return V_result ;
+    end
+  else
+    begin
+      if or ( eq ( V_x , 0 ) , eq ( V_y , 0 ) ) then
+        begin
+          return "Zero" ;
+        end
+      else
+        begin
+          V_result = mul ( V_x , V_y ) ;
+          return V_result ;
+        end ;
+    end ;
+end
+
+num F_average ( V_a , V_b , V_dummy )
+{
+num V_sum , num V_count , num V_result ,
+begin
+  V_sum = add ( V_a , V_b ) ;
+  V_count = 2 ;
+  V_result = div ( V_sum , V_count ) ;
+end
+}
+end
