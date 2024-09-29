@@ -10,7 +10,7 @@ public class ScopeAnalyzer {
 
     public ScopeAnalyzer() {
         scopeStack = new Stack<>(); // Using Stack for scoped symbol tables
-        scopeStack.push(new SymbolTable()); // Global scope
+        scopeStack.push(new SymbolTable()); // Global scope is created at initialization and stays
         varCounter = 100; // Start unique variable names at v100
         funcCounter = 500; // Start unique function names at f500
         uniqueNames = new HashMap<>();
@@ -24,10 +24,14 @@ public class ScopeAnalyzer {
     }
 
     public void exitScope() {
-        printCurrentSymbolTable();
-        System.out.println("Exiting the current scope.");
-        scopeStack.pop();
-        printCurrentSymbolTable(); // Print after the scope has been exited
+        if (!scopeStack.isEmpty() && scopeStack.size() > 1) { // Ensure we don't pop the global scope
+            printCurrentSymbolTable();
+            System.out.println("Exiting the current scope.");
+            scopeStack.pop(); // Pop only non-global scopes
+            printCurrentSymbolTable(); // Print after the scope has been exited
+        } else {
+            System.err.println("Error: Attempted to exit scope, but no non-global scope exists.");
+        }
     }
 
     // Generates a unique variable name, e.g., "v136"
@@ -45,10 +49,16 @@ public class ScopeAnalyzer {
         SymbolTable currentScope = scopeStack.peek();
 
         // Check if the variable is already declared in the current or outer scopes
-        if (containsInAnyScope(varName)) {
+        if (currentScope.contains(varName)) {
             System.err.println("Error: Variable '" + varName + "' is already declared in this scope.");
             stopOnError = true; // Set the flag to stop the program
             return false;
+        }
+
+        // If it's already declared in an outer scope, don't redeclare, just use it
+        if (containsInAnyScope(varName)) {
+            System.out.println("Using existing variable from outer scope: " + varName + " as " + uniqueNames.get(varName));
+            return true;
         }
 
         // Generate and assign a unique internal name
@@ -107,7 +117,7 @@ public class ScopeAnalyzer {
                     }
                 } else if (scopeStack.peek().contains(node.getVarName())) {
                     // Detect multiple declarations within the same scope
-                    System.err.println("Error: Variable '" + node.getVarName() + "' is already declared in this scope.");
+                    System.err.println("Error: Variable/Function '" + node.getVarName() + "' is already declared in this scope.");
                     stopOnError = true; // Stop the program
                 } else {
                     declare(node.getVarName()); // Treat as a declaration
@@ -139,10 +149,14 @@ public class ScopeAnalyzer {
 
     // Print the symbol table for the global scope
     public void printGlobalSymbolTable() {
-        SymbolTable globalScope = scopeStack.firstElement(); // Get the global (first) scope
-        System.out.println("\n=== Final Global Symbol Table ===");
-        for (String varName : globalScope.getVariables()) {
-            System.out.println(varName + " : " + uniqueNames.get(varName));
+        if (!scopeStack.isEmpty()) {
+            SymbolTable globalScope = scopeStack.firstElement(); // Get the global (first) scope
+            System.out.println("\n=== Final Global Symbol Table ===");
+            for (String varName : globalScope.getVariables()) {
+                System.out.println(varName + " : " + uniqueNames.get(varName));
+            }
+        } else {
+            System.err.println("Error: No scope to print the global symbol table.");
         }
     }
 
@@ -168,8 +182,12 @@ public class ScopeAnalyzer {
 
     // Print the current symbol table
     private void printCurrentSymbolTable() {
-        SymbolTable currentScope = scopeStack.peek();
-        System.out.println("=== Symbol Table for current scope ===");
-        currentScope.printTable();
+        if (!scopeStack.isEmpty()) {
+            SymbolTable currentScope = scopeStack.peek();
+            System.out.println("=== Symbol Table for current scope ===");
+            currentScope.printTable();
+        } else {
+            System.err.println("Error: Attempted to print symbol table for an empty scope.");
+        }
     }
 }

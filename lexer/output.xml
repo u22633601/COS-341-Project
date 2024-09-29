@@ -492,7 +492,7 @@
 <TOK>
   <ID>99</ID>
   <CLASS>f</CLASS>
-  <WORD>F_average</WORD>
+  <WORD>F_averag</WORD>
 </TOK>
 <TOK>
   <ID>100</ID>
@@ -572,7 +572,7 @@
 <TOK>
   <ID>115</ID>
   <CLASS>v</CLASS>
-  <WORD>V_result</WORD>
+  <WORD>V_resul</WORD>
 </TOK>
 <TOK>
   <ID>116</ID>
@@ -652,7 +652,7 @@
 <TOK>
   <ID>131</ID>
   <CLASS>v</CLASS>
-  <WORD>V_result</WORD>
+  <WORD>V_resul</WORD>
 </TOK>
 <TOK>
   <ID>132</ID>

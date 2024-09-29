@@ -1907,7 +1907,7 @@
     <LEAF>
       <PARENT>201</PARENT>
       <UNID>202</UNID>
-      <TERMINAL>F_average</TERMINAL>
+      <TERMINAL>F_averag</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>203</PARENT>
@@ -1987,7 +1987,7 @@
     <LEAF>
       <PARENT>228</PARENT>
       <UNID>229</UNID>
-      <TERMINAL>V_result</TERMINAL>
+      <TERMINAL>V_resul</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>230</PARENT>
@@ -2067,7 +2067,7 @@
     <LEAF>
       <PARENT>264</PARENT>
       <UNID>265</UNID>
-      <TERMINAL>V_result</TERMINAL>
+      <TERMINAL>V_resul</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>266</PARENT>
