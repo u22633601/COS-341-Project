@@ -492,7 +492,7 @@
 <TOK>
   <ID>99</ID>
   <CLASS>f</CLASS>
-  <WORD>F_averag</WORD>
+  <WORD>F_average</WORD>
 </TOK>
 <TOK>
   <ID>100</ID>
@@ -587,7 +587,7 @@
 <TOK>
   <ID>118</ID>
   <CLASS>v</CLASS>
-  <WORD>V_sum</WORD>
+  <WORD>V_result</WORD>
 </TOK>
 <TOK>
   <ID>119</ID>
@@ -596,8 +596,8 @@
 </TOK>
 <TOK>
   <ID>120</ID>
-  <CLASS>reserved_keyword</CLASS>
-  <WORD>add</WORD>
+  <CLASS>f</CLASS>
+  <WORD>F_average</WORD>
 </TOK>
 <TOK>
   <ID>121</ID>
@@ -607,7 +607,7 @@
 <TOK>
   <ID>122</ID>
   <CLASS>v</CLASS>
-  <WORD>V_a</WORD>
+  <WORD>V_x</WORD>
 </TOK>
 <TOK>
   <ID>123</ID>
@@ -617,95 +617,150 @@
 <TOK>
   <ID>124</ID>
   <CLASS>v</CLASS>
-  <WORD>V_b</WORD>
+  <WORD>V_y</WORD>
 </TOK>
 <TOK>
   <ID>125</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>)</WORD>
+  <WORD>,</WORD>
 </TOK>
 <TOK>
   <ID>126</ID>
-  <CLASS>reserved_keyword</CLASS>
-  <WORD>;</WORD>
+  <CLASS>n</CLASS>
+  <WORD>0</WORD>
 </TOK>
 <TOK>
   <ID>127</ID>
-  <CLASS>v</CLASS>
-  <WORD>V_count</WORD>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>)</WORD>
 </TOK>
 <TOK>
   <ID>128</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>=</WORD>
-</TOK>
-<TOK>
-  <ID>129</ID>
-  <CLASS>n</CLASS>
-  <WORD>2</WORD>
-</TOK>
-<TOK>
-  <ID>130</ID>
-  <CLASS>reserved_keyword</CLASS>
   <WORD>;</WORD>
 </TOK>
 <TOK>
-  <ID>131</ID>
-  <CLASS>v</CLASS>
-  <WORD>V_resul</WORD>
-</TOK>
-<TOK>
-  <ID>132</ID>
-  <CLASS>reserved_keyword</CLASS>
-  <WORD>=</WORD>
-</TOK>
-<TOK>
-  <ID>133</ID>
-  <CLASS>reserved_keyword</CLASS>
-  <WORD>div</WORD>
-</TOK>
-<TOK>
-  <ID>134</ID>
-  <CLASS>reserved_keyword</CLASS>
-  <WORD>(</WORD>
-</TOK>
-<TOK>
-  <ID>135</ID>
+  <ID>129</ID>
   <CLASS>v</CLASS>
   <WORD>V_sum</WORD>
 </TOK>
 <TOK>
-  <ID>136</ID>
+  <ID>130</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>=</WORD>
+</TOK>
+<TOK>
+  <ID>131</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>add</WORD>
+</TOK>
+<TOK>
+  <ID>132</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>(</WORD>
+</TOK>
+<TOK>
+  <ID>133</ID>
+  <CLASS>v</CLASS>
+  <WORD>V_a</WORD>
+</TOK>
+<TOK>
+  <ID>134</ID>
   <CLASS>reserved_keyword</CLASS>
   <WORD>,</WORD>
 </TOK>
 <TOK>
-  <ID>137</ID>
+  <ID>135</ID>
   <CLASS>v</CLASS>
-  <WORD>V_count</WORD>
+  <WORD>V_b</WORD>
 </TOK>
 <TOK>
-  <ID>138</ID>
+  <ID>136</ID>
   <CLASS>reserved_keyword</CLASS>
   <WORD>)</WORD>
 </TOK>
 <TOK>
-  <ID>139</ID>
+  <ID>137</ID>
   <CLASS>reserved_keyword</CLASS>
   <WORD>;</WORD>
 </TOK>
 <TOK>
-  <ID>140</ID>
+  <ID>138</ID>
+  <CLASS>v</CLASS>
+  <WORD>V_count</WORD>
+</TOK>
+<TOK>
+  <ID>139</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>end</WORD>
+  <WORD>=</WORD>
+</TOK>
+<TOK>
+  <ID>140</ID>
+  <CLASS>n</CLASS>
+  <WORD>2</WORD>
 </TOK>
 <TOK>
   <ID>141</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>}</WORD>
+  <WORD>;</WORD>
 </TOK>
 <TOK>
   <ID>142</ID>
+  <CLASS>v</CLASS>
+  <WORD>V_resul</WORD>
+</TOK>
+<TOK>
+  <ID>143</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>=</WORD>
+</TOK>
+<TOK>
+  <ID>144</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>div</WORD>
+</TOK>
+<TOK>
+  <ID>145</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>(</WORD>
+</TOK>
+<TOK>
+  <ID>146</ID>
+  <CLASS>v</CLASS>
+  <WORD>V_sum</WORD>
+</TOK>
+<TOK>
+  <ID>147</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>,</WORD>
+</TOK>
+<TOK>
+  <ID>148</ID>
+  <CLASS>v</CLASS>
+  <WORD>V_count</WORD>
+</TOK>
+<TOK>
+  <ID>149</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>)</WORD>
+</TOK>
+<TOK>
+  <ID>150</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>;</WORD>
+</TOK>
+<TOK>
+  <ID>151</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>end</WORD>
+</TOK>
+<TOK>
+  <ID>152</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>}</WORD>
+</TOK>
+<TOK>
+  <ID>153</ID>
   <CLASS>reserved_keyword</CLASS>
   <WORD>end</WORD>
 </TOK>
