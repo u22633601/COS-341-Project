@@ -105,13 +105,13 @@ public class ScopeAnalyzer {
         return false;
     }
 
-    public void analyzeNode(Node node) {
+    public void analyzeNode(NodeType node) {
         analyzeNodeFirstPass(node, null);
         stopOnError = false; // Reset error flag for second pass
         analyzeNodeSecondPass(node, null);
     }
 
-    private void analyzeNodeFirstPass(Node node, String currentFunction) {
+    private void analyzeNodeFirstPass(NodeType node, String currentFunction) {
         if (stopOnError)
             return;
 
@@ -132,7 +132,7 @@ public class ScopeAnalyzer {
             declare(currentFunction, null);
         }
 
-        for (Node child : node.getChildren()) {
+        for (NodeType child : node.getChildren()) {
             analyzeNodeFirstPass(child, currentFunction);
         }
 
@@ -141,7 +141,7 @@ public class ScopeAnalyzer {
         }
     }
 
-    private void analyzeNodeSecondPass(Node node, String currentFunction) {
+    private void analyzeNodeSecondPass(NodeType node, String currentFunction) {
         if (stopOnError)
             return;
 
@@ -161,7 +161,7 @@ public class ScopeAnalyzer {
             currentFunction = node.getVarName();
         }
 
-        for (Node child : node.getChildren()) {
+        for (NodeType child : node.getChildren()) {
             analyzeNodeSecondPass(child, currentFunction);
         }
 
@@ -190,7 +190,11 @@ public class ScopeAnalyzer {
         }
     }
 
-    public Node parseXML(org.w3c.dom.Node xmlNode) {
+    public Map<String, String> getUniqueNames() {
+        return uniqueNames;
+    }
+
+    public NodeType parseXML(org.w3c.dom.Node xmlNode) {
         String nodeName = xmlNode.getNodeName();
         String varName = "";
 
@@ -198,7 +202,7 @@ public class ScopeAnalyzer {
             varName = xmlNode.getTextContent().trim();
         }
 
-        List<Node> children = new ArrayList<>();
+        List<NodeType> children = new ArrayList<>();
         NodeList xmlChildren = xmlNode.getChildNodes();
         for (int i = 0; i < xmlChildren.getLength(); i++) {
             if (xmlChildren.item(i).getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
@@ -206,7 +210,7 @@ public class ScopeAnalyzer {
             }
         }
 
-        return new Node(nodeName, varName, children);
+        return new NodeType(nodeName, varName, children);
     }
 
     private void printCurrentSymbolTable() {

@@ -1,12 +1,12 @@
 import java.util.List;
-import java.util.ArrayList; // If you're using ArrayList for node children
 
-public class Node {
+
+public class NodeType {
     private String nodeType;
     private String varName;
-    private List<Node> children; // List of child nodes
+    private List<NodeType> children; // List of child nodes
 
-    public Node(String nodeType, String varName, List<Node> children) {
+    public NodeType(String nodeType, String varName, List<NodeType> children) {
         this.nodeType = nodeType;
         this.varName = varName;
         this.children = children;
@@ -20,7 +20,7 @@ public class Node {
         return varName;
     }
 
-    public List<Node> getChildren() {
+    public List<NodeType> getChildren() {
         return children;
     }
 

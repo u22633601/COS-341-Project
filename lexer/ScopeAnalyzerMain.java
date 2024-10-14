@@ -1,6 +1,6 @@
-import org.w3c.dom.*;
-import javax.xml.parsers.*;
 import java.io.File;
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
 
 public class ScopeAnalyzerMain {
     public static void main(String[] args) {
@@ -15,20 +15,41 @@ public class ScopeAnalyzerMain {
 
             // Parse the XML into a custom node structure
             ScopeAnalyzer analyzer = new ScopeAnalyzer();
-            Node root = analyzer.parseXML(doc.getDocumentElement());
+            NodeType root = analyzer.parseXML(doc.getDocumentElement());
             System.out.println("Parsing completed.");
-            System.out.println("Root node parsed: " + root.getVarName());
+            System.out.println("Root node parsed: " + root.getType());
 
             // Analyze the scope
             System.out.println("Analyzing scope...");
             analyzer.analyzeNode(root);
-            
+
             // Print final global symbol table
             analyzer.printGlobalSymbolTable();
+
+            // Print the structure of the parsed syntax tree
+            System.out.println("\nPrinting parsed syntax tree structure:");
+            printNodeStructure(root, 0);
+
+            // Generate intermediate code
+            System.out.println("\nGenerating intermediate code...");
+            IntermediateCodeGenerator codeGen = new IntermediateCodeGenerator(analyzer.getUniqueNames());
+            String intermediateCode = codeGen.generateCode(root);
+            System.out.println("Intermediate Code:");
+            System.out.println(intermediateCode);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-}
 
+    private static void printNodeStructure(NodeType node, int depth) {
+        StringBuilder indent = new StringBuilder();
+        for (int i = 0; i < depth; i++) {
+            indent.append("  ");
+        }
+        System.out.println(indent + node.getType() + (node.getVarName().isEmpty() ? "" : ": " + node.getVarName()));
+        for (NodeType child : node.getChildren()) {
+            printNodeStructure(child, depth + 1);
+        }
+    }
+}
