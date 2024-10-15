@@ -572,7 +572,7 @@
 <TOK>
   <ID>115</ID>
   <CLASS>v</CLASS>
-  <WORD>V_res</WORD>
+  <WORD>V_result</WORD>
 </TOK>
 <TOK>
   <ID>116</ID>
@@ -652,7 +652,7 @@
 <TOK>
   <ID>131</ID>
   <CLASS>v</CLASS>
-  <WORD>V_res</WORD>
+  <WORD>V_result</WORD>
 </TOK>
 <TOK>
   <ID>132</ID>

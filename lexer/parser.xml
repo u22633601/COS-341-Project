@@ -1987,7 +1987,7 @@
     <LEAF>
       <PARENT>228</PARENT>
       <UNID>229</UNID>
-      <TERMINAL>V_res</TERMINAL>
+      <TERMINAL>V_result</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>230</PARENT>
@@ -2067,7 +2067,7 @@
     <LEAF>
       <PARENT>264</PARENT>
       <UNID>265</UNID>
-      <TERMINAL>V_res</TERMINAL>
+      <TERMINAL>V_result</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>266</PARENT>
