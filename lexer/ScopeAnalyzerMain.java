@@ -6,7 +6,6 @@ public class ScopeAnalyzerMain {
     public static void main(String[] args) {
         try {
             // Parse the XML file
-            System.out.println("Parsing XML syntax tree...");
             File inputFile = new File("parser.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -16,22 +15,15 @@ public class ScopeAnalyzerMain {
             // Parse the XML into a custom node structure
             ScopeAnalyzer analyzer = new ScopeAnalyzer();
             NodeType root = analyzer.parseXML(doc.getDocumentElement());
-            System.out.println("Parsing completed.");
-            System.out.println("Root node parsed: " + root.getType());
-
-            // Analyze the scope
-            System.out.println("Analyzing scope...");
-            analyzer.analyzeNode(root);
-
-            // Print final global symbol table
-            analyzer.printGlobalSymbolTable();
 
             // Print the structure of the parsed syntax tree
-            System.out.println("\nPrinting parsed syntax tree structure:");
+            System.out.println("Parsed Syntax Tree Structure:");
             printNodeStructure(root, 0);
 
+            // Analyze the scope
+            analyzer.analyzeNode(root);
+
             // Generate intermediate code
-            System.out.println("\nGenerating intermediate code...");
             IntermediateCodeGenerator codeGen = new IntermediateCodeGenerator(analyzer.getUniqueNames());
             String intermediateCode = codeGen.generateCode(root);
             System.out.println("Intermediate Code:");
