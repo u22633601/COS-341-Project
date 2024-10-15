@@ -9,6 +9,7 @@ begin
     begin
       V_result = F_average ( V_x , V_y , 0 ) ;
       return V_result ;
+      skip ;
     end
   else
     begin
@@ -29,7 +30,6 @@ num F_average ( V_a , V_b , V_dummy )
 {
 num V_sum , num V_count , num V_resul ,
 begin
-V_result = F_average ( V_x , V_y , 0 ) ;
   V_sum = add ( V_a , V_b ) ;
   V_count = 2 ;
   V_resul = div ( V_sum , V_count ) ;
