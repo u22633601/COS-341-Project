@@ -15,7 +15,7 @@ public class TypeCheckerMain {
 
             // Parse the XML into a custom node structure
             TypeChecker typeChecker = new TypeChecker();
-            Node root = typeChecker.parseXML(doc.getDocumentElement());
+            NodeType root = typeChecker.parseXML(doc.getDocumentElement());
             System.out.println("Parsing completed.");
             System.out.println("Root node parsed for type checking: " + root.getVarName());
 
