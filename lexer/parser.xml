@@ -1557,7 +1557,7 @@
     <LEAF>
       <PARENT>8</PARENT>
       <UNID>9</UNID>
-      <TERMINAL>V_y</TERMINAL>
+      <TERMINAL>V_x</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>10</PARENT>
@@ -2022,7 +2022,7 @@
     <LEAF>
       <PARENT>201</PARENT>
       <UNID>202</UNID>
-      <TERMINAL>F_average</TERMINAL>
+      <TERMINAL>F_ave</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>203</PARENT>
@@ -2102,7 +2102,7 @@
     <LEAF>
       <PARENT>228</PARENT>
       <UNID>229</UNID>
-      <TERMINAL>V_resul</TERMINAL>
+      <TERMINAL>V_res</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>230</PARENT>
@@ -2237,7 +2237,7 @@
     <LEAF>
       <PARENT>287</PARENT>
       <UNID>288</UNID>
-      <TERMINAL>V_resul</TERMINAL>
+      <TERMINAL>V_res</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>289</PARENT>
