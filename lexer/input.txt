@@ -35,7 +35,7 @@ begin
   V_res = div ( V_sum , V_count ) ;
 end
 }
-num F_ave ( V_e , V_f , V_g )
+void F_ave ( V_e , V_f , V_g )
 {
 num V_sume , text V_counte , num V_rese ,
 begin
@@ -47,4 +47,4 @@ end
 }
 end
 
-e
+end

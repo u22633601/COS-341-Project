@@ -4,7 +4,7 @@ F_average : f504 : num
 V_counte : v138 : text
 V_sum : v122 : num
 V_x : v133 : text
-F_ave : f503 : num
+F_ave : f503 : void
 V_y : v134 : num
 V_sume : v135 : num
 V_dummy : v115 : num

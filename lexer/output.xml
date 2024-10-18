@@ -772,7 +772,7 @@
 <TOK>
   <ID>155</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>num</WORD>
+  <WORD>void</WORD>
 </TOK>
 <TOK>
   <ID>156</ID>
@@ -1054,4 +1054,4 @@
   <CLASS>reserved_keyword</CLASS>
   <WORD>end</WORD>
 </TOK>
-</TOKENSTRE
+</TOKENSTREAM>

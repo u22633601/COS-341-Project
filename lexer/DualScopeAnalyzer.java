@@ -61,6 +61,7 @@ public class DualScopeAnalyzer {
         private Map<String, String> uniqueNames;
         private boolean stopOnError;
         private String currentType = "";
+        private boolean inFunctionParams = false;
 
         public ScopeAnalyzer1() {
             scopeStack = new Stack<>();
@@ -96,7 +97,7 @@ public class DualScopeAnalyzer {
             return "f" + (funcCounter++);
         }
 
-        public boolean declare(String varName) {
+        public boolean declare(String varName, String type) {
             SymbolTable currentScope = scopeStack.peek();
 
             if (currentScope.contains(varName)) {
@@ -112,7 +113,7 @@ public class DualScopeAnalyzer {
             String uniqueName = isFunction(varName) ? generateUniqueFuncName() : generateUniqueVarName();
             uniqueNames.put(varName, uniqueName);
 
-            currentScope.add(varName, currentType);
+            currentScope.add(varName, type);
             return true;
         }
 
@@ -142,42 +143,49 @@ public class DualScopeAnalyzer {
             if (node.isBlockStart()) {
                 enterScope();
             }
-            if (node.isBlockEnd()) {
-                exitScope();
-            }
 
             if (node.getType().equals("TERMINAL")) {
                 if (node.getVarName().equals("num") || node.getVarName().equals("text")
                         || node.getVarName().equals("void")) {
                     currentType = node.getVarName();
+                    inFunctionParams = false;
+                } else if (isFunction(node.getVarName())) {
+                    inFunctionParams = true;
+                    if (!declare(node.getVarName(), currentType)) {
+                        return false;
+                    }
                 } else if (isVariableOrFunction(node.getVarName())) {
+                    String typeToUse = inFunctionParams ? "num" : currentType;
                     if (node.isAssignment()) {
                         if (!checkUsage(node.getVarName())) {
-                            return false; // Stop execution on error
+                            return false;
                         }
                         System.out.println("Assigning value to " + node.getVarName());
                     } else if (scopeStack.peek().contains(node.getVarName())) {
                         System.err.println("Error: Variable/Function '" + node.getVarName()
                                 + "' is already declared in this scope.");
-                        return false; // Stop execution on error
+                        return false;
                     } else {
-                        if (!declare(node.getVarName())) {
-                            return false; // Stop execution on error
+                        if (!declare(node.getVarName(), typeToUse)) {
+                            return false;
                         }
                     }
-                } else {
-                    //System.out.println("Ignoring terminal: " + node.getVarName());
                 }
-                return true;
+            } else if (node.getType().equals("FTYP")) {
+                inFunctionParams = false;
+            }
+
+            if (node.isBlockEnd()) {
+                exitScope();
             }
 
             for (Node child : node.getChildren()) {
                 if (!analyzeNode(child)) {
-                    return false; // Stop execution if error in child node
+                    return false;
                 }
             }
 
-            return true; // No errors encountered
+            return true;
         }
 
         private boolean isVariableOrFunction(String varName) {
@@ -303,6 +311,7 @@ public class DualScopeAnalyzer {
         private Set<String> usedFunctions;
         private Map<String, Set<String>> functionScopes;
         private String currentType = "";
+        private boolean inFunctionParams = false;
 
         public ScopeAnalyzer2() {
             scopeStack = new Stack<>();
@@ -344,7 +353,7 @@ public class DualScopeAnalyzer {
             return "f" + (funcCounter++);
         }
 
-        public boolean declare(String varName, String currentFunction) {
+        public boolean declare(String varName, String currentFunction, String type) {
             SymbolTable currentScope = scopeStack.peek();
 
             if (currentScope.contains(varName)) {
@@ -356,7 +365,7 @@ public class DualScopeAnalyzer {
             String uniqueName = isFunction(varName) ? generateUniqueFuncName() : generateUniqueVarName();
             uniqueNames.put(varName, uniqueName);
 
-            currentScope.add(varName, currentType);
+            currentScope.add(varName, type);
             if (currentFunction != null && functionScopes.containsKey(currentFunction)) {
                 functionScopes.get(currentFunction).add(varName);
             }
@@ -411,25 +420,35 @@ public class DualScopeAnalyzer {
                 if (node.getVarName().equals("num") || node.getVarName().equals("text")
                         || node.getVarName().equals("void")) {
                     currentType = node.getVarName();
+                    inFunctionParams = false;
+                } else if (isFunction(node.getVarName())) {
+                    inFunctionParams = true;
+                    currentFunction = node.getVarName();
+                    if (!declare(currentFunction, null, currentType)) {
+                        return false;
+                    }
                 } else if (isVariableOrFunction(node.getVarName())) {
+                    String typeToUse = inFunctionParams ? "num" : currentType;
                     if (!node.isAssignment() && !containsInCurrentScope(node.getVarName())) {
-                        if (!declare(node.getVarName(), currentFunction)) {
-                            return false; // Stop execution on error
+                        if (!declare(node.getVarName(), currentFunction, typeToUse)) {
+                            return false;
                         }
                     }
                 }
+            } else if (node.getType().equals("FTYP")) {
+                inFunctionParams = false;
             }
 
             if (node.getType().equals("FNAME")) {
                 currentFunction = node.getVarName();
-                if (!declare(currentFunction, null)) {
-                    return false; // Stop execution on error
+                if (!declare(currentFunction, null, currentType)) {
+                    return false;
                 }
             }
 
             for (NodeType child : node.getChildren()) {
                 if (!analyzeNodeFirstPass(child, currentFunction)) {
-                    return false; // Stop execution if error in child node
+                    return false;
                 }
             }
 
@@ -437,7 +456,7 @@ public class DualScopeAnalyzer {
                 exitScope();
             }
 
-            return true; // No errors encountered
+            return true;
         }
         
         public void writeSymbolTableToFile(String fileName) {
