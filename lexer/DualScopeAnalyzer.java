@@ -1,4 +1,6 @@
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
@@ -32,12 +34,17 @@ public class DualScopeAnalyzer {
                 // System.out.println("Analyzing scope with ScopeAnalyzer2...");
                 if (analyzer2.analyzeNode(root2)) {
                     analyzer2.printGlobalSymbolTable();
+                    analyzer2.writeSymbolTableToFile("Symbol.txt");
+                    System.out.println("Symbol table has been written to Symbol.txt");
                 } else {
                     System.err.println("ScopeAnalyzer2 encountered an error and stopped execution.");
                 }
+
             } else {
                 System.err.println("ScopeAnalyzer1 encountered an error and stopped execution.");
             }
+
+            
 
             
 
@@ -53,6 +60,7 @@ public class DualScopeAnalyzer {
         private int funcCounter;
         private Map<String, String> uniqueNames;
         private boolean stopOnError;
+        private String currentType = "";
 
         public ScopeAnalyzer1() {
             scopeStack = new Stack<>();
@@ -98,15 +106,13 @@ public class DualScopeAnalyzer {
             }
 
             if (containsInAnyScope(varName)) {
-                //System.out.println("Using existing variable from outer scope: " + varName + " as " + uniqueNames.get(varName));
                 return true;
             }
 
             String uniqueName = isFunction(varName) ? generateUniqueFuncName() : generateUniqueVarName();
             uniqueNames.put(varName, uniqueName);
-            //System.out.println("Declaring " + (isFunction(varName) ? "function" : "variable") + ": " + varName + " as " + uniqueName);
-            
-            currentScope.add(varName);
+
+            currentScope.add(varName, currentType);
             return true;
         }
 
@@ -140,8 +146,11 @@ public class DualScopeAnalyzer {
                 exitScope();
             }
 
-            if (node.getType().equals("TERMINAL") && !node.getVarName().isEmpty()) {
-                if (isVariableOrFunction(node.getVarName())) {
+            if (node.getType().equals("TERMINAL")) {
+                if (node.getVarName().equals("num") || node.getVarName().equals("text")
+                        || node.getVarName().equals("void")) {
+                    currentType = node.getVarName();
+                } else if (isVariableOrFunction(node.getVarName())) {
                     if (node.isAssignment()) {
                         if (!checkUsage(node.getVarName())) {
                             return false; // Stop execution on error
@@ -159,6 +168,7 @@ public class DualScopeAnalyzer {
                 } else {
                     //System.out.println("Ignoring terminal: " + node.getVarName());
                 }
+                return true;
             }
 
             for (Node child : node.getChildren()) {
@@ -181,9 +191,11 @@ public class DualScopeAnalyzer {
         public void printGlobalSymbolTable() {
             if (!scopeStack.isEmpty()) {
                 SymbolTable globalScope = scopeStack.firstElement();
-                System.out.println("\n=== Final Global Symbol Table (ScopeAnalyzer1) ===");
-                for (String varName : globalScope.getVariables()) {
-                    System.out.println(varName + " : " + uniqueNames.get(varName));
+                System.out.println("\n=== Final Global Symbol Table (ScopeAnalyzer2) ===");
+                for (Map.Entry<String, String> entry : globalScope.getVariables().entrySet()) {
+                    String varName = entry.getKey();
+                    String type = entry.getValue();
+                    System.out.println(varName + " : " + uniqueNames.get(varName) + " : " + type);
                 }
             } else {
                 System.err.println("Error: No scope to print the global symbol table.");
@@ -220,26 +232,26 @@ public class DualScopeAnalyzer {
         }
 
         static class SymbolTable {
-            private Set<String> variables;
+            private Map<String, String> variables;
 
             public SymbolTable() {
-                variables = new HashSet<>();
+                variables = new HashMap<>();
             }
 
-            public void add(String varName) {
-                variables.add(varName);
+            public void add(String varName, String type) {
+                variables.put(varName, type);
             }
 
             public boolean contains(String varName) {
-                return variables.contains(varName);
+                return variables.containsKey(varName);
             }
 
-            public Set<String> getVariables() {
+            public Map<String, String> getVariables() {
                 return variables;
             }
 
             public void printTable() {
-                //System.out.println("Variables: " + variables);
+                // System.out.println("Variables: " + variables);
             }
         }
 
@@ -290,6 +302,7 @@ public class DualScopeAnalyzer {
         private Set<String> declaredFunctions;
         private Set<String> usedFunctions;
         private Map<String, Set<String>> functionScopes;
+        private String currentType = "";
 
         public ScopeAnalyzer2() {
             scopeStack = new Stack<>();
@@ -342,9 +355,8 @@ public class DualScopeAnalyzer {
 
             String uniqueName = isFunction(varName) ? generateUniqueFuncName() : generateUniqueVarName();
             uniqueNames.put(varName, uniqueName);
-            //System.out.println("Declaring " + (isFunction(varName) ? "function" : "variable") + ": " + varName + " as " + uniqueName);
 
-            currentScope.add(varName);
+            currentScope.add(varName, currentType);
             if (currentFunction != null && functionScopes.containsKey(currentFunction)) {
                 functionScopes.get(currentFunction).add(varName);
             }
@@ -395,8 +407,11 @@ public class DualScopeAnalyzer {
                 enterScope(node.getVarName());
             }
 
-            if (node.getType().equals("TERMINAL") && !node.getVarName().isEmpty()) {
-                if (isVariableOrFunction(node.getVarName())) {
+            if (node.getType().equals("TERMINAL")) {
+                if (node.getVarName().equals("num") || node.getVarName().equals("text")
+                        || node.getVarName().equals("void")) {
+                    currentType = node.getVarName();
+                } else if (isVariableOrFunction(node.getVarName())) {
                     if (!node.isAssignment() && !containsInCurrentScope(node.getVarName())) {
                         if (!declare(node.getVarName(), currentFunction)) {
                             return false; // Stop execution on error
@@ -423,6 +438,21 @@ public class DualScopeAnalyzer {
             }
 
             return true; // No errors encountered
+        }
+        
+        public void writeSymbolTableToFile(String fileName) {
+            try (FileWriter writer = new FileWriter(fileName)) {
+                SymbolTable globalScope = scopeStack.firstElement();
+                writer.write("=== Global Symbol Table ===\n");
+                for (Map.Entry<String, String> entry : globalScope.getVariables().entrySet()) {
+                    String varName = entry.getKey();
+                    String type = entry.getValue();
+                    String uniqueName = uniqueNames.get(varName);
+                    writer.write(varName + " : " + uniqueName + " : " + type + "\n");
+                }
+            } catch (IOException e) {
+                System.err.println("Error writing to file: " + e.getMessage());
+            }
         }
         
         private boolean analyzeNodeSecondPass(NodeType node, String currentFunction) {
@@ -469,8 +499,10 @@ public class DualScopeAnalyzer {
             if (!scopeStack.isEmpty()) {
                 SymbolTable globalScope = scopeStack.firstElement();
                 System.out.println("\n=== Final Global Symbol Table (ScopeAnalyzer2) ===");
-                for (String varName : globalScope.getVariables()) {
-                    System.out.println(varName + " : " + uniqueNames.get(varName));
+                for (Map.Entry<String, String> entry : globalScope.getVariables().entrySet()) {
+                    String varName = entry.getKey();
+                    String type = entry.getValue();
+                    System.out.println(varName + " : " + uniqueNames.get(varName) + " : " + type);
                 }
             } else {
                 System.err.println("Error: No scope to print the global symbol table.");
@@ -482,6 +514,7 @@ public class DualScopeAnalyzer {
             String varName = "";
 
             if (nodeName.equals("TERMINAL")) {
+
                 varName = xmlNode.getTextContent().trim();
             }
 
@@ -523,26 +556,26 @@ public class DualScopeAnalyzer {
         }
 
         static class SymbolTable {
-            private Set<String> variables;
+            private Map<String, String> variables;
 
             public SymbolTable() {
-                variables = new HashSet<>();
+                variables = new HashMap<>();
             }
 
-            public void add(String varName) {
-                variables.add(varName);
+            public void add(String varName, String type) {
+                variables.put(varName, type);
             }
 
             public boolean contains(String varName) {
-                return variables.contains(varName);
+                return variables.containsKey(varName);
             }
 
-            public Set<String> getVariables() {
+            public Map<String, String> getVariables() {
                 return variables;
             }
 
             public void printTable() {
-                //System.out.println("Variables: " + variables);
+                // System.out.println("Variables: " + variables);
             }
         }
 

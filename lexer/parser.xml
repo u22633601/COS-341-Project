@@ -2153,7 +2153,7 @@
     <LEAF>
       <PARENT>1</PARENT>
       <UNID>2</UNID>
-      <TERMINAL>num</TERMINAL>
+      <TERMINAL>text</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>3</PARENT>
@@ -2708,7 +2708,7 @@
     <LEAF>
       <PARENT>225</PARENT>
       <UNID>226</UNID>
-      <TERMINAL>num</TERMINAL>
+      <TERMINAL>text</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>227</PARENT>
@@ -2983,7 +2983,7 @@
     <LEAF>
       <PARENT>343</PARENT>
       <UNID>344</UNID>
-      <TERMINAL>num</TERMINAL>
+      <TERMINAL>text</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>345</PARENT>
@@ -3206,4 +3206,4 @@
       <TERMINAL>$</TERMINAL>
     </LEAF>
   </LEAFNODES>
-</SYNTREE>
+</SYNTRE

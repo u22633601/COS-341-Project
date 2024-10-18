@@ -1,5 +1,5 @@
 main
-num V_x , num V_y , num V_result ,
+text V_x , num V_y , num V_result ,
 begin
   V_x < input ;
   V_y < input ;
@@ -27,7 +27,7 @@ end
 
 num F_average ( V_a , V_b , V_dummy )
 {
-num V_sum , num V_count , num V_res ,
+num V_sum , text V_count , num V_res ,
 begin
   V_res = F_ave ( V_x , V_y , 0 ) ; 
   V_sum = add ( V_a , V_b ) ;
@@ -37,7 +37,7 @@ end
 }
 num F_ave ( V_e , V_f , V_g )
 {
-num V_sume , num V_counte , num V_rese ,
+num V_sume , text V_counte , num V_rese ,
 begin
   V_rese = F_average ( V_x , V_y , 0 ) ; 
   V_sume = add ( V_a , V_b ) ;
@@ -47,4 +47,4 @@ end
 }
 end
 
-end
+e
