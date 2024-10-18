@@ -22,10 +22,11 @@ public class Token {
     }
 
     public String toXML() {
+        String sanitizedWord = word.replace("<", "lst");
         return "<TOK>\n" +
                "  <ID>" + id + "</ID>\n" +
                "  <CLASS>" + type.toString().toLowerCase() + "</CLASS>\n" +
-               "  <WORD>" + word + "</WORD>\n" +
+               "  <WORD>" + sanitizedWord + "</WORD>\n" +
                "</TOK>";
     }
 }

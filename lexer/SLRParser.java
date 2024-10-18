@@ -95,7 +95,11 @@ public class SLRParser {
                 }
                 int gotoState = getGotoState(stack.peek(), reduction.lhs);
                 if (gotoState == -1) {
-                    throw new Exception("Invalid GOTO state for " + reduction.lhs + " in state " + stack.peek());
+                    //throw new Exception("Invalid GOTO state for " + reduction.lhs + " in state " + stack.peek());
+                    if (gotoState == -1) {
+                        throw new Exception("Invalid GOTO state for non-terminal '" + reduction.lhs + "' after reducing using rule " + ruleNumber + " in state " + stack.peek());
+                    }
+                    
                 }
                 stack.push(gotoState);
                 System.out.println("  Reduce using rule " + ruleNumber + ": " + reduction.lhs + " -> "
@@ -105,8 +109,10 @@ public class SLRParser {
                 System.out.println("  Accept");
                 break;
             } else {
-                System.out.println("  Error: Unexpected action");
-                throw new Exception("Parsing error at token: " + token.value + " in state " + state);
+                // System.out.println("  Error: Unexpected action");
+                // throw new Exception("Parsing error at token: " + token.value + " in state " + state);
+                System.out.println(" Error: Unexpected action " + action + "' for token '" + token.value + "' (Type: " + token.type + ") at position " + currentTokenIndex + " in state " + state);
+                throw new Exception("Parsing error at token '" + token.value + "' (Type: " + token.type + ") at position " + currentTokenIndex + " in state " + state + ". No valid action found.");
             }
 
             System.out.println("  Stack: " + stack);
@@ -134,7 +140,7 @@ private String getAction(int state, Token token) {
                 break;
             case 1:
                 if (tokenValue.equals("$"))
-                    return "acc";
+                    return "s3";
                 break;
             case 2:
                 if (tokenValue.equals("num")) return "s6";
@@ -149,571 +155,798 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals("begin")) return "s9";
                 break;
             case 5:
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
                     return "s11";
                 break;
             case 6:
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
                     return "r4";
                 break;
             case 7:
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
-                    return "s11"; // VNAME
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "r5";
 
                 break;
             case 8:
                 if (tokenValue.equals("$")) return "r47";
-                if (tokenValue.equals("num")) return "s16";
+                if (tokenValue.equals("num"))
+                    return "s16";
+                if (tokenValue.equals("end"))
+                    return "r47";
                 if (tokenValue.equals("void")) return "s17";
-                if (tokenValue.equals("}")) return "r47";
                 break;
             case 9:
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
                 if (tokenValue.equals("end")) return "r8";
                 if (tokenValue.equals("skip")) return "s20";
                 if (tokenValue.equals("halt")) return "s21";
-                if (tokenValue.equals("return")) return "s22";
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
-                    return "s11"; // VNAME for assignment
-                if (tokenType.equals("text") && tokenValue.startsWith("F"))
-                    return "s27";
-                if (tokenValue.equals("if")) return "s28";
+                if (tokenValue.equals("return"))
+                    return "s22";
+                if (tokenValue.equals("if"))
+                    return "s28";
+                if (tokenType.equals("f") && tokenValue.startsWith("F_"))
+                    return "s29";
                 break;
             case 10:
                 if (tokenValue.equals(","))
-                    return "s29";
-                if (tokenValue.equals("begin"))
-                    return "r3";
+                    return "s30";
                 break;
             case 11:
                 if (tokenValue.equals(","))
-                    return "r6"; // VNAME -> V
-                if (tokenValue.equals("begin"))
                     return "r6";
-                if (tokenValue.equals(";")) return "r6";
-                if (tokenValue.equals("=")) return "r6";
-                if (tokenValue.equals("input"))
+                if (tokenValue.equals(";"))
                     return "r6";
-                return "r6";
+                if (tokenValue.equals("lst"))
+                    return "r6";
+                if (tokenValue.equals("="))
+                    return "r6";
+                if (tokenValue.equals(")"))
+                    return "r6";
+                break;
             case 12:
                 if (tokenValue.equals("$")) return "r1";
-                if (tokenValue.equals("}")) return "r1";
                 break;
             case 13:
                 if (tokenValue.equals("$")) return "r47";
-                if (tokenValue.equals("num")) return "s16";
+                if (tokenValue.equals("num"))
+                    return "s16";
+                if (tokenValue.equals("end")) return "r47";
                 if (tokenValue.equals("void")) return "s17";
-                if (tokenValue.equals("}")) return "r47";
                 break;
             case 14:
-                if (tokenValue.equals("{")) return "s33";
+                if (tokenValue.equals("{")) return "s34";
                 break;
             case 15:
-                if (tokenValue.equals("(")) return "s34";
+                if (tokenType.equals("f") && tokenValue.startsWith("F_"))
+                    return "s29";
                 break;
             case 16:
+                if (tokenType.equals("f") && tokenValue.startsWith("F_"))
+                    return "r51";
             case 17:
-                if (tokenValue.equals("(")) return "r51";
-                if (tokenValue.equals("(")) return "r52";
+                if (tokenType.equals("f") && tokenValue.startsWith("F_"))
+                    return "r52";
                 break;
             case 18:
-                if (tokenValue.equals("end")) return "s35";
+                if (tokenValue.equals("end")) return "s36";
                 break;
             case 19:
-                if (tokenValue.equals(";")) return "s36";
+                if (tokenValue.equals(";")) return "s37";
                 break;
             case 20:
+                if (tokenValue.equals(";"))
+                    return "r10";
+                break;
             case 21:
-                if (tokenValue.equals(";")) return "r10";
                 if (tokenValue.equals(";")) return "r11";
                 break;
             case 22:
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
                     return "s11";
-                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
-                    return "s40";
-                if (tokenType.equals("T"))
+                if (tokenType.equals("n"))
                     return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
                 break;
             case 23:
+                if (tokenValue.equals(";"))
+                    return "r13";
             case 24:
+                if (tokenValue.equals(";"))
+                    return "r14";
             case 25:
                 if (tokenValue.equals(";"))
-                    return "s36";
-                if (tokenValue.equals(";")) return "r13";
-                if (tokenValue.equals(";")) return "r14";
-                if (tokenValue.equals(";")) return "r15";
+                    return "r15";
                 break;
             case 26:
-                if (tokenValue.equals("input")) return "s42";
-                if (tokenValue.equals("=")) return "s43";
+                if (tokenValue.equals("lst")) return "s43";
+                if (tokenValue.equals("=")) return "s44";
                 break;
             case 27:
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
-                    return "s11";
-                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
-                    return "s40";
-                if (tokenType.equals("T"))
-                    return "s41";
                 if (tokenValue.equals("("))
-                    return "s34";
+                    return "s45";
                 break;
             case 28:
-                if (tokenValue.equals("not")) return "s50";
-                if (tokenValue.equals("sqrt")) return "s51";
-                if (tokenValue.equals("(")) return "s48";
+                if (tokenValue.equals("not")) return "s59";
+                if (tokenValue.equals("sqrt"))
+                    return "s60";
+                if (tokenValue.equals("or"))
+                    return "s51";
+                if (tokenValue.equals("and"))
+                    return "s52";
+                if (tokenValue.equals("eq"))
+                        return "s53";
+                if (tokenValue.equals("grt"))
+                        return "s54";
+                if (tokenValue.equals("add"))
+                        return "s55";
+                if (tokenValue.equals("sub"))
+                        return "s56";
+                if (tokenValue.equals("mul"))
+                        return "s57";
+                if (tokenValue.equals("div"))
+                        return "s58";
                 break;
             case 29:
-                if (tokenValue.equals("num")) return "s6";
+                if (tokenValue.equals("(")) // was )
+                    return "r46";
+                break;
+            case 30:
+                if (tokenValue.equals("num"))
+                    return "s6";
                 if (tokenValue.equals("text"))
                     return "s7";
                 if (tokenValue.equals("begin"))
                     return "r2";
                 break;
-            case 30:
-                if (tokenValue.equals("$")) return "r48";
-                if (tokenValue.equals("}")) return "r48";
-                break;
             case 31:
-                if (tokenValue.equals("$")) return "r49";
-                if (tokenValue.equals("num")) return "r49";
-                if (tokenValue.equals("text")) return "r49";
-                if (tokenValue.equals("void")) return "r49";
-                if (tokenValue.equals("}")) return "r49";
+                if (tokenValue.equals("$"))
+                    return "r48";
+                if (tokenValue.equals("end"))
+                    return "r48";
                 break;
             case 32:
+                if (tokenValue.equals("$"))
+                    return "r49";
+                if (tokenValue.equals("num"))
+                    return "r49";
+                if (tokenValue.equals("end"))
+                    return "r49";
+                if (tokenValue.equals("void"))
+                    return "r49";
+                break;
+            case 33:
                 if (tokenValue.equals("num")) return "s6";
                 if (tokenValue.equals("text")) return "s7";
                 break;
-            case 33:
-                if (tokenValue.equals("num")) return "r54";
-                if (tokenValue.equals("text")) return "r54";
-                break;
             case 34:
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
-                    return "s11";
+                if (tokenValue.equals("num"))
+                    return "r54";
+                if (tokenValue.equals("text"))
+                    return "r54";
                 break;
             case 35:
-                if (tokenValue.equals("$")) return "r7";
-                if (tokenValue.equals("num")) return "r7";
-                if (tokenValue.equals("text")) return "r7";
-                if (tokenValue.equals(";")) return "r7";
-                if (tokenValue.equals("void")) return "r7";
-                if (tokenValue.equals("}")) return "r7";
+                if (tokenValue.equals("(")) //was )
+                    return "s64";
                 break;
             case 36:
-                if (tokenValue.equals("end"))
-                    return "r8";
-                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
-                if (tokenValue.equals("skip")) return "s20";
-                if (tokenValue.equals("halt")) return "s21";
-                if (tokenValue.equals("return")) return "s22";
-                if (tokenValue.equals("if")) return "s28";
+                if (tokenValue.equals("$"))
+                    return "r7";
+                if (tokenValue.equals("num"))
+                    return "r7";
+                if (tokenValue.equals("else"))
+                    return "r7";
+                if (tokenValue.equals(";"))
+                    return "r7";
+                if (tokenValue.equals("void"))
+                    return "r7";
+                if (tokenValue.equals("}"))
+                    return "r7";
                 break;
             case 37:
-                if (tokenValue.equals(";")) return "r12";
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenValue.equals("end"))
+                    return "r8";
+                if (tokenValue.equals("skip"))
+                    return "s20";
+                if (tokenValue.equals("halt"))
+                    return "s21";
+                if (tokenValue.equals("return"))
+                    return "s22";
+                if (tokenValue.equals("if"))
+                    return "s28";
+                if (tokenType.equals("f") && tokenValue.startsWith("F_"))
+                    return "s29";
+                break;
+            case 38:
+                if (tokenValue.equals(";"))
+                    return "r12";
+                break;
+            case 39:
+                if (tokenValue.equals(","))
+                    return "r16";
+                if (tokenValue.equals(";"))
+                    return "r16";
+                if (tokenValue.equals(")"))
+                    return "r16";
                 break;
             case 40:
                 if (tokenValue.equals(","))
-                    return "r19"; // CONST -> T
-                if (tokenValue.equals(")"))
-                    return "r19";
-                if (tokenValue.equals(","))
-                    return "r16";
-                if (tokenValue.equals(";"))
-                    return "r16";
-                if (tokenValue.equals(")"))
-                    return "r16";
-                if (tokenValue.equals(","))
                     return "r17";
                 if (tokenValue.equals(";"))
                     return "r17";
                 if (tokenValue.equals(")"))
                     return "r17";
-                if (tokenValue.equals(","))
-                    return "r18";
-                if (tokenValue.equals(";"))
-                    return "r18";
-                if (tokenValue.equals(")"))
-                    return "r18";
-                if (tokenValue.equals(","))
-                    return "r19";
-                if (tokenValue.equals(";"))
-                    return "r19";
-                if (tokenValue.equals(")"))
-                    return "r19";
                 break;
-            case 38:
-            case 39:
             case 41:
-                if (tokenValue.equals(",")) return "r16";
-                if (tokenValue.equals(";")) return "r16";
-                if (tokenValue.equals(")")) return "r16";
-                if (tokenValue.equals(",")) return "r17";
-                if (tokenValue.equals(";")) return "r17";
-                if (tokenValue.equals(")")) return "r17";
-                if (tokenValue.equals(",")) return "r18";
-                if (tokenValue.equals(";")) return "r18";
-                if (tokenValue.equals(")")) return "r18";
-                if (tokenValue.equals(",")) return "r19";
-                if (tokenValue.equals(";")) return "r19";
-                if (tokenValue.equals(")")) return "r19";
+                if (tokenValue.equals(","))
+                    return "r18";
+                if (tokenValue.equals(";"))
+                    return "r18";
+                if (tokenValue.equals(")"))
+                    return "r18";
                 break;
             case 42:
-                if (tokenValue.equals("(")) return "s57";
+                if (tokenValue.equals(","))
+                    return "r19";
+                if (tokenValue.equals(";"))
+                    return "r19";
+                if (tokenValue.equals(")"))
+                    return "r19";
                 break;
             case 43:
-                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
-                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
-                    return "s40";
-                if (tokenType.equals("T")) return "s41";
-                if (tokenValue.equals("(")) return "s27";
-                if (tokenValue.equals("not")) return "s62";
-                if (tokenValue.equals("sqrt")) return "s63";
+                if (tokenValue.equals("input"))
+                    return "s66";
                 break;
             case 44:
-                if (tokenValue.equals(",")) return "s64";
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
+                if (tokenValue.equals("not"))
+                    return "s59";
+                if (tokenValue.equals("sqrt"))
+                    return "s60";
+                if (tokenValue.equals("or"))
+                    return "s51";
+                if (tokenValue.equals("and"))
+                    return "s52";
+                if (tokenValue.equals("eq"))
+                    return "s53";
+                if (tokenValue.equals("grt"))
+                    return "s54";
+                if (tokenValue.equals("add"))
+                    return "s55";
+                if (tokenValue.equals("sub"))
+                    return "s56";
+                if (tokenValue.equals("mul"))
+                    return "s57";
+                if (tokenValue.equals("div"))
+                    return "s58";
+                if (tokenType.equals("f") && tokenValue.startsWith("F_"))
+                    return "s29";
                 break;
             case 45:
-                if (tokenValue.equals("then")) return "s65";
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
                 break;
             case 46:
+                if (tokenValue.equals("then"))
+                    return "s74";
             case 47:
                 if (tokenValue.equals("then")) return "r31";
-                if (tokenValue.equals("then")) return "r32";
                 break;
             case 48:
-                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
-                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
-                    return "s40";
-                if (tokenType.equals("T")) return "s41";
-                if (tokenValue.equals("not")) return "s68";
+                if (tokenValue.equals("then"))
+                    return "r32";
                 break;
             case 49:
-                if (tokenValue.equals(")")) return "s69";
+                if (tokenValue.equals("(")) return "s75";
                 break;
             case 50:
+                if (tokenValue.equals("("))
+                    return "s76";
             case 51:
-                if (tokenValue.equals(")")) return "r36";
-                if (tokenValue.equals(")")) return "r37";
+                if (tokenValue.equals("("))
+                    return "r38";
                 break;
             case 52:
-                if (tokenValue.equals("begin")) return "r3";
+                if (tokenValue.equals("("))
+                    return "r39";
                 break;
             case 53:
-                if (tokenValue.equals("begin")) return "s9";
+                if (tokenValue.equals("("))
+                    return "r40";
                 break;
             case 54:
-                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
+                if (tokenValue.equals("("))
+                    return "r41";
                 break;
             case 55:
-                if (tokenValue.equals(",")) return "s72";
+                if (tokenValue.equals("("))
+                    return "r42";
                 break;
             case 56:
-                if (tokenValue.equals("end")) return "r9";
+                if (tokenValue.equals("("))
+                    return "r43";
                 break;
             case 57:
-                if (tokenValue.equals(";")) return "r20";
+                if (tokenValue.equals("("))
+                    return "r44";
                 break;
             case 58:
-                if (tokenValue.equals(";")) return "r21";
+                if (tokenValue.equals("("))
+                    return "r45";
                 break;
             case 59:
-                if (tokenValue.equals(";")) return "r24";
+                if (tokenValue.equals("("))
+                    return "r46";
                 break;
             case 60:
-                if (tokenValue.equals(";")) return "r25";
+                if (tokenValue.equals("("))
+                    return "r47";
                 break;
             case 61:
-                if (tokenValue.equals(";")) return "r26";
+                if (tokenValue.equals("begin"))
+                    return "r3";
                 break;
             case 62:
+                if (tokenValue.equals("begin"))
+                    return "s9";
             case 63:
-                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
-                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
-                    return "s40";
-                if (tokenType.equals("T")) return "s41";
-                if (tokenValue.equals("(")) return "s62";
-                if (tokenValue.equals("not")) return "s62";
-                if (tokenValue.equals("sqrt")) return "s63";
+                if (tokenType.equals("v") && tokenValue.startsWith("V_")) return "s11";
                 break;
             case 64:
-                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
-                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
-                    return "s40";
-                if (tokenType.equals("T"))
-                    return "s41";
-                if (tokenValue.equals(")"))
-                    return "s88";
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
                 break;
             case 65:
-                if (tokenValue.equals("begin")) return "s9";
+                if (tokenValue.equals("end")) return "r9";
                 break;
             case 66:
-                if (tokenValue.equals(",")) return "s79";
+                if (tokenValue.equals(";")) return "r20";
                 break;
             case 67:
-                if (tokenValue.equals(",")) return "s80";
+                if (tokenValue.equals(";"))
+                    return "r21";
                 break;
             case 68:
-                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
-                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
-                    return "s40";
-                if (tokenType.equals("T")) return "s41";
+                if (tokenValue.equals(";"))
+                    return "r24";
                 break;
             case 69:
-                if (tokenValue.equals("not")) return "s68";
+                if (tokenValue.equals(";"))
+                    return "r25";
                 break;
             case 70:
-                if (tokenValue.equals("{")) return "s83";
+                if (tokenValue.equals(";"))
+                    return "r26";
                 break;
             case 71:
-                if (tokenValue.equals(",")) return "s84";
+                if (tokenValue.equals("(")) return "s80"; //tess [was ) ]
                 break;
             case 72:
-                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
+                if (tokenValue.equals("(")) //tess [was ) ]
+                    return "s81";
                 break;
             case 73:
-                if (tokenValue.equals(")")) return "s86";
+                if (tokenValue.equals(","))
+                    return "s82";
                 break;
             case 74:
+                if (tokenValue.equals("begin"))
+                    return "s9";
             case 75:
-                if (tokenValue.equals(",")) return "r29";
-                if (tokenValue.equals(";")) return "r29";
-                if (tokenValue.equals(")")) return "r29";
-                if (tokenValue.equals(",")) return "r30";
-                if (tokenValue.equals(";")) return "r30";
-                if (tokenValue.equals(")")) return "r30";
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
+                if (tokenValue.equals("or"))
+                    return "s51";
+                if (tokenValue.equals("and"))
+                    return "s52";
+                if (tokenValue.equals("eq"))
+                    return "s53";
+                if (tokenValue.equals("grt"))
+                    return "s54";
+                if (tokenValue.equals("add"))
+                    return "s55";
+                if (tokenValue.equals("sub"))
+                    return "s56";
+                if (tokenValue.equals("mul"))
+                    return "s57";
+                if (tokenValue.equals("div"))
+                    return "s58";
                 break;
             case 76:
-                if (tokenValue.equals(",")) return "s87";
+                if (tokenValue.equals("or"))
+                    return "s51";
+                if (tokenValue.equals("and"))
+                    return "s52";
+                if (tokenValue.equals("eq"))
+                    return "s53";
+                if (tokenValue.equals("grt"))
+                    return "s54";
+                if (tokenValue.equals("add"))
+                    return "s55";
+                if (tokenValue.equals("sub"))
+                    return "s56";
+                if (tokenValue.equals("mul"))
+                    return "s57";
+                if (tokenValue.equals("div"))
+                    return "s58";
                 break;
             case 77:
-                if (tokenValue.equals(",")) return "s88";
+                if (tokenValue.equals("}"))
+                    return "s89";
                 break;
             case 78:
-                if (tokenValue.equals("else"))
-                    return "s89";
                 if (tokenValue.equals(","))
-                    return "s87"; // Comma between function arguments
-                if (tokenValue.equals(")"))
-                    return "r27";
+                    return "s90";
                 break;
             case 79:
-                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
-                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
-                    return "s40";
-                if (tokenType.equals("T"))
-                    return "s41";
                 if (tokenValue.equals(","))
-                    return "s87"; // Comma between function arguments
-                if (tokenValue.equals(")"))
-                    return "r27";
+                    return "s91"; // Comma between function arguments
                 break;
             case 80:
-                if (tokenValue.equals("not")) return "s68";
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
+                if (tokenValue.equals("not"))
+                    return "s59";
+                if (tokenValue.equals("sqrt"))
+                    return "s60";
+                if (tokenValue.equals("or"))
+                    return "s51";
+                if (tokenValue.equals("and"))
+                    return "s52";
+                if (tokenValue.equals("eq"))
+                    return "s53";
+                if (tokenValue.equals("grt"))
+                    return "s54";
+                if (tokenValue.equals("add"))
+                    return "s55";
+                if (tokenValue.equals("sub"))
+                    return "s56";
+                if (tokenValue.equals("mul"))
+                    return "s57";
+                if (tokenValue.equals("div"))
+                    return "s58";
                 break;
             case 81:
-                if (tokenValue.equals(")")) return "s92";
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
+                if (tokenValue.equals("not"))
+                    return "s59";
+                if (tokenValue.equals("sqrt"))
+                    return "s60";
+                if (tokenValue.equals("or"))
+                    return "s51";
+                if (tokenValue.equals("and"))
+                    return "s52";
+                if (tokenValue.equals("eq"))
+                    return "s53";
+                if (tokenValue.equals("grt"))
+                    return "s54";
+                if (tokenValue.equals("add"))
+                    return "s55";
+                if (tokenValue.equals("sub"))
+                    return "s56";
+                if (tokenValue.equals("mul"))
+                    return "s57";
+                if (tokenValue.equals("div"))
+                    return "s58";
                 break;
             case 82:
-                if (tokenValue.equals("$")) return "r47";
-                if (tokenValue.equals("num")) return "s16";
-                if (tokenValue.equals("void")) return "s17";
-                if (tokenValue.equals("}")) return "r47";
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
                 break;
             case 83:
-                if (tokenValue.equals("num")) return "r55";
-                if (tokenValue.equals("text")) return "r55";
-                if (tokenValue.equals("$")) return "r55";
-                if (tokenValue.equals("void")) return "r55";
-                if (tokenValue.equals("}")) return "r55";
+                if (tokenValue.equals("else"))
+                    return "s97";
                 break;
             case 84:
-                if (tokenValue.equals("num")) return "s6";
-                if (tokenValue.equals("text")) return "s7";
+                if (tokenValue.equals(","))
+                    return "s98";
                 break;
             case 85:
-                if (tokenValue.equals(",")) return "s96";
+                if (tokenValue.equals(",")) return "s99";
                 break;
             case 86:
-                if (tokenValue.equals(",")) return "r27";
-                if (tokenValue.equals(";")) return "r27";
-                if (tokenValue.equals(")")) return "r27";
+                if (tokenValue.equals("(")) return "s100";
                 break;
             case 87:
-                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
-                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
-                    return "s40";
-                if (tokenType.equals("T")) return "s41";
-                if (tokenValue.equals("(")) return "s62";
-                if (tokenValue.equals("not")) return "s62";
-                if (tokenValue.equals("sqrt")) return "s63";
-                break;
-            case 88:
-                if (tokenType.equals("text") && tokenValue.startsWith("V")) return "s11";
-                if (tokenType.equals("text") && (tokenValue.startsWith("N") || tokenValue.startsWith("T")))
-                    return "s40";
-                if (tokenType.equals("T"))
-                    return "s41";
-                if (tokenValue.equals(";"))
-                    return "r22";
-                break;
-            case 89:
-                if (tokenValue.equals("begin")) return "s9";
-                break;
-            case 90:
-                if (tokenValue.equals(")")) return "s100";
-                break;
-            case 91:
                 if (tokenValue.equals(")")) return "s101";
                 break;
-            case 92:
-                if (tokenValue.equals("then")) return "r35";
-                break;
-            case 93:
-                if (tokenValue.equals("}")) return "s102";
-                break;
-            case 94:
-                if (tokenValue.equals("}")) return "r57";
-                break;
-            case 95:
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
-                    return "s11";
-                break;
-            case 96:
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
-                    return "s11";
-                break;
-            case 97:
-                if (tokenValue.equals(","))
-                    return "s87"; // Comma between function arguments
-                if (tokenValue.equals(")"))
-                    return "r27";
-                if (tokenValue.equals(")"))
-                    return "s105";
-                break;
-            case 98:
-                if (tokenValue.equals(")"))
-                    return "s106";
-                break;
-            case 99:
-                if (tokenValue.equals(";"))
-                    return "r23";
-                break;
-            case 100:
-                if (tokenValue.equals(","))
-                    return "r33";
-                if (tokenValue.equals(";"))
-                    return "r33";
-                if (tokenValue.equals(")"))
-                    return "r33";
-                if (tokenValue.equals("then"))
-                    return "r33";
-                break;
-            case 101:
-                if (tokenValue.equals("then"))
-                    return "r34";
-                break;
-            case 102:
+            case 88:
                 if (tokenValue.equals("$"))
-                    return "r53";
+                    return "r47";
                 if (tokenValue.equals("num"))
-                    return "r53";
-                if (tokenValue.equals("text"))
-                    return "r53";
+                    return "s16";
+                if (tokenValue.equals("end"))
+                    return "r47";
                 if (tokenValue.equals("void"))
-                    return "r53";
-                if (tokenValue.equals("}"))
-                    return "r53";
+                    return "s17";
                 break;
-            case 103:
-                if (tokenValue.equals(","))
-                    return "s107";
+            case 89:
+                if (tokenValue.equals("$"))
+                    return "r55";
+                if (tokenValue.equals("num"))
+                    return "r55";
+                if (tokenValue.equals("end"))
+                    return "r55";
+                if (tokenValue.equals("void"))
+                    return "r55";
                 break;
-            case 104:
-                if (tokenValue.equals(")"))
-                    return "s108";
-                break;
-            case 105:
-                if (tokenValue.equals(","))
-                    return "r28";
-                if (tokenValue.equals(";"))
-                    return "r28";
-                if (tokenValue.equals(")"))
-                    return "r28";
-                break;
-            case 106:
-                if (tokenValue.equals(";"))
-                    return "r22";
-                break;
-            case 107:
+            case 90:
                 if (tokenValue.equals("num"))
                     return "s6";
                 if (tokenValue.equals("text"))
                     return "s7";
                 break;
+            case 91:
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                break;
+            case 92:
+                if (tokenValue.equals(")")) return "s106";
+                break;
+            case 93:
+                if (tokenValue.equals(","))
+                    return "r29";
+                if (tokenValue.equals(")"))
+                    return "r29";
+                break;
+            case 94:
+                if (tokenValue.equals(","))
+                    return "r30";
+                if (tokenValue.equals(")"))
+                    return "r30";
+                break;
+            case 95:
+                if (tokenValue.equals(","))
+                    return "s107";
+                break;
+            case 96:
+                if (tokenValue.equals(","))
+                    return "s108";
+                break;
+            case 97:
+                if (tokenValue.equals("begin"))
+                    return "s9";
+                break;
+            case 98:
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
+                break;
+            case 99:
+                if (tokenValue.equals("or"))
+                    return "s51";
+                if (tokenValue.equals("and"))
+                    return "s52";
+                if (tokenValue.equals("eq"))
+                    return "s53";
+                if (tokenValue.equals("grt"))
+                    return "s54";
+                if (tokenValue.equals("add"))
+                    return "s55";
+                if (tokenValue.equals("sub"))
+                    return "s56";
+                if (tokenValue.equals("mul"))
+                    return "s57";
+                if (tokenValue.equals("div"))
+                    return "s58";
+                break;
+            case 100:
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
+                break;
+            case 101:
+                if (tokenValue.equals("then"))
+                    return "r35";
+                break;
+            case 102:
+                if (tokenValue.equals("end"))
+                    return "s112";
+                break;
+            case 103:
+                if (tokenValue.equals("end"))
+                    return "r57";
+                break;
+            case 104:
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                break;
+            case 105:
+                if (tokenValue.equals(","))
+                    return "s114";
+                break;
+            case 106:
+                if (tokenValue.equals(","))
+                    return "r27";
+                if (tokenValue.equals(";"))
+                    return "r27";
+                if (tokenValue.equals(")"))
+                    return "r27";
+                break;
+            case 107:
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
+                if (tokenValue.equals("not"))
+                    return "s59";
+                if (tokenValue.equals("sqrt"))
+                    return "s60";
+                if (tokenValue.equals("or"))
+                    return "s51";
+                if (tokenValue.equals("and"))
+                    return "s52";
+                if (tokenValue.equals("eq"))
+                    return "s53";
+                if (tokenValue.equals("grt"))
+                    return "s54";
+                if (tokenValue.equals("add"))
+                    return "s55";
+                if (tokenValue.equals("sub"))
+                    return "s56";
+                if (tokenValue.equals("mul"))
+                    return "s57";
+                if (tokenValue.equals("div"))
+                    return "s58";
+                break;
             case 108:
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                if (tokenType.equals("n"))
+                    return "s41";
+                if (tokenType.equals("t"))
+                    return "s42";
+                break;
+            case 109:
+                if (tokenValue.equals(";"))
+                    return "r23";
+                break;
+            case 110:
+                if (tokenValue.equals(")"))
+                    return "s117";
+                break;
+            case 111:
+                if (tokenValue.equals(")"))
+                    return "s118";
+                break;
+            case 112:
+                if (tokenValue.equals("$"))
+                    return "r53";
+                if (tokenValue.equals("num"))
+                    return "r53";
+                if (tokenValue.equals("end"))
+                    return "r53";
+                if (tokenValue.equals("void"))
+                    return "r53";
+                break;
+            case 113:
+                if (tokenValue.equals(","))
+                    return "s119";
+                break;
+            case 114:
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                break;
+            case 115:
+                if (tokenValue.equals(")"))
+                    return "s121";
+                break;
+            case 116:
+                if (tokenValue.equals(")"))
+                    return "s122";
+                break;
+            case 117:
+                if (tokenValue.equals(","))
+                    return "r33";
+                if (tokenValue.equals(")"))
+                    return "r33";
+                if (tokenValue.equals("then"))
+                    return "r33";
+                break;
+            case 118:
+                if (tokenValue.equals("then"))
+                    return "r34";
+                break;
+            case 119:
+                if (tokenValue.equals("num"))
+                    return "s6";
+                if (tokenValue.equals("text"))
+                    return "s7";
+                break;
+            case 120:
+                if (tokenValue.equals(")"))
+                    return "s124";
+                break;
+            case 121:
+                if (tokenValue.equals(","))
+                    return "r28";
+                if (tokenValue.equals(";"))
+                    return "r28";
+                if (tokenValue.equals(")")) // was ;
+                    return "r28";
+                break;
+            case 122:
+                if (tokenValue.equals(";"))
+                    return "r22";
+                break;
+            case 123:
+                if (tokenType.equals("v") && tokenValue.startsWith("V_"))
+                    return "s11";
+                break;
+            case 124:
                 if (tokenValue.equals("{"))
                     return "r50";
                 break;
-            case 109:
-                if (tokenType.equals("text") && tokenValue.startsWith("V"))
-                    return "s11";
-                break;
-            case 110:
+            case 125:
                 if (tokenValue.equals(","))
-                    return "s111";
+                    return "s126";
                 break;
-            case 111:
-                if (tokenValue.equals("}"))
+            case 126:
+                if (tokenValue.equals("begin"))
                     return "r56";
                 break;
-            default:
-                break;
+                default:
+                return "\n Error: Unexpected token '" + token.value + "' (Type: " + token.type + ") at position " + currentTokenIndex + " in state " + state;
         }
-
-        // If no action is found, return an error
-        return "error";
+        return "\n Error: No valid action found for token '" + token.value + "' (Type: " + token.type + ") at position " + currentTokenIndex + " in state " + state;
     }
 
     private int getGotoState(int state, String nonTerminal) {
         switch (state) {
             case 0:
-                if (nonTerminal.equals("S"))
-                    return 1;
                 if (nonTerminal.equals("PROG"))
                     return 1;
-                if (nonTerminal.equals("GLOBVARS"))
-                    return 4;
                 break;
             case 2:
                 if (nonTerminal.equals("GLOBVARS"))
                     return 4;
                 if (nonTerminal.equals("VTYP"))
                     return 5;
-                if (nonTerminal.equals("PROG"))
-                    return 1;
                 break;
             case 4:
                 if (nonTerminal.equals("ALGO"))
                     return 8;
-                if (nonTerminal.equals("PROG"))
-                    return 1;
                 break;
             case 5:
                 if (nonTerminal.equals("VNAME"))
                     return 10;
-                if (nonTerminal.equals("GLOBVARS"))
-                    return 52;
-                break;
-            case 6:
-            case 7:
-                if (nonTerminal.equals("VNAME"))
-                    return 10;
-                if (nonTerminal.equals("GLOBVARS"))
-                    return 4;
-                if (nonTerminal.equals("PROG"))
-                    return 1;
                 break;
             case 8:
                 if (nonTerminal.equals("FUNCTIONS"))
@@ -722,281 +955,350 @@ private String getAction(int state, Token token) {
                     return 13;
                 if (nonTerminal.equals("HEADER"))
                     return 14;
-                if (nonTerminal.equals("FNAME"))
+                if (nonTerminal.equals("FTYP"))
                     return 15;
-                if (nonTerminal.equals("ALGO"))
-                    return 70;
-                if (nonTerminal.equals("PROG"))
-                    return 1;
                 break;
             case 9:
+                if (nonTerminal.equals("VNAME"))
+                    return 26;
                 if (nonTerminal.equals("INSTRUC"))
                     return 18;
                 if (nonTerminal.equals("COMMAND"))
                     return 19;
-                if (nonTerminal.equals("ATOMIC"))
-                    return 23;
                 if (nonTerminal.equals("ASSIGN"))
-                    return 24;
+                    return 23;
                 if (nonTerminal.equals("CALL"))
-                    return 25;
+                    return 24;
                 if (nonTerminal.equals("BRANCH"))
-                    return 26;
-                if (nonTerminal.equals("FNAME"))
-                    return 27;
-                if (nonTerminal.equals("ARG"))
-                    return 64;
-                if (nonTerminal.equals("VNAME"))
-                    return 78;
-                if (nonTerminal.equals("CONST"))
-                    return 79;
-                if (nonTerminal.equals("TERM"))
-                    return 97;
-                break;
-            case 10:
-                if (nonTerminal.equals("GLOBVARS"))
-                    return 52;
-                break;
-            case 12:
-                if (nonTerminal.equals("PROG"))
-                    return 1;
+                    return 25;
                 break;
             case 13:
                 if (nonTerminal.equals("FUNCTIONS"))
-                    return 30;
+                    return 31;
                 if (nonTerminal.equals("DECL"))
                     return 13;
                 if (nonTerminal.equals("HEADER"))
                     return 14;
-                if (nonTerminal.equals("FNAME"))
+                if (nonTerminal.equals("FTYP"))
                     return 15;
                 break;
-            case 19:
-                if (nonTerminal.equals("INSTRUC"))
-                    return 56;
+            case 14:
+                if (nonTerminal.equals("BODY"))
+                    return 32;
+                if (nonTerminal.equals("PROLOG"))
+                    return 33;
+                break;
+            case 15:
+                if (nonTerminal.equals("FNAME"))
+                    return 35;
                 break;
             case 22:
-                if (nonTerminal.equals("TERM"))
-                    return 37;
-                if (nonTerminal.equals("CONST"))
+                if (nonTerminal.equals("ATOMIC"))
                     return 38;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
                 if (nonTerminal.equals("VNAME"))
                     return 39;
                 break;
-            case 27:
-                if (nonTerminal.equals("TERM"))
-                    return 44;
-                if (nonTerminal.equals("CONST"))
-                    return 38;
-                if (nonTerminal.equals("VNAME"))
-                    return 39;
-                break;
+            // case 27:
+            //     if (nonTerminal.equals("ATOMIC"))
+            //         return 45;
+            //     if (nonTerminal.equals("CONST"))
+            //         return 40;
+            //     if (nonTerminal.equals("VNAME"))
+            //         return 39;
+            //     break;
             case 28:
                 if (nonTerminal.equals("COND"))
-                    return 45;
-                if (nonTerminal.equals("SIMPLE"))
                     return 46;
-                if (nonTerminal.equals("COMPOSIT"))
+                if (nonTerminal.equals("SIMPLE"))
                     return 47;
+                if (nonTerminal.equals("COMPOSIT"))
+                    return 48;
                 if (nonTerminal.equals("UNOP"))
+                    return 50;
+                if (nonTerminal.equals("BINOP"))
                     return 49;
                 break;
-            case 29:
+            case 30:
                 if (nonTerminal.equals("GLOBVARS"))
-                    return 52;
+                    return 61;
                 if (nonTerminal.equals("VTYP"))
                     return 5;
                 break;
-            case 32:
+            case 33:
                 if (nonTerminal.equals("VTYP"))
-                    return 54;
+                    return 63;
+                if (nonTerminal.equals("LOCVARS"))
+                    return 62;
                 break;
-            case 34:
-                if (nonTerminal.equals("ARG"))
-                    return 64;
-                if (nonTerminal.equals("ATOMIC"))
-                    return 77;
+            case 37:
                 if (nonTerminal.equals("VNAME"))
-                    return 78;
-                if (nonTerminal.equals("CONST"))
-                    return 79;
-                if (nonTerminal.equals("TERM"))
-                    return 97;
-                if (nonTerminal.equals("CALL"))
-                    return 25;
-                break;
-            case 36:
+                    return 26;
                 if (nonTerminal.equals("INSTRUC"))
-                    return 56;
+                    return 65;
                 if (nonTerminal.equals("COMMAND"))
                     return 19;
-                if (nonTerminal.equals("ATOMIC"))
-                    return 23;
                 if (nonTerminal.equals("ASSIGN"))
-                    return 24;
+                    return 23;
                 if (nonTerminal.equals("CALL"))
-                    return 25;
+                    return 24;
                 if (nonTerminal.equals("BRANCH"))
-                    return 26;
+                    return 25;
+                if (nonTerminal.equals("FNAME"))
+                    return 27;
                 break;
-            case 43:
-                if (nonTerminal.equals("TERM"))
-                    return 59;
+            case 44:
+                if (nonTerminal.equals("ATOMIC"))
+                    return 68;
                 if (nonTerminal.equals("CONST"))
-                    return 38;
+                    return 40;
                 if (nonTerminal.equals("VNAME"))
                     return 39;
-                if (nonTerminal.equals("OP"))
-                    return 58;
-                if (nonTerminal.equals("UNOP"))
-                    return 60;
-                if (nonTerminal.equals("BINOP"))
-                    return 61;
-                break;
-            case 48:
-                if (nonTerminal.equals("COND"))
-                    return 66;
-                if (nonTerminal.equals("SIMPLE"))
-                    return 46;
-                if (nonTerminal.equals("COMPOSIT"))
-                    return 47;
+                if (nonTerminal.equals("CALL"))
+                    return 69;
                 if (nonTerminal.equals("TERM"))
                     return 67;
+                if (nonTerminal.equals("OP"))
+                    return 70;
+                if (nonTerminal.equals("UNOP"))
+                    return 71;
+                if (nonTerminal.equals("BINOP"))
+                    return 72;
+                if (nonTerminal.equals("FNAME"))
+                    return 27;
+                break;
+            case 45:
+                if (nonTerminal.equals("ATOMIC"))
+                    return 73;
                 if (nonTerminal.equals("CONST"))
-                    return 38;
+                    return 40;
                 if (nonTerminal.equals("VNAME"))
                     return 39;
-                break;
-            case 53:
-                if (nonTerminal.equals("ALGO"))
-                    return 70;
                 break;
             case 62:
-            case 63:
-                if (nonTerminal.equals("TERM"))
-                    return 74;
-                if (nonTerminal.equals("CONST"))
-                    return 38;
-                if (nonTerminal.equals("VNAME"))
-                    return 39;
-                if (nonTerminal.equals("OP"))
-                    return 73;
-                if (nonTerminal.equals("UNOP"))
-                    return 60;
-                if (nonTerminal.equals("BINOP"))
-                    return 61;
-                break;
-            case 64:
-                if (nonTerminal.equals("TERM"))
-                    return 77;
-                if (nonTerminal.equals("CONST"))
-                    return 38;
-                if (nonTerminal.equals("VNAME"))
-                    return 39;
-                if (nonTerminal.equals("ARG"))
-                    return 64;
-                if (nonTerminal.equals("ATOMIC"))
-                    return 77;
-                if (nonTerminal.equals("CALL"))
-                    return 25;
-                break;
-            case 65:
                 if (nonTerminal.equals("ALGO"))
+                    return 77;
+                break;
+            case 63:
+                if (nonTerminal.equals("VNAME"))
                     return 78;
                 break;
-            case 68:
-                if (nonTerminal.equals("TERM"))
-                    return 90;
-                if (nonTerminal.equals("CONST"))
-                    return 38;
+            case 64:
+                if (nonTerminal.equals("VNAME"))
+                    return 79;
+                break;
+            // case 72:
+            //     if (nonTerminal.equals("VNAME"))
+            //         return 39;
+            //     if (nonTerminal.equals("ATOMIC"))
+            //         return 83;
+            //     if (nonTerminal.equals("CONST"))
+            //         return 40;
+            //     if (nonTerminal.equals("OP"))
+            //         return 84;
+            //     if (nonTerminal.equals("ARG"))
+            //         return 82;
+            //     break;
+            // case 73:
+            //     if (nonTerminal.equals("VNAME"))
+            //         return 39;
+            //     if (nonTerminal.equals("ATOMIC"))
+            //         return 83;
+            //     if (nonTerminal.equals("CONST"))
+            //         return 40;
+            //     if (nonTerminal.equals("OP"))
+            //         return 84;
+            //     if (nonTerminal.equals("ARG"))
+            //         return 85;
+            //     break;
+            // case 74:
+            //     if (nonTerminal.equals("VNAME"))
+            //         return 39;
+            //     if (nonTerminal.equals("ATOMIC"))
+            //         return 83;
+            //     if (nonTerminal.equals("CONST"))
+            //         return 40;
+            //     break;
+            case 74:
+                if (nonTerminal.equals("ALGO"))
+                    return 83;
+                break;
+            case 75:
                 if (nonTerminal.equals("VNAME"))
                     return 39;
-                break;
-            case 69:
-                if (nonTerminal.equals("COND"))
-                    return 91;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 84;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
                 if (nonTerminal.equals("SIMPLE"))
-                    return 46;
-                if (nonTerminal.equals("COMPOSIT"))
-                    return 47;
+                    return 85;
+                if (nonTerminal.equals("BINOP"))
+                    return 86;
                 break;
-            case 79:
-                if (nonTerminal.equals("TERM"))
-                    return 98;
-                if (nonTerminal.equals("CONST"))
-                    return 38;
-                if (nonTerminal.equals("VNAME"))
-                    return 39;
+            case 76:
+                if (nonTerminal.equals("SIMPLE"))
+                    return 87;
+                if (nonTerminal.equals("BINOP"))
+                    return 86;
+                break;
+            case 77:
+                if (nonTerminal.equals("EPILOG"))
+                    return 88;
                 break;
             case 80:
-                if (nonTerminal.equals("COND"))
-                    return 91;
-                if (nonTerminal.equals("SIMPLE"))
-                    return 46;
-                if (nonTerminal.equals("COMPOSIT"))
-                    return 47;
+                if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 93;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                if (nonTerminal.equals("OP"))
+                    return 94;
+                if (nonTerminal.equals("ARG"))
+                    return 92;
+                if (nonTerminal.equals("UNOP"))
+                    return 71;
+                if (nonTerminal.equals("BINOP"))
+                    return 72;
+                break;
+            case 81:
+                if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 93;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                if (nonTerminal.equals("OP"))
+                    return 94;
+                if (nonTerminal.equals("ARG"))
+                    return 95;
+                if (nonTerminal.equals("UNOP"))
+                    return 71;
+                if (nonTerminal.equals("BINOP"))
+                    return 72;
                 break;
             case 82:
+                if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 96;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                break;
+            // case 88:
+            //     if (nonTerminal.equals("ATOMIC"))
+            //         return 99;
+            //     if (nonTerminal.equals("CONST"))
+            //         return 40;
+            //     if (nonTerminal.equals("VNAME"))
+            //         return 39;
+            //     break;
+            case 88:
                 if (nonTerminal.equals("FUNCTIONS"))
-                    return 94;
+                    return 103;
                 if (nonTerminal.equals("DECL"))
                     return 13;
                 if (nonTerminal.equals("HEADER"))
                     return 14;
-                if (nonTerminal.equals("FNAME"))
+                if (nonTerminal.equals("FTYP"))
                     return 15;
+                if (nonTerminal.equals("SUBFUNCS"))
+                    return 102;
                 break;
-            case 84:
+            case 90:
                 if (nonTerminal.equals("VTYP"))
-                    return 95;
-                break;
-            case 87:
-                if (nonTerminal.equals("TERM"))
-                    return 97;
-                if (nonTerminal.equals("CONST"))
-                    return 38;
-                if (nonTerminal.equals("VNAME"))
-                    return 39;
-                if (nonTerminal.equals("OP"))
-                    return 73;
-                if (nonTerminal.equals("UNOP"))
-                    return 60;
-                if (nonTerminal.equals("BINOP"))
-                    return 61;
-                if (nonTerminal.equals("ARG"))
-                    return 64;
-                if (nonTerminal.equals("ATOMIC"))
-                    return 77;
-                if (nonTerminal.equals("CALL"))
-                    return 25;
-                break;
-            case 88:
-                if (nonTerminal.equals("TERM"))
-                    return 98;
-                if (nonTerminal.equals("CONST"))
-                    return 38;
-                if (nonTerminal.equals("VNAME"))
-                    return 39;
-                break;
-            case 89:
-                if (nonTerminal.equals("ALGO"))
-                    return 99;
-                break;
-            case 95:
-                if (nonTerminal.equals("VNAME"))
-                    return 103;
-                break;
-            case 96:
-                if (nonTerminal.equals("VNAME"))
                     return 104;
                 break;
-            case 107:
-                if (nonTerminal.equals("VTYP"))
+            case 91:
+                if (nonTerminal.equals("VNAME"))
+                    return 105;
+                break;
+            // case 96:
+            //     if (nonTerminal.equals("VNAME"))
+            //         return 39;
+            //     if (nonTerminal.equals("ATOMIC"))
+            //         return 83;
+            //     if (nonTerminal.equals("CONST"))
+            //         return 40;
+            //     if (nonTerminal.equals("OP"))
+            //         return 84;
+            //     if (nonTerminal.equals("ARG"))
+            //         return 106;
+            //     break;
+            // case 97:
+            //     if (nonTerminal.equals("VNAME"))
+            //         return 39;
+            //     if (nonTerminal.equals("ATOMIC"))
+            //         return 107;
+            //     if (nonTerminal.equals("CONST"))
+            //         return 40;
+            //     break;
+            case 97:
+                if (nonTerminal.equals("ALGO"))
                     return 109;
                 break;
-            case 109:
+            case 98:
                 if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
                     return 110;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                break;
+            case 99:
+                if (nonTerminal.equals("SIMPLE"))
+                    return 111;
+                if (nonTerminal.equals("BINOP"))
+                    return 86;
+                break;
+            case 100:
+                if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 84;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                break;
+            case 104:
+                if (nonTerminal.equals("VNAME"))
+                    return 113;
+                break;
+            case 107:
+                if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 93;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                if (nonTerminal.equals("OP"))
+                    return 94;
+                if (nonTerminal.equals("ARG"))
+                    return 115;
+                if (nonTerminal.equals("UNOP"))
+                    return 71;
+                if (nonTerminal.equals("BINOP"))
+                    return 72;
+                break;
+            case 108:
+                if (nonTerminal.equals("VNAME"))
+                    return 39;
+                if (nonTerminal.equals("ATOMIC"))
+                    return 116;
+                if (nonTerminal.equals("CONST"))
+                    return 40;
+                break;
+            case 114:
+                if (nonTerminal.equals("VNAME"))
+                    return 120;
+                break;
+            case 119:
+                if (nonTerminal.equals("VTYP"))
+                    return 123;
+                break;
+            case 123:
+                if (nonTerminal.equals("VNAME"))
+                    return 125;
                 break;
             default:
                 break;
@@ -1009,40 +1311,42 @@ private String getAction(int state, Token token) {
 
     private Reduction reduce(int ruleNumber) {
         switch (ruleNumber) {
+            case 0:
+                return new Reduction("S", 2);////is it really 2????????????
             case 1:
-                return new Reduction("PROG", 3); // PROG -> main GLOBVARS ALGO
+                return new Reduction("PROG", 4); // PROG -> main GLOBVARS ALGO FUNCTIONS
             case 2:
                 return new Reduction("GLOBVARS", 0); // GLOBVARS -> ε
             case 3:
-                return new Reduction("GLOBVARS", 3); // GLOBVARS -> GLOBVARS VTYP VNAME ,
+                return new Reduction("GLOBVARS", 4); // GLOBVARS -> VTYP VNAME , GLOBVARS
             case 4:
                 return new Reduction("VTYP", 1); // VTYP -> num
             case 5:
                 return new Reduction("VTYP", 1); // VTYP -> text
             case 6:
-                return new Reduction("VNAME", 1); // VNAME -> variable
+                return new Reduction("VNAME", 1); // VNAME -> v
             case 7:
                 return new Reduction("ALGO", 3); // ALGO -> begin INSTRUC end
             case 8:
                 return new Reduction("INSTRUC", 0); // INSTRUC -> ε
             case 9:
-                return new Reduction("INSTRUC", 2); // INSTRUC -> INSTRUC COMMAND ;
+                return new Reduction("INSTRUC", 3); // INSTRUC -> COMMAND ; INSTRUC
             case 10:
                 return new Reduction("COMMAND", 1); // COMMAND -> skip //here
             case 11:
                 return new Reduction("COMMAND", 1); // COMMAND -> halt
             case 12:
-                return new Reduction("COMMAND", 1); // COMMAND -> ATOMIC
+                return new Reduction("COMMAND", 2); // COMMAND -> return ATOMIC
             case 13:
-                return new Reduction("ATOMIC", 1); // ATOMIC -> ASSIGN
+                return new Reduction("COMMAND", 1); // COMMAND -> ASSIGN
             case 14:
-                return new Reduction("ATOMIC", 1); // ATOMIC -> CALL
+                return new Reduction("COMMAND", 1); // COMMAND -> CALL
             case 15:
-                return new Reduction("ATOMIC", 1); // ATOMIC -> BRANCH
+                return new Reduction("COMMAND", 1); // COMMAND -> BRANCH
             case 16:
-                return new Reduction("TERM", 1); // TERM -> CONST
+                return new Reduction("ATOMIC", 1); // ATOMIC -> VNAME
             case 17:
-                return new Reduction("TERM", 1); // TERM -> VNAME
+                return new Reduction("ATOMIC", 1); // ATOMIC -> CONST
             case 18:
                 return new Reduction("CONST", 1); // CONST -> N
             case 19:
@@ -1052,33 +1356,33 @@ private String getAction(int state, Token token) {
             case 21:
                 return new Reduction("ASSIGN", 3); // ASSIGN -> VNAME = OP
             case 22:
-                return new Reduction("CALL", 4); // CALL -> FNAME ( ARG )
+                return new Reduction("CALL", 8); // CALL -> FNAME ( ATOMIC , ATOMIC, ATOMIC )
             case 23:
-                return new Reduction("BRANCH", 5); // BRANCH -> if COND then ALGO else ALGO
+                return new Reduction("BRANCH", 6); // BRANCH -> if COND then ALGO else ALGO
             case 24:
-                return new Reduction("OP", 1); // OP -> TERM
+                return new Reduction("TERM", 1); // TERM -> ATOMIC
             case 25:
-                return new Reduction("OP", 1); // OP -> UNOP
+                return new Reduction("TERM", 1); // TERM -> CALL
             case 26:
-                return new Reduction("OP", 1); // OP -> BINOP
+                return new Reduction("TERM", 1); // TERM -> OP
             case 27:
-                return new Reduction("ARG", 1); // ARG -> TERM
+                return new Reduction("OP", 4); // OP -> UNOP (ARG)
             case 28:
-                return new Reduction("ARG", 3); // ARG -> ARG , TERM
+                return new Reduction("OP", 6); // OP -> BINOP (ARG , ARG )
             case 29:
-                return new Reduction("UNOP", 4); // UNOP -> not ( TERM )
+                return new Reduction("ARG", 1); // ARG -> ATOMIC
             case 30:
-                return new Reduction("UNOP", 4); // UNOP -> sqrt ( TERM )
+                return new Reduction("ARG", 1); // ARG -> OP
             case 31:
                 return new Reduction("COND", 1); // COND -> SIMPLE
             case 32:
                 return new Reduction("COND", 1); // COND -> COMPOSIT
             case 33:
-                return new Reduction("SIMPLE", 3); // SIMPLE -> TERM < TERM
+                return new Reduction("SIMPLE", 6); // SIMPLE -> BINOP ( ATOMIC , ATOMIC)
             case 34:
-                return new Reduction("COMPOSIT", 3); // COMPOSIT -> ( COND )
+                return new Reduction("COMPOSIT", 6); // COMPOSIT -> BINOP ( SIMPLE , SIMPLE)
             case 35:
-                return new Reduction("COMPOSIT", 3); // COMPOSIT -> not COND
+                return new Reduction("COMPOSIT", 4); // COMPOSIT -> UNOP (SIMPLE)
             case 36:
                 return new Reduction("UNOP", 1); // UNOP -> not
             case 37:
@@ -1108,21 +1412,21 @@ private String getAction(int state, Token token) {
             case 49:
                 return new Reduction("DECL", 2); // DECL -> HEADER BODY
             case 50:
-                return new Reduction("HEADER", 4); // HEADER -> FNAME ( FTYP )
+                return new Reduction("HEADER", 9); // HEADER -> FTYP FNAME (VNAME , VNAME , VNAME)
             case 51:
                 return new Reduction("FTYP", 1); // FTYP -> num
             case 52:
                 return new Reduction("FTYP", 1); // FTYP -> void
             case 53:
-                return new Reduction("BODY", 3); // BODY -> { PROLOG EPILOG }
+                return new Reduction("BODY", 6); // BODY -> PROLOG LOCVARS ALGO EPILOG SUBFUNCS end
             case 54:
-                return new Reduction("PROLOG", 0); // PROLOG -> ε
+                return new Reduction("PROLOG", 1); // PROLOG -> {
             case 55:
-                return new Reduction("PROLOG", 2); // PROLOG -> PROLOG LOCVARS
+                return new Reduction("EPILOG", 1); // EPILOG -> }
             case 56:
-                return new Reduction("LOCVARS", 3); // LOCVARS -> VTYP VNAME ,
+                return new Reduction("LOCVARS", 9); // LOCVARS -> VTYP VNAME , VTYP VNAME , VTYP VNAME
             case 57:
-                return new Reduction("EPILOG", 1); // EPILOG -> SUBFUNCS
+                return new Reduction("SUBFUNCS", 1); //SUBFUNCS -> FUNCTIONS
             default:
                 throw new RuntimeException("Unknown rule number: " + ruleNumber);
         }
@@ -1224,7 +1528,7 @@ private String getAction(int state, Token token) {
             System.out.println("Parsing completed successfully. Output written to " + args[1]);
         } catch (Exception e) {
             System.err.println("Error during parsing: " + e.getMessage());
-            e.printStackTrace();
+           // e.printStackTrace();  took this out so the error looks more cute ;)
         }
     }
 }

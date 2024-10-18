@@ -7,10 +7,10 @@ public class Lexer {
 
     private static final String VARIABLE_REGEX = "V_[a-z]([a-z]|[0-9])*";
     private static final String FUNCTION_REGEX = "F_[a-z]([a-z]|[0-9])*";
-    private static final String TEXT_REGEX = "[A-Z][a-z]{0,7}";
+    private static final String TEXT_REGEX = "\"[A-Z][a-z]{0,7}\"";
     private static final String NUMBER_REGEX = "-?\\d+(\\.\\d+)?";
     private static final String RESERVED_KEYWORDS_REGEX = "\\b(main|begin|end|skip|halt|return|if|then|else|input|num|text|void|not|sqrt|or|and|eq|grt|add|sub|mul|div)\\b";
-    private static final String OPERATORS_REGEX = "[=+\\-*/<>!;,\\$\\(\\)]";
+    private static final String OPERATORS_REGEX = "[=+\\-*/<>!;,\\$\\(\\){}]";
     
     public void tokenizeFile(String filePath) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
@@ -37,10 +37,10 @@ public class Lexer {
     
 
     private TokenType identifyTokenType(String word) {
-        if (word.matches(VARIABLE_REGEX)) return TokenType.VARIABLE;
-        if (word.matches(FUNCTION_REGEX)) return TokenType.FUNCTION;
-        if (word.matches(TEXT_REGEX)) return TokenType.TEXT;
-        if (word.matches(NUMBER_REGEX)) return TokenType.NUMBER;
+        if (word.matches(VARIABLE_REGEX)) return TokenType.V;
+        if (word.matches(FUNCTION_REGEX)) return TokenType.F;
+        if (word.matches(TEXT_REGEX)) return TokenType.T;
+        if (word.matches(NUMBER_REGEX)) return TokenType.N;
         if (word.matches(RESERVED_KEYWORDS_REGEX)) return TokenType.RESERVED_KEYWORD;
         if (word.matches(OPERATORS_REGEX)) return TokenType.RESERVED_KEYWORD; // Operators treated as reserved keywords
         return TokenType.INVALID;
