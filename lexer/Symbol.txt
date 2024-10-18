@@ -1,3 +1,2 @@
-V_y : v104 : num
-V_a : v100 : num
-V_x : v103 : text
+V_y : v103 : num
+V_x : v102 : text

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <SYNTREE>
   <ROOT>
-    <UNID>65</UNID>
+    <UNID>43</UNID>
     <SYMB>PROG</SYMB>
     <CHILDREN>
-      <ID>64</ID>
+      <ID>42</ID>
     </CHILDREN>
   </ROOT>
   <INNERNODES>
@@ -40,58 +40,47 @@
         <ID>10</ID>
       </CHILDREN>
     </IN>
-    <IN symbol="VTYP">
-      <PARENT>12</PARENT>
-      <UNID>13</UNID>
-      <SYMB>VTYP</SYMB>
-      <CHILDREN>
-        <ID>13</ID>
-      </CHILDREN>
-    </IN>
-    <IN symbol="VNAME">
-      <PARENT>14</PARENT>
-      <UNID>15</UNID>
-      <SYMB>VNAME</SYMB>
-      <CHILDREN>
-        <ID>15</ID>
-      </CHILDREN>
-    </IN>
     <IN symbol="GLOBVARS">
-      <PARENT>16</PARENT>
-      <UNID>17</UNID>
+      <PARENT>11</PARENT>
+      <UNID>12</UNID>
       <SYMB>GLOBVARS</SYMB>
       <CHILDREN/>
     </IN>
     <IN symbol="GLOBVARS">
-      <PARENT>17</PARENT>
-      <UNID>18</UNID>
+      <PARENT>12</PARENT>
+      <UNID>13</UNID>
       <SYMB>GLOBVARS</SYMB>
       <CHILDREN>
-        <ID>15</ID>
-        <ID>16</ID>
-        <ID>17</ID>
-        <ID>18</ID>
+        <ID>10</ID>
+        <ID>11</ID>
+        <ID>12</ID>
+        <ID>13</ID>
       </CHILDREN>
     </IN>
     <IN symbol="GLOBVARS">
-      <PARENT>18</PARENT>
-      <UNID>19</UNID>
+      <PARENT>13</PARENT>
+      <UNID>14</UNID>
       <SYMB>GLOBVARS</SYMB>
       <CHILDREN>
-        <ID>16</ID>
-        <ID>17</ID>
-        <ID>18</ID>
-        <ID>19</ID>
+        <ID>11</ID>
+        <ID>12</ID>
+        <ID>13</ID>
+        <ID>14</ID>
       </CHILDREN>
     </IN>
-    <IN symbol="GLOBVARS">
+    <IN symbol="VNAME">
+      <PARENT>16</PARENT>
+      <UNID>17</UNID>
+      <SYMB>VNAME</SYMB>
+      <CHILDREN>
+        <ID>17</ID>
+      </CHILDREN>
+    </IN>
+    <IN symbol="BINOP">
       <PARENT>19</PARENT>
       <UNID>20</UNID>
-      <SYMB>GLOBVARS</SYMB>
+      <SYMB>BINOP</SYMB>
       <CHILDREN>
-        <ID>17</ID>
-        <ID>18</ID>
-        <ID>19</ID>
         <ID>20</ID>
       </CHILDREN>
     </IN>
@@ -103,214 +92,126 @@
         <ID>23</ID>
       </CHILDREN>
     </IN>
-    <IN symbol="ASSIGN">
-      <PARENT>25</PARENT>
-      <UNID>26</UNID>
-      <SYMB>ASSIGN</SYMB>
+    <IN symbol="ATOMIC">
+      <PARENT>23</PARENT>
+      <UNID>24</UNID>
+      <SYMB>ATOMIC</SYMB>
       <CHILDREN>
         <ID>24</ID>
-        <ID>25</ID>
-        <ID>26</ID>
       </CHILDREN>
     </IN>
-    <IN symbol="COMMAND">
-      <PARENT>26</PARENT>
-      <UNID>27</UNID>
-      <SYMB>COMMAND</SYMB>
+    <IN symbol="ARG">
+      <PARENT>24</PARENT>
+      <UNID>25</UNID>
+      <SYMB>ARG</SYMB>
       <CHILDREN>
-        <ID>27</ID>
+        <ID>25</ID>
       </CHILDREN>
     </IN>
     <IN symbol="VNAME">
+      <PARENT>27</PARENT>
+      <UNID>28</UNID>
+      <SYMB>VNAME</SYMB>
+      <CHILDREN>
+        <ID>28</ID>
+      </CHILDREN>
+    </IN>
+    <IN symbol="ATOMIC">
+      <PARENT>28</PARENT>
+      <UNID>29</UNID>
+      <SYMB>ATOMIC</SYMB>
+      <CHILDREN>
+        <ID>29</ID>
+      </CHILDREN>
+    </IN>
+    <IN symbol="ARG">
       <PARENT>29</PARENT>
       <UNID>30</UNID>
-      <SYMB>VNAME</SYMB>
+      <SYMB>ARG</SYMB>
       <CHILDREN>
         <ID>30</ID>
       </CHILDREN>
     </IN>
-    <IN symbol="ASSIGN">
-      <PARENT>32</PARENT>
-      <UNID>33</UNID>
-      <SYMB>ASSIGN</SYMB>
-      <CHILDREN>
-        <ID>31</ID>
-        <ID>32</ID>
-        <ID>33</ID>
-      </CHILDREN>
-    </IN>
-    <IN symbol="COMMAND">
-      <PARENT>33</PARENT>
-      <UNID>34</UNID>
-      <SYMB>COMMAND</SYMB>
-      <CHILDREN>
-        <ID>34</ID>
-      </CHILDREN>
-    </IN>
-    <IN symbol="VNAME">
-      <PARENT>36</PARENT>
-      <UNID>37</UNID>
-      <SYMB>VNAME</SYMB>
-      <CHILDREN>
-        <ID>37</ID>
-      </CHILDREN>
-    </IN>
-    <IN symbol="BINOP">
-      <PARENT>39</PARENT>
-      <UNID>40</UNID>
-      <SYMB>BINOP</SYMB>
-      <CHILDREN>
-        <ID>40</ID>
-      </CHILDREN>
-    </IN>
-    <IN symbol="VNAME">
-      <PARENT>42</PARENT>
-      <UNID>43</UNID>
-      <SYMB>VNAME</SYMB>
-      <CHILDREN>
-        <ID>43</ID>
-      </CHILDREN>
-    </IN>
-    <IN symbol="ATOMIC">
-      <PARENT>43</PARENT>
-      <UNID>44</UNID>
-      <SYMB>ATOMIC</SYMB>
-      <CHILDREN>
-        <ID>44</ID>
-      </CHILDREN>
-    </IN>
-    <IN symbol="ARG">
-      <PARENT>44</PARENT>
-      <UNID>45</UNID>
-      <SYMB>ARG</SYMB>
-      <CHILDREN>
-        <ID>45</ID>
-      </CHILDREN>
-    </IN>
-    <IN symbol="VNAME">
-      <PARENT>47</PARENT>
-      <UNID>48</UNID>
-      <SYMB>VNAME</SYMB>
-      <CHILDREN>
-        <ID>48</ID>
-      </CHILDREN>
-    </IN>
-    <IN symbol="ATOMIC">
-      <PARENT>48</PARENT>
-      <UNID>49</UNID>
-      <SYMB>ATOMIC</SYMB>
-      <CHILDREN>
-        <ID>49</ID>
-      </CHILDREN>
-    </IN>
-    <IN symbol="ARG">
-      <PARENT>49</PARENT>
-      <UNID>50</UNID>
-      <SYMB>ARG</SYMB>
-      <CHILDREN>
-        <ID>50</ID>
-      </CHILDREN>
-    </IN>
     <IN symbol="OP">
-      <PARENT>51</PARENT>
-      <UNID>52</UNID>
+      <PARENT>31</PARENT>
+      <UNID>32</UNID>
       <SYMB>OP</SYMB>
       <CHILDREN>
-        <ID>47</ID>
-        <ID>48</ID>
-        <ID>49</ID>
-        <ID>50</ID>
-        <ID>51</ID>
-        <ID>52</ID>
+        <ID>27</ID>
+        <ID>28</ID>
+        <ID>29</ID>
+        <ID>30</ID>
+        <ID>31</ID>
+        <ID>32</ID>
       </CHILDREN>
     </IN>
     <IN symbol="TERM">
-      <PARENT>52</PARENT>
-      <UNID>53</UNID>
+      <PARENT>32</PARENT>
+      <UNID>33</UNID>
       <SYMB>TERM</SYMB>
       <CHILDREN>
-        <ID>53</ID>
+        <ID>33</ID>
       </CHILDREN>
     </IN>
     <IN symbol="ASSIGN">
-      <PARENT>53</PARENT>
-      <UNID>54</UNID>
+      <PARENT>33</PARENT>
+      <UNID>34</UNID>
       <SYMB>ASSIGN</SYMB>
       <CHILDREN>
-        <ID>52</ID>
-        <ID>53</ID>
-        <ID>54</ID>
+        <ID>32</ID>
+        <ID>33</ID>
+        <ID>34</ID>
       </CHILDREN>
     </IN>
     <IN symbol="COMMAND">
-      <PARENT>54</PARENT>
-      <UNID>55</UNID>
+      <PARENT>34</PARENT>
+      <UNID>35</UNID>
       <SYMB>COMMAND</SYMB>
       <CHILDREN>
-        <ID>55</ID>
+        <ID>35</ID>
       </CHILDREN>
     </IN>
     <IN symbol="INSTRUC">
-      <PARENT>56</PARENT>
-      <UNID>57</UNID>
+      <PARENT>36</PARENT>
+      <UNID>37</UNID>
       <SYMB>INSTRUC</SYMB>
       <CHILDREN/>
     </IN>
     <IN symbol="INSTRUC">
-      <PARENT>57</PARENT>
-      <UNID>58</UNID>
+      <PARENT>37</PARENT>
+      <UNID>38</UNID>
       <SYMB>INSTRUC</SYMB>
       <CHILDREN>
-        <ID>56</ID>
-        <ID>57</ID>
-        <ID>58</ID>
-      </CHILDREN>
-    </IN>
-    <IN symbol="INSTRUC">
-      <PARENT>58</PARENT>
-      <UNID>59</UNID>
-      <SYMB>INSTRUC</SYMB>
-      <CHILDREN>
-        <ID>57</ID>
-        <ID>58</ID>
-        <ID>59</ID>
-      </CHILDREN>
-    </IN>
-    <IN symbol="INSTRUC">
-      <PARENT>59</PARENT>
-      <UNID>60</UNID>
-      <SYMB>INSTRUC</SYMB>
-      <CHILDREN>
-        <ID>58</ID>
-        <ID>59</ID>
-        <ID>60</ID>
+        <ID>36</ID>
+        <ID>37</ID>
+        <ID>38</ID>
       </CHILDREN>
     </IN>
     <IN symbol="ALGO">
-      <PARENT>61</PARENT>
-      <UNID>62</UNID>
+      <PARENT>39</PARENT>
+      <UNID>40</UNID>
       <SYMB>ALGO</SYMB>
       <CHILDREN>
-        <ID>60</ID>
-        <ID>61</ID>
-        <ID>62</ID>
+        <ID>38</ID>
+        <ID>39</ID>
+        <ID>40</ID>
       </CHILDREN>
     </IN>
     <IN symbol="FUNCTIONS">
-      <PARENT>62</PARENT>
-      <UNID>63</UNID>
+      <PARENT>40</PARENT>
+      <UNID>41</UNID>
       <SYMB>FUNCTIONS</SYMB>
       <CHILDREN/>
     </IN>
     <IN symbol="PROG">
-      <PARENT>63</PARENT>
-      <UNID>64</UNID>
+      <PARENT>41</PARENT>
+      <UNID>42</UNID>
       <SYMB>PROG</SYMB>
       <CHILDREN>
-        <ID>61</ID>
-        <ID>62</ID>
-        <ID>63</ID>
-        <ID>64</ID>
+        <ID>39</ID>
+        <ID>40</ID>
+        <ID>41</ID>
+        <ID>42</ID>
       </CHILDREN>
     </IN>
   </INNERNODES>
@@ -323,12 +224,12 @@
     <LEAF>
       <PARENT>1</PARENT>
       <UNID>2</UNID>
-      <TERMINAL>num</TERMINAL>
+      <TERMINAL>text</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>3</PARENT>
       <UNID>4</UNID>
-      <TERMINAL>V_a</TERMINAL>
+      <TERMINAL>V_x</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>5</PARENT>
@@ -338,12 +239,12 @@
     <LEAF>
       <PARENT>6</PARENT>
       <UNID>7</UNID>
-      <TERMINAL>text</TERMINAL>
+      <TERMINAL>num</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>8</PARENT>
       <UNID>9</UNID>
-      <TERMINAL>V_x</TERMINAL>
+      <TERMINAL>V_y</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>10</PARENT>
@@ -351,24 +252,29 @@
       <TERMINAL>,</TERMINAL>
     </LEAF>
     <LEAF>
-      <PARENT>11</PARENT>
-      <UNID>12</UNID>
-      <TERMINAL>num</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>13</PARENT>
-      <UNID>14</UNID>
-      <TERMINAL>V_y</TERMINAL>
+      <PARENT>14</PARENT>
+      <UNID>15</UNID>
+      <TERMINAL>begin</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>15</PARENT>
       <UNID>16</UNID>
-      <TERMINAL>,</TERMINAL>
+      <TERMINAL>V_x</TERMINAL>
+    </LEAF>
+    <LEAF>
+      <PARENT>17</PARENT>
+      <UNID>18</UNID>
+      <TERMINAL>=</TERMINAL>
+    </LEAF>
+    <LEAF>
+      <PARENT>18</PARENT>
+      <UNID>19</UNID>
+      <TERMINAL>add</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>20</PARENT>
       <UNID>21</UNID>
-      <TERMINAL>begin</TERMINAL>
+      <TERMINAL>(</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>21</PARENT>
@@ -376,93 +282,33 @@
       <TERMINAL>V_x</TERMINAL>
     </LEAF>
     <LEAF>
-      <PARENT>23</PARENT>
-      <UNID>24</UNID>
-      <TERMINAL>lst</TERMINAL>
+      <PARENT>25</PARENT>
+      <UNID>26</UNID>
+      <TERMINAL>,</TERMINAL>
     </LEAF>
     <LEAF>
-      <PARENT>24</PARENT>
-      <UNID>25</UNID>
-      <TERMINAL>input</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>27</PARENT>
-      <UNID>28</UNID>
-      <TERMINAL>;</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>28</PARENT>
-      <UNID>29</UNID>
+      <PARENT>26</PARENT>
+      <UNID>27</UNID>
       <TERMINAL>V_y</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>30</PARENT>
       <UNID>31</UNID>
-      <TERMINAL>lst</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>31</PARENT>
-      <UNID>32</UNID>
-      <TERMINAL>input</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>34</PARENT>
-      <UNID>35</UNID>
-      <TERMINAL>;</TERMINAL>
+      <TERMINAL>)</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>35</PARENT>
       <UNID>36</UNID>
-      <TERMINAL>V_x</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>37</PARENT>
-      <UNID>38</UNID>
-      <TERMINAL>=</TERMINAL>
+      <TERMINAL>;</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>38</PARENT>
       <UNID>39</UNID>
-      <TERMINAL>add</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>40</PARENT>
-      <UNID>41</UNID>
-      <TERMINAL>(</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>41</PARENT>
-      <UNID>42</UNID>
-      <TERMINAL>V_x</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>45</PARENT>
-      <UNID>46</UNID>
-      <TERMINAL>,</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>46</PARENT>
-      <UNID>47</UNID>
-      <TERMINAL>V_y</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>50</PARENT>
-      <UNID>51</UNID>
-      <TERMINAL>)</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>55</PARENT>
-      <UNID>56</UNID>
-      <TERMINAL>;</TERMINAL>
-    </LEAF>
-    <LEAF>
-      <PARENT>60</PARENT>
-      <UNID>61</UNID>
       <TERMINAL>end</TERMINAL>
     </LEAF>
     <LEAF>
-      <PARENT>65</PARENT>
-      <UNID>66</UNID>
+      <PARENT>43</PARENT>
+      <UNID>44</UNID>
       <TERMINAL>$</TERMINAL>
     </LEAF>
   </LEAFNODES>

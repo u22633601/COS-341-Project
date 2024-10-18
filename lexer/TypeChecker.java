@@ -4,330 +4,271 @@ import java.io.*;
 import java.util.*;
 
 public class TypeChecker {
+    private final Map<Integer, Element> nodes = new HashMap<>();
+    private final Map<Integer, String> terminalValues = new HashMap<>();
+    private final Map<String, String> symbolTable = new HashMap<>();
+    private final Set<Integer> visitedNodes = new HashSet<>();
 
-    private static Map<String, String> symbolTable = new HashMap<>();
+    private Map<Integer, Element> nodeMap = new HashMap<>();
+    public static void main(String[] args) throws Exception {
+        if (args.length != 2) {
+            System.out.println("Usage: java TypeChecker <XML file> <Symbol table file>");
+            return;
+        }
 
-    private static void loadSymbolTable(String filePath) throws IOException {
-        System.out.println("Loading symbol table...");
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        TypeChecker checker = new TypeChecker();
+        checker.loadSymbolTable(args[1]);  // Load symbol table from file
+        checker.loadTree(args[0]);         // Load XML tree
+        boolean result = checker.traverseAndCheck();
+        System.out.println("Type check result: " + result);
+    }
+
+    // Load the symbol table from the input file
+    private void loadSymbolTable(String filename) {
+        System.out.println("Loading Symbol Table from: " + filename);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(" : ");
-                if (parts.length == 3) {
-                    symbolTable.put(parts[0].trim(), parts[2].trim());
-                    System.out.println("Loaded: " + parts[0].trim() + " -> " + parts[2].trim());
+                line = line.trim();
+                if (!line.isEmpty() && line.contains(":")) {
+                    String[] parts = line.split(":");
+                    if (parts.length >= 3) {
+                        String variableName = parts[0].trim();
+                        String type = parts[2].trim();
+                        symbolTable.put(variableName, type);
+                        System.out.println("Added to Symbol Table: " + variableName + " = " + type);
+                    } else {
+                        System.out.println("Skipping malformed line: " + line);
+                    }
                 }
             }
+            System.out.println("Loaded Symbol Table: " + symbolTable);
+        } catch (IOException e) {
+            System.out.println("Error loading symbol table: " + e.getMessage());
         }
     }
 
-    private static String getType(String symbol) {
-        String type = symbolTable.getOrDefault(symbol, "u");
-        System.out.println("Getting type for '" + symbol + "': " + type);
-        return type;
-    }
+    // Load the XML tree from the input file
+    private void loadTree(String filename) throws Exception {
+        System.out.println("Loading XML Tree from: " + filename);
 
-    private static boolean typeCheck(Node node) {
-        if (node == null) {
-            System.out.println("Encountered a null node.");
-            return true;
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(new File(filename));
+
+        // Store IN nodes in the map
+        NodeList inNodes = doc.getElementsByTagName("IN");
+        for (int i = 0; i < inNodes.getLength(); i++) {
+            Element element = (Element) inNodes.item(i);
+            int id = Integer.parseInt(element.getElementsByTagName("UNID").item(0).getTextContent());
+            nodes.put(id, element);
+            System.out.println("Added IN Node: ID = " + id + ", Symbol = " + element.getAttribute("symbol"));
         }
 
-        String nodeName = node.getNodeName();
-        System.out.println("Visiting node: " + nodeName);
-
-        switch (nodeName) {
-            case "SYNTREE":
-            case "ROOT":
-            case "INNERNODES":
-            case "LEAFNODES":
-            case "PROG":
-            case "GLOBVARS":
-            case "ALGO":
-            case "FUNCTIONS":
-            case "INSTRUC":
-                return typeCheckChildren(node);
-            case "IN":
-            case "LEAF":
-            case "COMMAND":
-            case "ASSIGN":
-            case "CALL":
-            case "BRANCH":
-            case "TERM":
-            case "OP":
-            case "COND":
-                return typeCheckNode(node);
-            default:
-                System.out.println("Unhandled node type: " + nodeName);
-                return true;
+        // Extract LEAF nodes to get terminal values
+        NodeList leafNodes = doc.getElementsByTagName("LEAF");
+        for (int i = 0; i < leafNodes.getLength(); i++) {
+            Element element = (Element) leafNodes.item(i);
+            int id = Integer.parseInt(element.getElementsByTagName("UNID").item(0).getTextContent());
+            String terminalValue = element.getElementsByTagName("TERMINAL").item(0).getTextContent().trim();
+            terminalValues.put(id, terminalValue);
+            System.out.println("Added LEAF Node: ID = " + id + ", Terminal = " + terminalValue);
         }
     }
 
-    private static boolean typeCheckChildren(Node parent) {
-        NodeList children = parent.getChildNodes();
-        for (int i = 0; i < children.getLength(); i++) {
-            Node child = children.item(i);
-            if (child.getNodeType() == Node.ELEMENT_NODE) {
-                if (!typeCheck(child)) {
-                    return false;
-                }
-            }
+    // Traverse and check the XML tree
+    // Traverse and check the XML tree, stopping at terminal symbols if necessary.
+private boolean traverseAndCheck() {
+    for (Element node : nodes.values()) {
+        if (!checkNode(node)) {
+            return false;  // Stop traversal if any node fails.
         }
+    }
+    return true;
+}
+
+
+private boolean checkNode(Element node) {
+    int nodeId = getNodeID(node);
+
+    if (visitedNodes.contains(nodeId)) {
+        System.out.println("Node ID " + nodeId + " already visited. Skipping.");
+        return true;  // Skip further processing.
+    }
+
+    visitedNodes.add(nodeId);  // Mark as visited.
+
+    String symbol = node.getAttribute("symbol");
+    System.out.println("Processing node: ID = " + nodeId + ", Symbol = " + symbol);
+
+    // Stop if we encounter the terminal '$'.
+    if ("$".equals(terminalValues.get(nodeId))) {
+        System.out.println("Encountered terminal '$'. Stopping further processing.");
         return true;
     }
 
-    private static boolean typeCheckNode(Node node) {
-        Node symbNode = getChildByTag(node, "SYMB");
-        if (symbNode == null) {
-            symbNode = getChildByTag(node, "TERMINAL");
-        }
-
-        if (symbNode == null) {
-            System.out.println("No SYMB or TERMINAL found for node: " + node.getNodeName());
-            return true;
-        }
-
-        String symbol = symbNode.getTextContent().trim();
-        System.out.println("Checking symbol: " + symbol);
-
-        switch (symbol) {
-            case "ASSIGN":
-                return typeCheckAssign(node);
-            case "CALL":
-                return typeCheckCall(node);
-            case "BRANCH":
-                return typeCheckBranch(node);
-            case "BINOP":
-                return typeCheckBinOp(node);
-            case "UNOP":
-                return typeCheckUnOp(node);
-            case "RETURN":
-                return typeCheckReturn(node);
-            default:
-                System.out.println("Unhandled symbol: " + symbol);
-                return true;
-        }
+    // Process OP or ASSIGN nodes.
+    if ("OP".equals(symbol)) {
+        return checkOp(node);
+    } else if ("ASSIGN".equals(symbol)) {
+        return checkAssignment(node);
     }
 
-    private static boolean typeCheckAssign(Node node) {
-        String varName = getVName(node);
-        String varType = getType(varName);
-        String termType = getTermType(getChildByTag(node, "TERM"));
-        System.out.println("Checking assignment: " + varName + " (" + varType + ") = " + termType);
-        return varType.equals(termType);
-    }
-
-    private static boolean typeCheckCall(Node node) {
-        String funcName = getFName(node);
-        String funcType = getType(funcName);
-        System.out.println("Checking function call: " + funcName + " -> " + funcType);
-        
-        // Check if all arguments are numeric
-        NodeList args = node.getChildNodes();
-        for (int i = 0; i < args.getLength(); i++) {
-            Node arg = args.item(i);
-            if (arg.getNodeName().equals("ARG")) {
-                String argType = getType(getVName(arg));
-                if (!argType.equals("n")) {
-                    return false;
-                }
-            }
+    // Traverse children.
+    List<Element> children = findChildren(node);
+    for (Element child : children) {
+        if (!checkNode(child)) {
+            return false;  // Stop if any child fails.
         }
-        
-        return funcType.equals("v") || funcType.equals("n");
+    }
+    return true;
+}
+
+
+    // Check an OP node structure
+private boolean checkOp(Element node) {
+    List<Element> children = findChildren(node);
+
+    if (children.size() < 2) {
+        System.out.println("Invalid OP node structure: Not enough children");
+        return false;
     }
 
-    private static boolean typeCheckBranch(Node node) {
-        Node cond = getChildByTag(node, "COND");
-        String condType = getCondType(cond);
-        System.out.println("Branch condition type: " + condType);
-        return condType.equals("b") && typeCheckChildren(node);
-    }
-
-    private static boolean typeCheckBinOp(Node node) {
-        Node arg1Node = getChildByTag(node, "ARG1");
-        Node arg2Node = getChildByTag(node, "ARG2");
-
-        if (arg1Node == null || arg2Node == null) {
-            System.out.println("Argument nodes are null for binary operation.");
+    // Check type compatibility for all child nodes involved in the operation
+    String firstType = inferType(children.get(0));
+    for (int i = 1; i < children.size(); i++) {
+        String childType = inferType(children.get(i));
+        if (!firstType.equals(childType)) {
+            System.out.println("Type mismatch in OP: Expected " + firstType + " but got " + childType);
             return false;
         }
+    }
 
-        String leftType = getArgType(arg1Node);
-        String rightType = getArgType(arg2Node);
-        String binop = getNodeSymbol(node);
+    System.out.println("Valid OP node with " + children.size() + " children.");
+    return true;
+}
 
-        System.out.println("Checking binary operation: " + binop +
-                " (left: " + leftType + ", right: " + rightType + ")");
 
-        if (Arrays.asList("add", "sub", "mul", "div").contains(binop)) {
-            return leftType.equals("n") && rightType.equals("n");
-        } else if (Arrays.asList("grt", "eq").contains(binop)) {
-            return leftType.equals("n") && rightType.equals("n");
-        } else if (Arrays.asList("and", "or").contains(binop)) {
-            return leftType.equals("b") && rightType.equals("b");
-        }
+    // Check an ASSIGN node structure
+private boolean checkAssignment(Element node) {
+    List<Element> children = findChildren(node);
+
+    if (children.size() < 2) {
+        System.out.println("Invalid ASSIGN node structure: Not enough children");
         return false;
     }
 
-    private static boolean typeCheckUnOp(Node node) {
-        Node argNode = getChildByTag(node, "ARG");
-        String argType = getArgType(argNode);
-        String unop = getNodeSymbol(node);
+    // Get the variable name and type from the symbol table.
+    String variableName = getNodeContent(children.get(0));
+    String expectedType = symbolTable.get(variableName);
 
-        System.out.println("Checking unary operation: " + unop + " (arg: " + argType + ")");
-
-        return (unop.equals("sqrt") && argType.equals("n")) ||
-               (unop.equals("not") && argType.equals("b"));
-    }
-
-    private static boolean typeCheckReturn(Node node) {
-        Node atomicNode = getChildByTag(node, "ATOMIC");
-        String atomicType = getType(getVName(atomicNode));
-        
-        // Find the enclosing function's return type
-        Node funcNode = findEnclosingFunction(node);
-        if (funcNode != null) {
-            Node headerNode = getChildByTag(funcNode, "HEADER");
-            Node ftypNode = getChildByTag(headerNode, "FTYP");
-            String funcReturnType = ftypNode.getTextContent().trim();
-            
-            System.out.println("Checking return: " + atomicType + " vs function return type: " + funcReturnType);
-            return (atomicType.equals("n") && funcReturnType.equals("num")) ||
-                   (atomicType.equals("v") && funcReturnType.equals("void"));
-        }
-        
+    if (expectedType == null) {
+        System.out.println("Error: Variable '" + variableName + "' is not declared.");
         return false;
     }
 
-    private static Node findEnclosingFunction(Node node) {
-        while (node != null && !node.getNodeName().equals("DECL")) {
-            node = node.getParentNode();
+    // Infer the type of the assigned value.
+    String valueType = inferType(children.get(1));
+
+    // Check if the types match.
+    if (!expectedType.equals(valueType)) {
+        System.out.println("Type mismatch in ASSIGN: Variable '" + variableName + "' expects " 
+                           + expectedType + ", but got " + valueType);
+        return false;
+    }
+
+    System.out.println("Assignment to '" + variableName + "' is valid.");
+    return true;
+}
+
+    
+
+    // Infer the type of a node based on its content
+// Infer the type of a node based on its content
+private String inferType(Element node) {
+    String content = getNodeContent(node);
+
+    if (content.equals("unknown")) {
+        return "unknown";  // Gracefully handle unknown content.
+    } else if (content.matches("\\d+")) {
+        return "num";
+    } else if (content.matches("\".*\"")) {
+        return "text";
+    } else if (symbolTable.containsKey(content)) {
+        return symbolTable.get(content);
+    }
+    return "unknown";
+}
+
+
+private String getNodeContent(Element node) {
+    int id = getNodeID(node);
+
+    // Return cached content if available (avoid re-processing).
+    if (terminalValues.containsKey(id)) {
+        String content = terminalValues.get(id);
+        System.out.println("Using cached content for node ID " + id + ": " + content);
+        return content;
+    }
+
+    // If the node was visited before, use a fallback to prevent empty content.
+    if (visitedNodes.contains(id)) {
+        System.out.println("Node ID " + id + " already visited. Returning fallback content.");
+        return terminalValues.getOrDefault(id, "unknown");  // Use a default fallback.
+    }
+
+    visitedNodes.add(id);  // Mark as visited.
+
+    // Traverse child nodes to retrieve content.
+    NodeList childIDs = node.getElementsByTagName("ID");
+    for (int i = 0; i < childIDs.getLength(); i++) {
+        int childID = Integer.parseInt(childIDs.item(i).getTextContent().trim());
+
+        if (terminalValues.containsKey(childID)) {
+            String content = terminalValues.get(childID);
+            terminalValues.put(id, content);  // Cache the result.
+            return content;
         }
-        return node;
-    }
 
-    private static String getVName(Node node) {
-        Node vnameNode = getChildByTag(node, "VNAME");
-        if (vnameNode == null) {
-            System.out.println("No VNAME node found.");
-            return "";
-        }
-        return getLeafValue(vnameNode);
-    }
-
-    private static String getFName(Node node) {
-        return getLeafValue(getChildByTag(node, "FNAME"));
-    }
-
-    private static Node getChildByTag(Node node, String tagName) {
-        NodeList children = node.getChildNodes();
-        for (int i = 0; i < children.getLength(); i++) {
-            Node child = children.item(i);
-            if (child.getNodeType() == Node.ELEMENT_NODE && child.getNodeName().equals(tagName)) {
-                return child;
+        if (nodes.containsKey(childID)) {
+            Element childNode = nodes.get(childID);
+            String childContent = getNodeContent(childNode);
+            if (!childContent.isEmpty()) {
+                terminalValues.put(id, childContent);  // Cache the result.
+                return childContent;
             }
         }
-        return null;
     }
 
-    private static String getLeafValue(Node node) {
-        return node != null ? node.getTextContent().trim() : "";
-    }
+    System.out.println("No valid content found for node ID " + id + ". Returning 'unknown'.");
+    return "unknown";  // Ensure we return 'unknown' instead of an empty string.
+}
 
-    private static String getNodeSymbol(Node node) {
-        Node symbNode = getChildByTag(node, "SYMB");
-        return symbNode != null ? symbNode.getTextContent().trim() : "";
-    }
 
-    private static String getTermType(Node termNode) {
-        if (termNode == null) {
-            return "u";
-        }
-        Node childNode = termNode.getFirstChild();
-        if (childNode == null) {
-            return "u";
-        }
-        switch (childNode.getNodeName()) {
-            case "ATOMIC":
-                return getType(getVName(childNode));
-            case "CALL":
-                return getType(getFName(childNode));
-            case "OP":
-                return getOpType(childNode);
-            default:
-                return "u";
-        }
-    }
 
-    private static String getArgType(Node argNode) {
-        if (argNode == null) {
-            return "u";
-        }
-        Node childNode = argNode.getFirstChild();
-        if (childNode == null) {
-            return "u";
-        }
-        switch (childNode.getNodeName()) {
-            case "ATOMIC":
-                return getType(getVName(childNode));
-            case "OP":
-                return getOpType(childNode);
-            default:
-                return "u";
-        }
-    }
 
-    private static String getOpType(Node opNode) {
-        Node unopNode = getChildByTag(opNode, "UNOP");
-        if (unopNode != null) {
-            String unop = getNodeSymbol(unopNode);
-            return unop.equals("not") ? "b" : "n";
-        }
-        Node binopNode = getChildByTag(opNode, "BINOP");
-        if (binopNode != null) {
-            String binop = getNodeSymbol(binopNode);
-            if (Arrays.asList("and", "or").contains(binop)) {
-                return "b";
-            } else if (Arrays.asList("grt", "eq").contains(binop)) {
-                return "b";
-            } else {
-                return "n";
+
+
+    
+    
+    // Find children of a given node
+    private List<Element> findChildren(Element node) {
+        List<Element> children = new ArrayList<>();
+        NodeList childNodes = node.getElementsByTagName("ID");
+
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            int childID = Integer.parseInt(childNodes.item(i).getTextContent());
+            if (nodes.containsKey(childID)) {
+                children.add(nodes.get(childID));
+                System.out.println("Found child node: ID = " + childID);
             }
         }
-        return "u";
+        return children;
     }
 
-    private static String getCondType(Node condNode) {
-        if (condNode == null) {
-            return "u";
-        }
-        Node childNode = condNode.getFirstChild();
-        if (childNode == null) {
-            return "u";
-        }
-        switch (childNode.getNodeName()) {
-            case "SIMPLE":
-            case "COMPOSIT":
-                return "b";
-            default:
-                return "u";
-        }
-    }
-
-    public static void main(String[] args) {
-        try {
-            loadSymbolTable("Symbol.txt");
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(new File("parser.xml"));
-            Node root = doc.getDocumentElement();
-
-            boolean result = typeCheck(root);
-            System.out.println("Type Checking Result: " + (result ? "Valid" : "Invalid"));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    // Get the unique ID of a node
+    private int getNodeID(Element node) {
+        return Integer.parseInt(node.getElementsByTagName("UNID").item(0).getTextContent());
     }
 }
