@@ -1,4 +1,3 @@
-=== Global Symbol Table ===
 V_result : v110 : num
 F_average : f504 : num
 V_counte : v138 : text

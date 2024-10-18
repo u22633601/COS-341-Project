@@ -17,7 +17,7 @@ public class DualScopeAnalyzer {
             doc.getDocumentElement().normalize();
 
             // Run ScopeAnalyzer1
-            System.out.println("\n=== Running ScopeAnalyzer1 ===");
+            //System.out.println("\n=== Running ScopeAnalyzer1 ===");
             ScopeAnalyzer1 analyzer1 = new ScopeAnalyzer1();
             ScopeAnalyzer1.Node root1 = analyzer1.parseXML(doc.getDocumentElement());
             //System.out.println("Parsing completed for ScopeAnalyzer1.");
@@ -26,7 +26,7 @@ public class DualScopeAnalyzer {
             if (analyzer1.analyzeNode(root1)) {
                 analyzer1.printGlobalSymbolTable();
                 // Run ScopeAnalyzer2
-                System.out.println("\n=== Running ScopeAnalyzer2 ===");
+                System.out.println("\n=== Running ScopeAnalyzer ===");
                 ScopeAnalyzer2 analyzer2 = new ScopeAnalyzer2();
                 ScopeAnalyzer2.NodeType root2 = analyzer2.parseXML(doc.getDocumentElement());
                 // System.out.println("Parsing completed for ScopeAnalyzer2.");
@@ -37,11 +37,11 @@ public class DualScopeAnalyzer {
                     analyzer2.writeSymbolTableToFile("Symbol.txt");
                     System.out.println("Symbol table has been written to Symbol.txt");
                 } else {
-                    System.err.println("ScopeAnalyzer2 encountered an error and stopped execution.");
+                    System.err.println("ScopeAnalyzer encountered an error and stopped execution.");
                 }
 
             } else {
-                System.err.println("ScopeAnalyzer1 encountered an error and stopped execution.");
+                System.err.println("ScopeAnalyzer encountered an error and stopped execution.");
             }
 
             
@@ -199,11 +199,11 @@ public class DualScopeAnalyzer {
         public void printGlobalSymbolTable() {
             if (!scopeStack.isEmpty()) {
                 SymbolTable globalScope = scopeStack.firstElement();
-                System.out.println("\n=== Final Global Symbol Table (ScopeAnalyzer2) ===");
+                //System.out.println("\n=== Final Global Symbol Table (ScopeAnalyzer1) ===");
                 for (Map.Entry<String, String> entry : globalScope.getVariables().entrySet()) {
                     String varName = entry.getKey();
                     String type = entry.getValue();
-                    System.out.println(varName + " : " + uniqueNames.get(varName) + " : " + type);
+                    //System.out.println(varName + " : " + uniqueNames.get(varName) + " : " + type);
                 }
             } else {
                 System.err.println("Error: No scope to print the global symbol table.");
@@ -462,7 +462,7 @@ public class DualScopeAnalyzer {
         public void writeSymbolTableToFile(String fileName) {
             try (FileWriter writer = new FileWriter(fileName)) {
                 SymbolTable globalScope = scopeStack.firstElement();
-                writer.write("=== Global Symbol Table ===\n");
+                //writer.write("=== Global Symbol Table ===\n");
                 for (Map.Entry<String, String> entry : globalScope.getVariables().entrySet()) {
                     String varName = entry.getKey();
                     String type = entry.getValue();
@@ -517,7 +517,7 @@ public class DualScopeAnalyzer {
         public void printGlobalSymbolTable() {
             if (!scopeStack.isEmpty()) {
                 SymbolTable globalScope = scopeStack.firstElement();
-                System.out.println("\n=== Final Global Symbol Table (ScopeAnalyzer2) ===");
+                System.out.println("\n=== Final Global Symbol Table ===");
                 for (Map.Entry<String, String> entry : globalScope.getVariables().entrySet()) {
                     String varName = entry.getKey();
                     String type = entry.getValue();
