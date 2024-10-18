@@ -1,50 +1,7 @@
 main
-text V_x , num V_y , num V_result ,
+num V_a , text V_x , num V_y ,
 begin
   V_x < input ;
   V_y < input ;
-  
-  if and ( grt ( V_x , 0 ) , grt ( V_y , 0 ) ) then
-    begin
-      V_result = F_average ( V_x , V_y , 0 ) ;
-      return V_result ;
-      skip ;
-    end
-  else
-    begin
-      if or ( eq ( V_x , 0 ) , eq ( V_y , 0 ) ) then
-        begin
-          return "Zero" ;
-        end
-      else
-        begin
-          V_result = mul ( V_x , V_y ) ;
-          return V_result ;
-        end ;
-    end ;
-end
-
-
-num F_average ( V_a , V_b , V_dummy )
-{
-num V_sum , text V_count , num V_res ,
-begin
-  V_res = F_ave ( V_x , V_y , 0 ) ; 
-  V_sum = add ( V_a , V_b ) ;
-  V_count = 2 ;
-  V_res = div ( V_sum , V_count ) ;
-end
-}
-void F_ave ( V_e , V_f , V_g )
-{
-num V_sume , text V_counte , num V_rese ,
-begin
-  V_rese = F_average ( V_x , V_y , 0 ) ; 
-  V_sume = add ( V_a , V_b ) ;
-  V_counte = 2 ;
-  V_rese = div ( V_sume , V_counte ) ;
-end
-}
-end
-
+  V_x = add ( V_x , V_y ) ;
 end
