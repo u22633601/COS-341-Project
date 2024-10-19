@@ -49,10 +49,11 @@ public class TypeChecker {
     }
 
     private static void checkLine(String line) {
-        if (line.startsWith("main") || line.equals("end") || line.startsWith("begin")) {
+        line = line.trim();
+        if (line.isEmpty() || line.startsWith("main") || line.equals("end") || line.startsWith("begin")) {
             return; // These lines don't require type checking
         }
-
+    
         if (line.contains("<")) {
             checkInput(line);
         } else if (line.contains("=")) {
@@ -61,10 +62,58 @@ public class TypeChecker {
             checkCondition(line);
         } else if (line.startsWith("return")) {
             checkReturn(line);
-        } else if (line.contains("(")) {
-            checkFunctionCall(line);
+        } else if (line.matches("^(num|text|void)\\s+F_.*\\(.*\\).*")) {
+            checkFunctionDeclaration(line);
         } else if (line.startsWith("num") || line.startsWith("text") || line.startsWith("void")) {
             checkDeclaration(line);
+        } else if (line.contains("(")) {
+            checkFunctionCall(line);
+        }
+    }
+
+    private static void checkFunctionDeclaration(String line) {
+        line = line.replace("{", "").trim(); // Remove opening brace if present
+        String[] parts = line.split("\\(", 2);
+        if (parts.length != 2) {
+            addError("Invalid function declaration");
+            return;
+        }
+        
+        String[] returnTypeAndName = parts[0].trim().split("\\s+");
+        if (returnTypeAndName.length != 2) {
+            addError("Invalid function declaration format");
+            return;
+        }
+        
+        String returnType = returnTypeAndName[0];
+        String funcName = returnTypeAndName[1];
+        
+        if (!funcName.startsWith("F_")) {
+            addError("Function name must start with F_: " + funcName);
+        }
+        
+        String params = parts[1].substring(0, parts[1].lastIndexOf(")")).trim();
+        String[] paramList = params.split(",");
+        if (paramList.length != 3) {
+            addError("Function " + funcName + " must have exactly 3 parameters");
+        }
+        
+        for (String param : paramList) {
+            String paramName = param.trim();
+            if (!paramName.startsWith("V_")) {
+                addError("Function parameter must start with V_: " + paramName);
+            }
+            String paramType = symbolTable.get(paramName);
+            if (paramType == null || !paramType.equals("num")) {
+                addError("Function parameter must be of type num: " + paramName);
+            }
+        }
+        
+        String declaredType = symbolTable.get(funcName);
+        if (declaredType == null) {
+            addError("Function " + funcName + " is not declared in the symbol table");
+        } else if (!declaredType.equals(returnType)) {
+            addError("Return type mismatch for function " + funcName + ": declared as " + declaredType + ", but defined as " + returnType);
         }
     }
 
@@ -130,18 +179,27 @@ public class TypeChecker {
     }
 
     private static void checkDeclaration(String line) {
-        String[] parts = line.split(" ");
-        String type = parts[0];
-        String name = parts[1].replace(",", "").trim();
-
-        if (!name.startsWith("V_") && !name.startsWith("F_")) {
-            addError("Invalid variable or function name: " + name);
-        }
-
-        if (symbolTable.containsKey(name)) {
-            String declaredType = symbolTable.get(name);
-            if (!declaredType.equals(type)) {
-                addError("Type mismatch in declaration: " + name + " declared as " + type + ", but symbol table says " + declaredType);
+        String[] parts = line.split(",");
+        
+        for (String part : parts) {
+            String[] subParts = part.trim().split("\\s+");
+            if (subParts.length < 2) continue;
+            
+            String type = subParts[0];
+            String name = subParts[subParts.length - 1].trim();
+            
+            if (!name.startsWith("V_")) {
+                addError("Invalid variable name: " + name);
+            } else if (symbolTable.containsKey(name)) {
+                String declaredType = symbolTable.get(name);
+                if (!declaredType.equals(type)) {
+                    addError("Type mismatch in declaration: " + name + " declared as " + type + ", but symbol table says " + declaredType);
+                }
+            } else {
+                // Variable is not in the symbol table, which is fine for local variables
+                if (debug) {
+                    System.out.println("Declared local variable: " + name + " of type " + type);
+                }
             }
         }
     }
@@ -160,17 +218,11 @@ public class TypeChecker {
             
             String[] args = splitArguments(argsString);
             
-            // Recursively check each argument
-            String[] checkedArgs = new String[args.length];
-            for (int i = 0; i < args.length; i++) {
-                checkedArgs[i] = checkExpression(args[i]);
-            }
-            
             if (isBuiltInFunction(funcName)) {
-                checkBuiltInFunction(funcName, checkedArgs);
+                checkBuiltInFunction(funcName, args);
                 return "num"; // All built-in functions return num
             } else if (funcName.startsWith("F_")) {
-                return checkUserDefinedFunction(funcName, checkedArgs);
+                return checkUserDefinedFunction(funcName, args);
             } else {
                 addError("Unknown function: " + funcName);
                 return "unknown";
@@ -324,7 +376,7 @@ public class TypeChecker {
         }
     }
 
-    private static void checkBuiltInFunction(String funcName, String[] argTypes) {
+    private static void checkBuiltInFunction(String funcName, String[] args) {
         switch (funcName) {
             case "add":
             case "sub":
@@ -334,22 +386,26 @@ public class TypeChecker {
             case "or":
             case "eq":
             case "grt":
-                if (argTypes.length != 2) {
+                if (args.length != 2) {
                     addError("Operator " + funcName + " requires exactly 2 arguments");
                 } else {
-                    for (String argType : argTypes) {
+                    for (String arg : args) {
+                        String argType = inferType(arg.trim());
                         if (!argType.equals("num")) {
-                            addError("Argument must be of type num for operator " + funcName);
+                            addError("Argument " + arg.trim() + " must be of type num for operator " + funcName);
                         }
                     }
                 }
                 break;
             case "not":
             case "sqrt":
-                if (argTypes.length != 1) {
+                if (args.length != 1) {
                     addError("Operator " + funcName + " requires exactly 1 argument");
-                } else if (!argTypes[0].equals("num")) {
-                    addError("Argument must be of type num for operator " + funcName);
+                } else {
+                    String argType = inferType(args[0].trim());
+                    if (!argType.equals("num")) {
+                        addError("Argument " + args[0].trim() + " must be of type num for operator " + funcName);
+                    }
                 }
                 break;
             default:
