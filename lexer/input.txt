@@ -7,7 +7,7 @@ begin
 
   if and ( eq ( V_x , 0 ) , grt ( V_y , 0 ) ) then
     begin
-      V_result = F_average ( V_x , V_y , V_result ) ;
+      V_result = and ( 0 , 0 ) ;
       return V_result ;
       skip ;
     end
