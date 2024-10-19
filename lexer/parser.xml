@@ -251,7 +251,7 @@
     <LEAF>
       <PARENT>1</PARENT>
       <UNID>2</UNID>
-      <TERMINAL>num</TERMINAL>
+      <TERMINAL>text</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>3</PARENT>
@@ -281,7 +281,7 @@
     <LEAF>
       <PARENT>11</PARENT>
       <UNID>12</UNID>
-      <TERMINAL>text</TERMINAL>
+      <TERMINAL>num</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>13</PARENT>
