@@ -112,7 +112,7 @@
 <TOK>
   <ID>23</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>grt</WORD>
+  <WORD>eq</WORD>
 </TOK>
 <TOK>
   <ID>24</ID>
@@ -302,7 +302,7 @@
 <TOK>
   <ID>61</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>add</WORD>
+  <WORD>eq</WORD>
 </TOK>
 <TOK>
   <ID>62</ID>
@@ -547,7 +547,7 @@
 <TOK>
   <ID>110</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>num</WORD>
+  <WORD>text</WORD>
 </TOK>
 <TOK>
   <ID>111</ID>
@@ -562,7 +562,7 @@
 <TOK>
   <ID>113</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>num</WORD>
+  <WORD>text</WORD>
 </TOK>
 <TOK>
   <ID>114</ID>
@@ -642,7 +642,7 @@
 <TOK>
   <ID>129</ID>
   <CLASS>v</CLASS>
-  <WORD>V_c</WORD>
+  <WORD>V_count</WORD>
 </TOK>
 <TOK>
   <ID>130</ID>

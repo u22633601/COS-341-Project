@@ -5,7 +5,7 @@ begin
   V_x < input ;
   V_y < input ;
 
-  if and ( grt ( V_x , 0 ) , grt ( V_y , 0 ) ) then
+  if and ( eq ( V_x , 0 ) , grt ( V_y , 0 ) ) then
     begin
       V_result = F_average ( V_x , V_y , V_result ) ;
       return V_result ;
@@ -13,7 +13,7 @@ begin
     end
   else
     begin
-      if or ( add ( V_x , 0 ) , eq ( V_y , 0 ) ) then
+      if or ( eq ( V_x , 0 ) , eq ( V_y , 0 ) ) then
         begin
           return "Zero" ;
         end
@@ -27,10 +27,10 @@ end
   
 num F_average ( V_c , V_b , V_dummy )
 {
-num V_sum , num V_count , num V_a ,
+text V_sum , text V_count , num V_a ,
 begin
   V_sum = add ( V_a , V_b ) ;
-  V_c = "hi" ;
+  V_count = "hi" ;
 end
 }
 end

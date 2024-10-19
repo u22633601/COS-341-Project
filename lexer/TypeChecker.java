@@ -128,7 +128,10 @@ public class TypeChecker {
         int endIndex = line.lastIndexOf(")");
         if (startIndex != -1 && endIndex != -1 && startIndex < endIndex) {
             String condition = line.substring(startIndex + 1, endIndex).trim();
-            checkExpression(condition);
+            String conditionType = checkExpression(condition);
+            if (!conditionType.equals("bool")) {
+                addError("Condition must be a boolean-like expression");
+            }
         } else {
             addError("Invalid if statement structure");
         }
@@ -220,7 +223,11 @@ public class TypeChecker {
             
             if (isBuiltInFunction(funcName)) {
                 checkBuiltInFunction(funcName, args);
-                return "num"; // All built-in functions return num
+                if (funcName.equals("eq") || funcName.equals("grt") || funcName.equals("and") || funcName.equals("or") || funcName.equals("not")) {
+                    return "bool";
+                } else {
+                    return "num";
+                }
             } else if (funcName.startsWith("F_")) {
                 return checkUserDefinedFunction(funcName, args);
             } else {
@@ -382,27 +389,57 @@ public class TypeChecker {
             case "sub":
             case "mul":
             case "div":
-            case "and":
-            case "or":
-            case "eq":
             case "grt":
                 if (args.length != 2) {
                     addError("Operator " + funcName + " requires exactly 2 arguments");
                 } else {
                     for (String arg : args) {
-                        String argType = inferType(arg.trim());
+                        String argType = checkExpression(arg.trim());
                         if (!argType.equals("num")) {
                             addError("Argument " + arg.trim() + " must be of type num for operator " + funcName);
                         }
                     }
                 }
                 break;
+            case "and":
+            case "or":
+                if (args.length != 2) {
+                    addError("Operator " + funcName + " requires exactly 2 arguments");
+                } else {
+                    for (String arg : args) {
+                        String argType = checkExpression(arg.trim());
+                        if (!argType.equals("bool")) {
+                            addError("Argument " + arg.trim() + " must be a boolean-like expression for operator " + funcName);
+                        }
+                    }
+                }
+                break;
+            case "eq":
+                if (args.length != 2) {
+                    addError("Operator " + funcName + " requires exactly 2 arguments");
+                } else {
+                    String type1 = checkExpression(args[0].trim());
+                    String type2 = checkExpression(args[1].trim());
+                    if (!type1.equals(type2)) {
+                        addError("Arguments of eq must be of the same type");
+                    }
+                }
+                break;
             case "not":
+                if (args.length != 1) {
+                    addError("Operator " + funcName + " requires exactly 1 argument");
+                } else {
+                    String argType = checkExpression(args[0].trim());
+                    if (!argType.equals("bool")) {
+                        addError("Argument " + args[0].trim() + " must be a boolean-like expression for operator " + funcName);
+                    }
+                }
+                break;
             case "sqrt":
                 if (args.length != 1) {
                     addError("Operator " + funcName + " requires exactly 1 argument");
                 } else {
-                    String argType = inferType(args[0].trim());
+                    String argType = checkExpression(args[0].trim());
                     if (!argType.equals("num")) {
                         addError("Argument " + args[0].trim() + " must be of type num for operator " + funcName);
                     }
@@ -411,6 +448,14 @@ public class TypeChecker {
             default:
                 addError("Unknown built-in function: " + funcName);
         }
+    }
+
+    private static boolean isBooleanLikeExpression(String expression) {
+        if (expression.contains("(")) {
+            String funcName = expression.substring(0, expression.indexOf("(")).trim();
+            return funcName.equals("eq") || funcName.equals("grt") || funcName.equals("and") || funcName.equals("or") || funcName.equals("not");
+        }
+        return false;
     }
 
     private static boolean isBuiltInFunction(String funcName) {

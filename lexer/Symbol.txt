@@ -4,7 +4,7 @@ V_result : v110 : num
 F_average : f501 : num
 V_b : v121 : num
 V_a : v120 : num
-V_sum : v119 : num
-V_c : v122 : num
-V_count : v117 : num
+V_sum : v119 : text
+V_c : v113 : num
+V_count : v122 : text
 V_x : v111 : num
