@@ -1357,7 +1357,7 @@
     <LEAF>
       <PARENT>11</PARENT>
       <UNID>12</UNID>
-      <TERMINAL>text</TERMINAL>
+      <TERMINAL>num</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>13</PARENT>
@@ -1622,7 +1622,7 @@
     <LEAF>
       <PARENT>113</PARENT>
       <UNID>114</UNID>
-      <TERMINAL>eq</TERMINAL>
+      <TERMINAL>add</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>115</PARENT>
@@ -1817,7 +1817,7 @@
     <LEAF>
       <PARENT>203</PARENT>
       <UNID>204</UNID>
-      <TERMINAL>void</TERMINAL>
+      <TERMINAL>num</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>205</PARENT>
@@ -1962,7 +1962,7 @@
     <LEAF>
       <PARENT>258</PARENT>
       <UNID>259</UNID>
-      <TERMINAL>V_count</TERMINAL>
+      <TERMINAL>V_c</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>260</PARENT>
@@ -1972,7 +1972,7 @@
     <LEAF>
       <PARENT>261</PARENT>
       <UNID>262</UNID>
-      <TERMINAL>2</TERMINAL>
+      <TERMINAL>"hi"</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>267</PARENT>

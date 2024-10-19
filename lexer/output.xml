@@ -37,7 +37,7 @@
 <TOK>
   <ID>8</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>text</WORD>
+  <WORD>num</WORD>
 </TOK>
 <TOK>
   <ID>9</ID>
@@ -302,7 +302,7 @@
 <TOK>
   <ID>61</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>eq</WORD>
+  <WORD>add</WORD>
 </TOK>
 <TOK>
   <ID>62</ID>
@@ -497,7 +497,7 @@
 <TOK>
   <ID>100</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>void</WORD>
+  <WORD>num</WORD>
 </TOK>
 <TOK>
   <ID>101</ID>
@@ -642,7 +642,7 @@
 <TOK>
   <ID>129</ID>
   <CLASS>v</CLASS>
-  <WORD>V_count</WORD>
+  <WORD>V_c</WORD>
 </TOK>
 <TOK>
   <ID>130</ID>
@@ -651,8 +651,8 @@
 </TOK>
 <TOK>
   <ID>131</ID>
-  <CLASS>n</CLASS>
-  <WORD>2</WORD>
+  <CLASS>t</CLASS>
+  <WORD>"hi"</WORD>
 </TOK>
 <TOK>
   <ID>132</ID>
