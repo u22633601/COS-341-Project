@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.util.ArrayList;
 
 public class TypeChecker {
     private static Map<String, String> symbolTable = new HashMap<>();
@@ -74,8 +75,14 @@ public class TypeChecker {
     }
 
     private static void checkCondition(String line) {
-        String condition = line.substring(line.indexOf("(") + 1, line.lastIndexOf(")"));
-        checkExpression(condition);
+        int startIndex = line.indexOf("(");
+        int endIndex = line.lastIndexOf(")");
+        if (startIndex != -1 && endIndex != -1 && startIndex < endIndex) {
+            String condition = line.substring(startIndex + 1, endIndex).trim();
+            checkExpression(condition);
+        } else {
+            addError("Invalid if statement structure");
+        }
     }
 
     private static void checkAssignment(String line) {
@@ -140,16 +147,30 @@ public class TypeChecker {
     }
 
     private static String checkExpression(String expression) {
+        expression = expression.trim();
+        if (expression.isEmpty()) {
+            addError("Empty expression");
+            return "unknown";
+        }
+        
         if (expression.contains("(")) {
-            String funcName = expression.substring(0, expression.indexOf("(")).trim();
-            String args = expression.substring(expression.indexOf("(") + 1, expression.lastIndexOf(")"));
-            String[] argList = args.split(",");
-
+            int openParenIndex = expression.indexOf("(");
+            String funcName = expression.substring(0, openParenIndex).trim();
+            String argsString = getArguments(expression.substring(openParenIndex));
+            
+            String[] args = splitArguments(argsString);
+            
+            // Recursively check each argument
+            String[] checkedArgs = new String[args.length];
+            for (int i = 0; i < args.length; i++) {
+                checkedArgs[i] = checkExpression(args[i]);
+            }
+            
             if (isBuiltInFunction(funcName)) {
-                checkBuiltInFunction(funcName, argList);
+                checkBuiltInFunction(funcName, checkedArgs);
                 return "num"; // All built-in functions return num
             } else if (funcName.startsWith("F_")) {
-                return checkUserDefinedFunction(funcName, argList);
+                return checkUserDefinedFunction(funcName, checkedArgs);
             } else {
                 addError("Unknown function: " + funcName);
                 return "unknown";
@@ -157,6 +178,49 @@ public class TypeChecker {
         } else {
             return inferType(expression);
         }
+    }
+    
+    private static String getArguments(String expression) {
+        int parenthesesCount = 0;
+        int start = expression.indexOf("(");
+        for (int i = start; i < expression.length(); i++) {
+            if (expression.charAt(i) == '(') {
+                parenthesesCount++;
+            } else if (expression.charAt(i) == ')') {
+                parenthesesCount--;
+                if (parenthesesCount == 0) {
+                    return expression.substring(start + 1, i);
+                }
+            }
+        }
+        addError("Mismatched parentheses in expression: " + expression);
+        return "";
+    }
+    
+    private static String[] splitArguments(String argsString) {
+        List<String> args = new ArrayList<>();
+        int parenthesesCount = 0;
+        StringBuilder currentArg = new StringBuilder();
+        
+        for (char c : argsString.toCharArray()) {
+            if (c == '(') {
+                parenthesesCount++;
+            } else if (c == ')') {
+                parenthesesCount--;
+            }
+            
+            if (c == ',' && parenthesesCount == 0) {
+                args.add(currentArg.toString().trim());
+                currentArg = new StringBuilder();
+            } else {
+                currentArg.append(c);
+            }
+        }
+        if (currentArg.length() > 0) {
+            args.add(currentArg.toString().trim());
+        }
+        
+        return args.toArray(new String[0]);
     }
 
     private static String inferType(String expression) {
@@ -245,16 +309,22 @@ public class TypeChecker {
             addError("Operator " + op + " requires exactly 2 arguments");
             return;
         }
-
+    
         for (String arg : args) {
-            String argType = inferType(arg.trim());
+            String argType;
+            if (arg.contains("(")) {
+                // This is a nested function call, which has already been checked
+                argType = "num";
+            } else {
+                argType = inferType(arg.trim());
+            }
             if (!argType.equals("num")) {
                 addError("Argument " + arg.trim() + " must be of type num for operator " + op);
             }
         }
     }
 
-    private static void checkBuiltInFunction(String funcName, String[] paramList) {
+    private static void checkBuiltInFunction(String funcName, String[] argTypes) {
         switch (funcName) {
             case "add":
             case "sub":
@@ -264,11 +334,23 @@ public class TypeChecker {
             case "or":
             case "eq":
             case "grt":
-                checkBinaryOperation(funcName, paramList);
+                if (argTypes.length != 2) {
+                    addError("Operator " + funcName + " requires exactly 2 arguments");
+                } else {
+                    for (String argType : argTypes) {
+                        if (!argType.equals("num")) {
+                            addError("Argument must be of type num for operator " + funcName);
+                        }
+                    }
+                }
                 break;
             case "not":
             case "sqrt":
-                checkUnaryOperation(funcName, paramList);
+                if (argTypes.length != 1) {
+                    addError("Operator " + funcName + " requires exactly 1 argument");
+                } else if (!argTypes[0].equals("num")) {
+                    addError("Argument must be of type num for operator " + funcName);
+                }
                 break;
             default:
                 addError("Unknown built-in function: " + funcName);

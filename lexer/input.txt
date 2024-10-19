@@ -1,6 +1,5 @@
 main
-text V_x , num V_y , num V_res ,
+num V_x , num V_y , text V_res ,
 begin
   V_x = add ( V_y , V_res ) ;
 end
-  
