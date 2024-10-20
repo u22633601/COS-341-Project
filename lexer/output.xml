@@ -1036,21 +1036,41 @@
 </TOK>
 <TOK>
   <ID>208</ID>
-  <CLASS>reserved_keyword</CLASS>
-  <WORD>end</WORD>
+  <CLASS>v</CLASS>
+  <WORD>V_e</WORD>
 </TOK>
 <TOK>
   <ID>209</ID>
   <CLASS>reserved_keyword</CLASS>
-  <WORD>}</WORD>
+  <WORD>=</WORD>
 </TOK>
 <TOK>
   <ID>210</ID>
+  <CLASS>t</CLASS>
+  <WORD>"Hi"</WORD>
+</TOK>
+<TOK>
+  <ID>211</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>;</WORD>
+</TOK>
+<TOK>
+  <ID>212</ID>
   <CLASS>reserved_keyword</CLASS>
   <WORD>end</WORD>
 </TOK>
 <TOK>
-  <ID>211</ID>
+  <ID>213</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>}</WORD>
+</TOK>
+<TOK>
+  <ID>214</ID>
+  <CLASS>reserved_keyword</CLASS>
+  <WORD>end</WORD>
+</TOK>
+<TOK>
+  <ID>215</ID>
   <CLASS>reserved_keyword</CLASS>
   <WORD>end</WORD>
 </TOK>

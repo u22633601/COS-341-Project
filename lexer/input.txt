@@ -43,6 +43,7 @@ begin
   V_sume = add ( V_a , V_b ) ;
   V_counte = 2 ;
   V_rese = div ( V_sume , V_counte ) ;
+  V_e = "Hi" ;
 end
 }
 end
