@@ -13,6 +13,7 @@ public class ParserP {
     private int currentTokenIndex = 0;
     private int nodeId = 1;
     private Document doc;
+    private Element currentParent=null;
 
     private static class Token {
         int id;
@@ -54,6 +55,8 @@ public class ParserP {
         doc = builder.newDocument();
         stack.push(0);
     }
+    
+    private Stack<Element> nodeStack = new Stack<>();
 
     private Element parseTokens() throws Exception {
         Element syntree = doc.createElement("SYNTREE");
@@ -79,44 +82,39 @@ public class ParserP {
                 stack.push(nextState);
                 Element leaf = createLeafNode(token);
                 leafNodes.appendChild(leaf);
+                nodeStack.push(leaf);
                 currentTokenIndex++;
-                System.out.println("  Shift to state " + nextState);
             } else if (action.startsWith("r")) {
                 int ruleNumber = Integer.parseInt(action.substring(1));
                 Reduction reduction = reduce(ruleNumber);
                 Element node = createInnerNode(reduction);
                 innerNodes.appendChild(node);
+                
+                for (int i = 0; i < reduction.rhsLength; i++) {
+                    stack.pop();
+                    if (!nodeStack.isEmpty()) {
+                        Element child = nodeStack.pop();
+                        addChildToParent(node, child);
+                    }
+                }
+                
+                nodeStack.push(node);
+
+                int gotoState = getGotoState(stack.peek(), reduction.lhs);
+                if (gotoState == -1) {
+                    throw new Exception("Invalid GOTO state for non-terminal '" + reduction.lhs + "' after reducing using rule " + ruleNumber + " in state " + stack.peek());
+                }
+                stack.push(gotoState);
+
                 if (root == null && reduction.lhs.equals("PROG")) {
                     root = createRootNode(node);
                     syntree.appendChild(root);
                 }
-                for (int i = 0; i < reduction.rhsLength; i++) {
-                    stack.pop();
-                }
-                int gotoState = getGotoState(stack.peek(), reduction.lhs);
-                if (gotoState == -1) {
-                    //throw new Exception("Invalid GOTO state for " + reduction.lhs + " in state " + stack.peek());
-                    if (gotoState == -1) {
-                        throw new Exception("Invalid GOTO state for non-terminal '" + reduction.lhs + "' after reducing using rule " + ruleNumber + " in state " + stack.peek());
-                    }
-                    
-                }
-                stack.push(gotoState);
-                System.out.println("  Reduce using rule " + ruleNumber + ": " + reduction.lhs + " -> "
-                        + reduction.rhsLength + " symbols");
-                System.out.println("  Goto state " + gotoState);
             } else if (action.equals("acc")) {
-                System.out.println("  Accept");
                 break;
             } else {
-                // System.out.println("  Error: Unexpected action");
-                // throw new Exception("Parsing error at token: " + token.value + " in state " + state);
-                System.out.println(" Error: Unexpected action " + action + "' for token '" + token.value + "' (Type: " + token.type + ") at position " + currentTokenIndex + " in state " + state);
                 throw new Exception("Parsing error at token '" + token.value + "' (Type: " + token.type + ") at position " + currentTokenIndex + " in state " + state + ". No valid action found.");
             }
-
-            System.out.println("  Stack: " + stack);
-            System.out.println();
 
             steps++;
         }
@@ -1445,18 +1443,17 @@ private String getAction(int state, Token token) {
     private Element createRootNode(Element innerNode) {
         Element root = doc.createElement("ROOT");
         root.appendChild(createUNID());
-        root.appendChild(createSymb(innerNode.getAttribute("symbol")));
-        root.appendChild(createChildren(innerNode));
+        root.appendChild(createSymb("PROG"));
+        root.appendChild(createChildren());
+        addChildToParent(root, innerNode);
         return root;
     }
 
     private Element createInnerNode(Reduction reduction) {
         Element node = doc.createElement("IN");
-        node.setAttribute("symbol", reduction.lhs);
-        node.appendChild(createParent());
         node.appendChild(createUNID());
         node.appendChild(createSymb(reduction.lhs));
-        node.appendChild(createChildren(reduction.rhsLength));
+        node.appendChild(createChildren());
         return node;
     }
 
@@ -1472,8 +1469,17 @@ private String getAction(int state, Token token) {
 
     private Element createParent() {
         Element parent = doc.createElement("PARENT");
-        parent.setTextContent(String.valueOf(nodeId - 1));
+        if (currentParent != null) {
+            parent.setTextContent(currentParent.getElementsByTagName("UNID").item(0).getTextContent());
+        }
         return parent;
+    }
+
+    private void addChildToParent(Element parent, Element child) {
+        Element children = (Element) parent.getElementsByTagName("CHILDREN").item(0);
+        Element id = doc.createElement("ID");
+        id.setTextContent(child.getElementsByTagName("UNID").item(0).getTextContent());
+        children.appendChild(id);
     }
 
     private Element createUNID() {
@@ -1486,6 +1492,16 @@ private String getAction(int state, Token token) {
         Element symb = doc.createElement("SYMB");
         symb.setTextContent(symbol);
         return symb;
+    }
+
+    private Element createChildren() {
+        return doc.createElement("CHILDREN");
+    }
+
+    private Element createIdElement(Element node) {
+        Element id = doc.createElement("ID");
+        id.setTextContent(node.getElementsByTagName("UNID").item(0).getTextContent());
+        return id;
     }
 
     private Element createChildren(int count) {
