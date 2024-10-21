@@ -1,13 +1,12 @@
 main
 num V_x , num V_y , num V_result ,
 begin
-
   V_x < input ;
   V_y < input ;
 
-  if and ( eq ( V_x , 0 ) , grt ( V_y , 0 ) ) then
+  if and ( grt ( V_x , 0 ) , grt ( V_y , 0 ) ) then
     begin
-      V_result = and ( 0 , 0 ) ;
+      V_result = F_average ( V_x , V_y , 0 ) ;
       return V_result ;
       skip ;
     end
@@ -24,25 +23,28 @@ begin
         end ;
     end ;
 end
-  
-num F_average ( V_c , V_b , V_dummy )
+
+
+num F_average ( V_a , V_b , V_dummy )
 {
-text V_sum , text V_count , num V_a ,
+num V_sum , num V_count , num V_res ,
 begin
+  V_res = F_ave ( V_x , V_y , 0 ) ; 
   V_sum = add ( V_a , V_b ) ;
   V_count = 2 ;
   V_res = div ( V_sum , V_count ) ;
 end
 }
-void F_ave ( V_e , V_f , V_g )
+num F_ave ( V_e , V_f , V_g )
 {
-num V_sume , text V_counte , num V_rese ,
+num V_sume , num V_counte , num V_rese ,
 begin
   V_rese = F_average ( V_x , V_y , 0 ) ; 
   V_sume = add ( V_a , V_b ) ;
   V_counte = 2 ;
   V_rese = div ( V_sume , V_counte ) ;
-  V_e = "Hi" ;
 end
 }
+end
+
 end

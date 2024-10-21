@@ -1,0 +1,11 @@
+LABEL main
+v101 := 15
+v102 := 10
+IF grt(v101,v102) THEN greater ELSE lesser
+LABEL greater
+PRINT v101
+GOTO end_program
+LABEL lesser
+PRINT v102
+LABEL end_program
+HALT
