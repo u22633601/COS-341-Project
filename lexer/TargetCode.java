@@ -58,7 +58,7 @@ public class TargetCode {
                 addLine("PRINT " + var);
             } else if (line.startsWith("CALL")) {
                 String function = line.split("_")[1].split("\\(")[0];
-                addLine("GOSUB " + function);
+                addLine("GOSUB " + function + "_nums");  // Add "_nums" suffix
             } else if (line.equals("RETURN")) {
                 addLine("RETURN");
             } else if (line.equals("HALT")) {
