@@ -1,11 +1,8 @@
 LABEL main
-v101 := 15
-v102 := 10
-IF grt(v101,v102) THEN greater ELSE lesser
-LABEL greater
+v101 := 1
+LABEL loop_start
 PRINT v101
-GOTO end_program
-LABEL lesser
-PRINT v102
+v101 := add(v101,1)
+IF grt(v101,5) THEN end_program ELSE loop_start
 LABEL end_program
 HALT
