@@ -61,7 +61,7 @@ public class TargetCode {
                 addLine("GOSUB " + function + "_nums");  // Add "_nums" suffix
             } else if (line.equals("RETURN")) {
                 addLine("RETURN");
-            } else if (line.equals("HALT")) {
+            } else if (line.equals("STOP")) {
                 addLine("END");
             } else if (line.startsWith("INPUT")) {
                 String var = translateVariable(line.split(" ")[1]);
@@ -125,7 +125,7 @@ public class TargetCode {
                 case "div":
                     return left + " / " + right;
                 default:
-                    return expr; // If it's an unknown operation, return as is
+                    return expr; 
             }
         }
         return translateVariable(expr);
