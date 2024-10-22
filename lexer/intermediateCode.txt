@@ -1,11 +1,15 @@
 LABEL main
-v101 := 15
-v102 := 10
-IF grt(v101,v102) THEN greater ELSE lesser
-LABEL greater
-PRINT v101
+v101 := 6
+v102 := 7
+CALL_add_nums(v101,v102)
+v103 := M[SP]
+PRINT v103
 GOTO end_program
-LABEL lesser
-PRINT v102
+
+LABEL add_nums
+v201 := add(v101,v102)
+M[SP] := v201
+RETURN
+
 LABEL end_program
 HALT
