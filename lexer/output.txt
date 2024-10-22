@@ -1,0 +1,83 @@
+
+
+
+
+
+
+
+
+
+
+INPUT v101
+
+
+
+INPUT v102
+
+
+
+IF v101 > 0 &&  GOTO L0
+v104 := v101 + v102
+	
+	
+	
+	
+	
+	
+	
+	
+	RETURN v104
+	
+	
+	REM DO NOTHING
+GOTO L1
+L0:
+v104 := v101 + v102
+	
+	
+	
+	
+	
+	
+	
+	
+	RETURN v104
+	
+	
+	REM DO NOTHING
+L1:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+v104 := v101 + v102
+
+
+
+
+
+
+
+
+RETURN v104
+
+
+REM DO NOTHING
+
+STOP
+REM END

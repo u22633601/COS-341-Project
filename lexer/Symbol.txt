@@ -1,5 +1,1 @@
-V_x : v101 : num
-V_y : v102 : num
-V_message : v103 : text
-V_result : v104 : num
-V_name : v105 : num
+V_x : v101 : text
