@@ -1,11 +1,26 @@
-LABEL main
-v101 := 15
-v102 := 10
-IF grt(v101,v102) THEN greater ELSE lesser
-LABEL greater
-PRINT v101
-GOTO end_program
-LABEL lesser
-PRINT v102
-LABEL end_program
-HALT
+main
+num V_x , num V_y , num V_result ,
+begin
+
+  V_x < input ;
+  V_y < input ;
+
+  if and ( grt ( V_x , 0 ) , grt ( V_y , 0 ) ) then
+    begin
+      V_result = add ( V_x , V_y ) ;
+      return V_result ;
+      skip ;
+    end
+  else
+    begin
+      if or ( eq ( V_x , 0 ) , eq ( V_y , 0 ) ) then
+        begin
+          return "Zero" ;
+        end
+      else
+        begin
+          V_result = mul ( V_x , V_y ) ;
+          return V_result ;
+        end ;
+    end ;
+end

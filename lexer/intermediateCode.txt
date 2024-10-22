@@ -1,27 +1,10 @@
-INPUT v109
-INPUT v110
-t1 = v109 = 0
-t2 = v110 > 0
-t3 = t1 AND t2
-IF t3 GOTO L1 ELSE GOTO L2
-L1:
-t4 = 0 AND 0
-v108 = t4
-RETURN v108
-REM DO NOTHING
-GOTO L3
-L2:
-t5 = v109 = 0
-t6 = v110 = 0
-t7 = t5 OR t6
-IF t7 GOTO L4 ELSE GOTO L5
-L4:
-RETURN "Zero"
-GOTO L6
-L5:
-t8 = v109 * v110
-v108 = t8
-RETURN v108
-L6:
-L3:
-STOP
+LABEL main
+v101 := 5
+v102 := 10
+v103 := "Hello"
+v104 := add(v101,v102)
+PRINT v103
+PRINT v104
+v105 := "World"
+PRINT v105
+HALT

@@ -7,14 +7,59 @@ public class TargetCode {
     private static Map<String, String> variableMap = new HashMap<>();
     private static Map<String, Integer> labelMap = new HashMap<>();
     private static List<String> basicCode = new ArrayList<>();
-    private static char nextVarName = 'A';
 
     public static void main(String[] args) {
+        loadSymbolTable();  // Add this call to main
         List<String> intermediateCode = readIntermediateCode();
         generateBasicCode(intermediateCode);
         updateGotoLines();
         printBasicCode();
     }
+
+    private static void loadSymbolTable() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("Symbol.txt"))) {
+            String line;
+            int numVarCounter = 1;  // Counter for numeric variables (V1%, V2%, etc.)
+            char textVarCounter = 'A';  // Counter for text variables (A$, B$, etc.)
+            
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(" : ");
+                if (parts.length == 3) {
+                    String originalName = parts[0];  // V_x, V_y, etc.
+                    String generatedName = parts[1]; // v101, v102, etc.
+                    String type = parts[2].trim();   // num or text
+                    
+                    if (type.equals("num")) {
+                        // Create numeric variable (V1%, V2%, etc.)
+                        variableMap.put(generatedName, "V" + numVarCounter + "%");
+                        numVarCounter++;
+                    } else if (type.equals("text")) {
+                        // Create text variable (A$, B$, etc.)
+                        variableMap.put(generatedName, textVarCounter + "$");
+                        textVarCounter++;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // The translateVariable method needs to be updated to use the new variable format
+    private static String translateVariable(String var) {
+        if (var == null || var.isEmpty()) {
+            return "";
+        }
+        if (var.matches("v\\d+")) {
+            return variableMap.getOrDefault(var, var);
+        } else if (var.startsWith("M[")) {
+            String[] parts = var.split("\\[|\\]");
+            return "M(" + parts[1] + ",SP)";
+        } else {
+            return var;
+        }
+    }
+
 
     private static List<String> readIntermediateCode() {
         List<String> code = new ArrayList<>();
@@ -131,19 +176,7 @@ public class TargetCode {
         return translateVariable(expr);
     }
 
-    private static String translateVariable(String var) {
-        if (var == null || var.isEmpty()) {
-            return "";
-        }
-        if (var.matches("v\\d+")) {
-            return variableMap.computeIfAbsent(var, k -> String.valueOf(nextVarName++));
-        } else if (var.startsWith("M[")) {
-            String[] parts = var.split("\\[|\\]");
-            return "M(" + parts[1] + ",SP)";
-        } else {
-            return var;
-        }
-    }
+    
 
     
 }
