@@ -101,7 +101,7 @@ public class DualScopeAnalyzer {
             SymbolTable currentScope = scopeStack.peek();
 
             if (currentScope.contains(varName)) {
-                System.err.println("Error: Variable '" + varName + "' is already declared in this scope.");
+                System.err.println("Error: Variable or function '" + varName + " is not declared in the scope or has a duplicate declaration. ");
                 stopOnError = true;
                 return false;
             }
@@ -134,7 +134,7 @@ public class DualScopeAnalyzer {
                     return true;
                 }
             }
-            System.err.println("Error: Variable or function '" + varName + "' is not declared in the current scope.");
+            System.err.println("Error: Variable or function '" + varName + " is not declared in the scope or has a duplicate declaration. ");
             stopOnError = true;
             return false;
         }

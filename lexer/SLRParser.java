@@ -488,11 +488,11 @@ private String getAction(int state, Token token) {
                 break;
             case 59:
                 if (tokenValue.equals("("))
-                    return "r46";
+                    return "r36";
                 break;
             case 60:
                 if (tokenValue.equals("("))
-                    return "r47";
+                    return "r37";
                 break;
             case 61:
                 if (tokenValue.equals("begin"))

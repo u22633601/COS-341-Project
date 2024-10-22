@@ -1,48 +1,15 @@
 main
-num V_x , num V_y , num V_result ,
+num V_x ,
 begin
-
+  V_x = add ( 2 , 4 ) ;
   V_x < input ;
-  V_y < input ;
-
-  if and ( eq ( V_x , 0 ) , grt ( V_y , 0 ) ) then
+  if grt ( V_x , 0 ) then
     begin
-      V_result = and ( 0 , 0 ) ;
-      return V_result ;
-      skip ;
+      return "Pos" ;
     end
   else
     begin
-      if or ( eq ( V_x , 0 ) , eq ( V_y , 0 ) ) then
-        begin
-          return "Zero" ;
-        end
-      else
-        begin
-          V_result = mul ( V_x , V_y ) ;
-          return V_result ;
-        end ;
-    end ;
-end
-  
-num F_average ( V_c , V_b , V_dummy )
-{
-text V_sum , text V_count , num V_a ,
-begin
-  V_sum = add ( V_a , V_b ) ;
-  V_count = 2 ;
-  V_res = div ( V_sum , V_count ) ;
-end
-}
-void F_ave ( V_e , V_f , V_g )
-{
-num V_sume , text V_counte , num V_rese ,
-begin
-  V_rese = F_average ( V_x , V_y , 0 ) ; 
-  V_sume = add ( V_a , V_b ) ;
-  V_counte = 2 ;
-  V_rese = div ( V_sume , V_counte ) ;
-  V_e = "Hi" ;
-end
-}
+      return "Npos" ;
+    end
+    ;
 end
