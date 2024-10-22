@@ -123,17 +123,27 @@ public class TypeChecker {
     }
 
     private static void checkCondition(String line) {
-        int startIndex = line.indexOf("(");
-        int endIndex = line.lastIndexOf(")");
-        if (startIndex != -1 && endIndex != -1 && startIndex < endIndex) {
-            String condition = line.substring(startIndex + 1, endIndex).trim();
-            String conditionType = checkExpression(condition);
-            if (!conditionType.equals("bool")) {
-                //System.out.println(conditionType);
-                addError("Condition must be a boolean-like expression");
-            }
-        } else {
-            addError("Invalid if statement structure");
+        // Remove the 'if' keyword
+        String conditionPart = line.substring(2).trim();
+        
+        // Find the 'then' keyword and extract everything before it
+        int thenIndex = conditionPart.lastIndexOf("then");
+        if (thenIndex == -1) {
+            addError("Invalid if statement: missing 'then' keyword");
+            return;
+        }
+        
+        // Extract the condition
+        String condition = conditionPart.substring(0, thenIndex).trim();
+        
+        if (debug) {
+            System.out.println("Checking condition: " + condition);
+        }
+        
+        // Check if the condition is a valid boolean expression
+        String conditionType = checkExpression(condition);
+        if (!conditionType.equals("bool")) {
+            addError("Condition must be a boolean expression (grt, eq, and, or)");
         }
     }
 
@@ -220,16 +230,12 @@ public class TypeChecker {
             String[] args = splitArguments(argsString);
             
             if (isBuiltInFunction(funcName)) {
-                if (funcName.equals("grt") || funcName.equals("eq")) {
-                    checkBuiltInFunction(funcName, args);
+                checkBuiltInFunction(funcName, args);
+                if (funcName.equals("grt") || funcName.equals("eq") || 
+                    funcName.equals("and") || funcName.equals("or")) {
                     return "bool";
-                } else if (funcName.equals("and") || funcName.equals("or") || funcName.equals("not")) {
-                    checkBuiltInFunction(funcName, args);
-                    return "bool";
-                } else {
-                    checkBuiltInFunction(funcName, args);
-                    return "num";
                 }
+                return "num";
             } else if (funcName.startsWith("F_")) {
                 return checkUserDefinedFunction(funcName, args);
             } else {
@@ -241,12 +247,16 @@ public class TypeChecker {
         }
     }
 
-    private static boolean isBooleanOperation(String funcName) {
-        return funcName.equals("grt") || 
-               funcName.equals("eq") || 
-               funcName.equals("and") || 
-               funcName.equals("or") || 
-               funcName.equals("not");
+    private static boolean isBooleanOperation(String expression) {
+        expression = expression.trim();
+        if (!expression.contains("(")) {
+            return false;
+        }
+        
+        // Split the expression to handle nested calls
+        String outerFunc = expression.substring(0, expression.indexOf("(")).trim();
+        return outerFunc.equals("grt") || outerFunc.equals("eq") || 
+               outerFunc.equals("and") || outerFunc.equals("or");
     }
     
     private static String getArguments(String expression) {
@@ -390,16 +400,13 @@ public class TypeChecker {
                     return;
                 }
                 for (String arg : args) {
-                    String argTrimmed = arg.trim();
-                    if (isNumeric(argTrimmed) || 
-                        (argTrimmed.startsWith("V_") && symbolTable.getOrDefault(argTrimmed, "unknown").equals("num")) ||
-                        (argTrimmed.contains("(") && checkExpression(argTrimmed).equals("num"))) {
-                        continue;
+                    String type = checkExpression(arg.trim());
+                    if (!type.equals("num")) {
+                        addError("Arguments of grt must be numeric, found type: " + type);
                     }
-                    addError("Arguments of grt must be numeric");
                 }
                 break;
-                
+                    
             case "add":
             case "sub":
             case "mul":
@@ -411,11 +418,11 @@ public class TypeChecker {
                 for (String arg : args) {
                     String type = checkExpression(arg.trim());
                     if (!type.equals("num")) {
-                        addError("Arguments of " + funcName + " must be numeric");
+                        addError("Arguments of " + funcName + " must be numeric, found type: " + type);
                     }
                 }
                 break;
-                
+                    
             case "and":
             case "or":
                 if (args.length != 2) {
@@ -425,12 +432,11 @@ public class TypeChecker {
                 for (String arg : args) {
                     String type = checkExpression(arg.trim());
                     if (!type.equals("bool")) {
-                       // System.out.println("herrreeee  "+type);
-                        addError("Arguments of " + funcName + " must be boolean expressions");
+                        addError("Arguments of " + funcName + " must be boolean expressions (grt, eq, and, or)");
                     }
                 }
                 break;
-                
+                    
             case "eq":
                 if (args.length != 2) {
                     addError("Operator eq requires exactly 2 arguments");
@@ -439,11 +445,10 @@ public class TypeChecker {
                 String type1 = checkExpression(args[0].trim());
                 String type2 = checkExpression(args[1].trim());
                 if (!type1.equals(type2)) {
-                    
                     addError("Arguments of eq must be of the same type");
                 }
                 break;
-                
+                    
             case "not":
                 if (args.length != 1) {
                     addError("Operator not requires exactly 1 argument");
