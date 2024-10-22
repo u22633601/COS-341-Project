@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.*;
-import java.util.ArrayList;
 
 public class TypeChecker {
     private static Map<String, String> symbolTable = new HashMap<>();
@@ -124,16 +123,27 @@ public class TypeChecker {
     }
 
     private static void checkCondition(String line) {
-        int startIndex = line.indexOf("(");
-        int endIndex = line.lastIndexOf(")");
-        if (startIndex != -1 && endIndex != -1 && startIndex < endIndex) {
-            String condition = line.substring(startIndex + 1, endIndex).trim();
-            String conditionType = checkExpression(condition);
-            if (!conditionType.equals("bool")) {
-                addError("Condition must be a boolean-like expression");
-            }
-        } else {
-            addError("Invalid if statement structure");
+        // Remove the 'if' keyword
+        String conditionPart = line.substring(2).trim();
+        
+        // Find the 'then' keyword and extract everything before it
+        int thenIndex = conditionPart.lastIndexOf("then");
+        if (thenIndex == -1) {
+            addError("Invalid if statement: missing 'then' keyword");
+            return;
+        }
+        
+        // Extract the condition
+        String condition = conditionPart.substring(0, thenIndex).trim();
+        
+        if (debug) {
+            System.out.println("Checking condition: " + condition);
+        }
+        
+        // Check if the condition is a valid boolean expression
+        String conditionType = checkExpression(condition);
+        if (!conditionType.equals("bool")) {
+            addError("Condition must be a boolean expression (grt, eq, and, or)");
         }
     }
 
@@ -215,19 +225,17 @@ public class TypeChecker {
         }
         
         if (expression.contains("(")) {
-            int openParenIndex = expression.indexOf("(");
-            String funcName = expression.substring(0, openParenIndex).trim();
-            String argsString = getArguments(expression.substring(openParenIndex));
-            
+            String funcName = expression.substring(0, expression.indexOf("(")).trim();
+            String argsString = getArguments(expression);
             String[] args = splitArguments(argsString);
             
             if (isBuiltInFunction(funcName)) {
                 checkBuiltInFunction(funcName, args);
-                if (funcName.equals("eq") || funcName.equals("grt") || funcName.equals("and") || funcName.equals("or") || funcName.equals("not")) {
+                if (funcName.equals("grt") || funcName.equals("eq") || 
+                    funcName.equals("and") || funcName.equals("or")) {
                     return "bool";
-                } else {
-                    return "num";
                 }
+                return "num";
             } else if (funcName.startsWith("F_")) {
                 return checkUserDefinedFunction(funcName, args);
             } else {
@@ -238,25 +246,40 @@ public class TypeChecker {
             return inferType(expression);
         }
     }
+
+    private static boolean isBooleanOperation(String expression) {
+        expression = expression.trim();
+        if (!expression.contains("(")) {
+            return false;
+        }
+        
+        // Split the expression to handle nested calls
+        String outerFunc = expression.substring(0, expression.indexOf("(")).trim();
+        return outerFunc.equals("grt") || outerFunc.equals("eq") || 
+               outerFunc.equals("and") || outerFunc.equals("or");
+    }
     
     private static String getArguments(String expression) {
-        int parenthesesCount = 0;
-        int start = expression.indexOf("(");
-        for (int i = start; i < expression.length(); i++) {
-            if (expression.charAt(i) == '(') {
-                parenthesesCount++;
-            } else if (expression.charAt(i) == ')') {
-                parenthesesCount--;
-                if (parenthesesCount == 0) {
-                    return expression.substring(start + 1, i);
-                }
+        int parenthesesCount = 1;
+        int startIndex = expression.indexOf("(") + 1;
+        
+        for (int i = startIndex; i < expression.length(); i++) {
+            if (expression.charAt(i) == '(') parenthesesCount++;
+            if (expression.charAt(i) == ')') parenthesesCount--;
+            if (parenthesesCount == 0) {
+                return expression.substring(startIndex, i);
             }
         }
+        
         addError("Mismatched parentheses in expression: " + expression);
         return "";
     }
     
     private static String[] splitArguments(String argsString) {
+        if (!argsString.contains(",")) {
+            return new String[]{argsString.trim()};
+        }
+        
         List<String> args = new ArrayList<>();
         int parenthesesCount = 0;
         StringBuilder currentArg = new StringBuilder();
@@ -264,7 +287,8 @@ public class TypeChecker {
         for (char c : argsString.toCharArray()) {
             if (c == '(') {
                 parenthesesCount++;
-            } else if (c == ')') {
+            }
+            if (c == ')') {
                 parenthesesCount--;
             }
             
@@ -275,25 +299,12 @@ public class TypeChecker {
                 currentArg.append(c);
             }
         }
+        
         if (currentArg.length() > 0) {
             args.add(currentArg.toString().trim());
         }
         
         return args.toArray(new String[0]);
-    }
-
-    private static String inferType(String expression) {
-        expression = expression.trim();
-        if (expression.startsWith("\"") && expression.endsWith("\"")) {
-            return "text";
-        } else if (isNumeric(expression)) {
-            return "num";
-        } else if (expression.startsWith("V_") || expression.startsWith("F_")) {
-            return getVariableType(expression);
-        } else {
-            addError("Cannot infer type of: " + expression);
-            return "unknown";
-        }
     }
 
     private static String getVariableType(String var) {
@@ -310,9 +321,7 @@ public class TypeChecker {
         }
     }
 
-    private static boolean isNumeric(String str) {
-        return str.matches("-?\\d+(\\.\\d+)?");
-    }
+    
 
     private static void addError(String message) {
         errors.add("Line " + currentLine + ": Type Error: " + message);
@@ -385,69 +394,101 @@ public class TypeChecker {
 
     private static void checkBuiltInFunction(String funcName, String[] args) {
         switch (funcName) {
+            case "grt":
+                if (args.length != 2) {
+                    addError("Operator grt requires exactly 2 arguments");
+                    return;
+                }
+                for (String arg : args) {
+                    String type = checkExpression(arg.trim());
+                    if (!type.equals("num")) {
+                        addError("Arguments of grt must be numeric, found type: " + type);
+                    }
+                }
+                break;
+                    
             case "add":
             case "sub":
             case "mul":
             case "div":
-            case "grt":
                 if (args.length != 2) {
                     addError("Operator " + funcName + " requires exactly 2 arguments");
-                } else {
-                    for (String arg : args) {
-                        String argType = checkExpression(arg.trim());
-                        if (!argType.equals("num")) {
-                            addError("Argument " + arg.trim() + " must be of type num for operator " + funcName);
-                        }
+                    return;
+                }
+                for (String arg : args) {
+                    String type = checkExpression(arg.trim());
+                    if (!type.equals("num")) {
+                        addError("Arguments of " + funcName + " must be numeric, found type: " + type);
                     }
                 }
                 break;
+                    
             case "and":
             case "or":
                 if (args.length != 2) {
                     addError("Operator " + funcName + " requires exactly 2 arguments");
-                } else {
-                    for (String arg : args) {
-                        String argType = checkExpression(arg.trim());
-                        if (!argType.equals("bool")) {
-                            addError("Argument " + arg.trim() + " must be a boolean-like expression for operator " + funcName);
-                        }
+                    return;
+                }
+                for (String arg : args) {
+                    String type = checkExpression(arg.trim());
+                    if (!type.equals("bool")) {
+                        addError("Arguments of " + funcName + " must be boolean expressions (grt, eq, and, or)");
                     }
                 }
                 break;
+                    
             case "eq":
                 if (args.length != 2) {
-                    addError("Operator " + funcName + " requires exactly 2 arguments");
-                } else {
-                    String type1 = checkExpression(args[0].trim());
-                    String type2 = checkExpression(args[1].trim());
-                    if (!type1.equals(type2)) {
-                        addError("Arguments of eq must be of the same type");
-                    }
+                    addError("Operator eq requires exactly 2 arguments");
+                    return;
+                }
+                String type1 = checkExpression(args[0].trim());
+                String type2 = checkExpression(args[1].trim());
+                if (!type1.equals(type2)) {
+                    addError("Arguments of eq must be of the same type");
                 }
                 break;
+                    
             case "not":
                 if (args.length != 1) {
-                    addError("Operator " + funcName + " requires exactly 1 argument");
-                } else {
-                    String argType = checkExpression(args[0].trim());
-                    if (!argType.equals("bool")) {
-                        addError("Argument " + args[0].trim() + " must be a boolean-like expression for operator " + funcName);
-                    }
+                    addError("Operator not requires exactly 1 argument");
+                    return;
+                }
+                String type = checkExpression(args[0].trim());
+                if (!type.equals("bool")) {
+                    addError("Argument of not must be a boolean expression");
                 }
                 break;
-            case "sqrt":
-                if (args.length != 1) {
-                    addError("Operator " + funcName + " requires exactly 1 argument");
-                } else {
-                    String argType = checkExpression(args[0].trim());
-                    if (!argType.equals("num")) {
-                        addError("Argument " + args[0].trim() + " must be of type num for operator " + funcName);
-                    }
-                }
-                break;
-            default:
-                addError("Unknown built-in function: " + funcName);
         }
+    }
+    
+    private static boolean isNumeric(String str) {
+        if (str == null || str.trim().isEmpty()) {
+            return false;
+        }
+        try {
+            Double.parseDouble(str.trim());
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+    
+    private static String inferType(String expression) {
+        expression = expression.trim();
+        if (expression.isEmpty()) {
+            return "unknown";
+        }
+        if (expression.startsWith("\"") && expression.endsWith("\"")) {
+            return "text";
+        }
+        if (isNumeric(expression)) {
+            return "num";
+        }
+        if (expression.startsWith("V_")) {
+            return symbolTable.getOrDefault(expression, "bool");
+        }
+        return "unknown";
     }
 
     private static boolean isBooleanLikeExpression(String expression) {

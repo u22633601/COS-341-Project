@@ -427,7 +427,7 @@
     <LEAF>
       <PARENT>1</PARENT>
       <UNID>2</UNID>
-      <TERMINAL>num</TERMINAL>
+      <TERMINAL>text</TERMINAL>
     </LEAF>
     <LEAF>
       <PARENT>3</PARENT>
