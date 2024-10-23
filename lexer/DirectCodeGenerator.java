@@ -475,40 +475,61 @@ public class DirectCodeGenerator {
         String op = getCurrentToken();
         System.out.println("DEBUG: parseBinaryOp - operator: " + op);
         advance(); // Skip operator
-        advance(); // Skip (
+
+        if (getCurrentToken().equals("(")) {
+            advance(); // Skip (
+        }
 
         // Handle first expression
-        String place1 = "t" + tempCounter++;
-        Expression exp1 = parseExpression();
-        System.out.println("DEBUG: parseBinaryOp - first exp code: " + exp1.code);
-        System.out.println("DEBUG: parseBinaryOp - first exp place: " + exp1.place);
+        Expression exp1;
+        if (isOperator(getCurrentToken())) {
+            exp1 = parseBinaryOp();
+        } else {
+            exp1 = parseExpression();
+        }
 
-        advance(); // Skip ,
+        if (getCurrentToken().equals(",")) {
+            advance(); // Skip ,
+        }
 
         // Handle second expression
-        String place2 = "t" + tempCounter++;
-        Expression exp2 = parseExpression();
-        System.out.println("DEBUG: parseBinaryOp - second exp code: " + exp2.code);
-        System.out.println("DEBUG: parseBinaryOp - second exp place: " + exp2.place);
+        Expression exp2;
+        if (isOperator(getCurrentToken())) {
+            exp2 = parseBinaryOp();
+        } else {
+            exp2 = parseExpression();
+        }
 
-        advance(); // Skip )
+        if (getCurrentToken().equals(")")) {
+            advance(); // Skip )
+        }
 
-        // Final result place
-        String place = "t" + tempCounter++;
-        String opSymbol = translateOperator(op);
-
+        // Generate temporary variables and code for both operands
         StringBuilder codeBuilder = new StringBuilder();
+        // Add code from nested operations if any
+        if (!exp1.code.isEmpty()) {
+            codeBuilder.append(exp1.code).append("\n");
+        }
+        if (!exp2.code.isEmpty()) {
+            codeBuilder.append(exp2.code).append("\n");
+        }
+
+        // Always create temp variables for operands
+        String place1 = "t" + tempCounter++;
+        String place2 = "t" + tempCounter++;
+        String resultPlace = "t" + tempCounter++;
+
+        // Add assignments to temp variables
         codeBuilder.append(place1).append(" := ").append(exp1.place).append("\n");
         codeBuilder.append(place2).append(" := ").append(exp2.place).append("\n");
-        codeBuilder.append(place).append(" := ").append(place1)
+
+        // Add the operation
+        String opSymbol = translateOperator(op);
+        codeBuilder.append(resultPlace).append(" := ").append(place1)
                 .append(" ").append(opSymbol).append(" ")
                 .append(place2);
 
-        String finalCode = codeBuilder.toString();
-        System.out.println("DEBUG: parseBinaryOp - generated code:\n" + finalCode);
-        System.out.println("DEBUG: parseBinaryOp - place: " + place);
-
-        return new Expression(finalCode, place);
+        return new Expression(codeBuilder.toString(), resultPlace);
     }
 
     private static void parseAssignmentOrInput() {
