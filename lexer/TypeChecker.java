@@ -6,6 +6,8 @@ public class TypeChecker {
     private static List<String> errors = new ArrayList<>();
     private static int currentLine = 0;
     private static boolean debug = true; // Set to true for detailed output
+    private static String currentFunction = null;
+    private static String currentFunctionType = null;
 
     public static void main(String[] args) {
         loadSymbolTable("Symbol.txt");
@@ -53,7 +55,18 @@ public class TypeChecker {
             return; // These lines don't require type checking
         }
     
-        if (line.contains("<")) {
+        if (line.matches("^(num|text|void)\\s+F_.*\\(.*\\).*")) {
+            // Extract function type and name more safely
+            String[] parts = line.split("\\s+|\\(");
+            if (parts.length >= 2) {
+                currentFunction = parts[1];
+                currentFunctionType = parts[0];
+            }
+            checkFunctionDeclaration(line);
+        } else if (line.equals("}")) {
+            currentFunction = null;
+            currentFunctionType = null;
+        } else if (line.contains("<")) {
             checkInput(line);
         } else if (line.contains("=")) {
             checkAssignment(line);
@@ -61,8 +74,6 @@ public class TypeChecker {
             checkCondition(line);
         } else if (line.startsWith("return")) {
             checkReturn(line);
-        } else if (line.matches("^(num|text|void)\\s+F_.*\\(.*\\).*")) {
-            checkFunctionDeclaration(line);
         } else if (line.startsWith("num") || line.startsWith("text") || line.startsWith("void")) {
             checkDeclaration(line);
         } else if (line.contains("(")) {
@@ -164,12 +175,38 @@ public class TypeChecker {
         }
     }
 
+    // private static void checkReturn(String line) {
+    //     String value = line.substring(line.indexOf(" ") + 1, line.indexOf(";")).trim();
+    //     if (value.startsWith("\"") && value.endsWith("\"")) {
+    //         // It's a string literal, which is fine
+    //     } else {
+    //         checkExpression(value);
+    //     }
+    // }
+
     private static void checkReturn(String line) {
+        if (currentFunction == null || currentFunctionType == null) {
+            return; // Not in a function
+        }
+    
         String value = line.substring(line.indexOf(" ") + 1, line.indexOf(";")).trim();
-        if (value.startsWith("\"") && value.endsWith("\"")) {
-            // It's a string literal, which is fine
-        } else {
-            checkExpression(value);
+        
+        // void functions shouldn't return a value
+        if (currentFunctionType.equals("void") && !value.isEmpty()) {
+            addError("Void function cannot return a value");
+            return;
+        }
+    
+        // num functions must return a numeric value
+        if (currentFunctionType.equals("num")) {
+            if (value.startsWith("\"")) {
+                addError("Function " + currentFunction + " has return type num but is returning text");
+                return;
+            }
+            String returnType = checkExpression(value);
+            if (!returnType.equals("num")) {
+                addError("Function " + currentFunction + " has return type num but is returning " + returnType);
+            }
         }
     }
 

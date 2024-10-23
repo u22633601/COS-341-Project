@@ -1,12 +1,8 @@
-t1 = 2
-t2 = 4
-t3 = t1 + t2
-v101 = t3
 INPUT v101
-t4 = v101
-t5 = 0
-t6 = t4 > t5
-IF t6 GOTO L1 ELSE GOTO L2
+t1 = v101
+t2 = 0
+t3 = t1 > t2
+IF t3 GOTO L1 ELSE GOTO L2
 L1:
 RETURN "Pos"
 GOTO L3
