@@ -314,7 +314,7 @@ public class TypeChecker {
             if (isBuiltInFunction(funcName)) {
                 checkBuiltInFunction(funcName, args);
                 if (funcName.equals("grt") || funcName.equals("eq") || 
-                    funcName.equals("and") || funcName.equals("or")) {
+                    funcName.equals("and") || funcName.equals("or") || funcName.equals("not")) {
                     return "bool";
                 }
                 return "num";
