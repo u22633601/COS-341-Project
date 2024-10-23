@@ -8,6 +8,8 @@ public class TypeChecker {
     private static boolean debug = true; // Set to true for detailed output
     private static String currentFunction = null;
     private static String currentFunctionType = null;
+    private static boolean hasReturnStatement = false;
+    private static Set<String> currentFunctionCalls = new HashSet<>();
 
     public static void main(String[] args) {
         loadSymbolTable("Symbol.txt");
@@ -33,6 +35,65 @@ public class TypeChecker {
         }
     }
 
+    private static void checkReturn(String line) {
+        if (currentFunction == null || currentFunctionType == null) {
+            return; // Not in a function
+        }
+    
+        // Handle both spellings of return
+        String value;
+        if (line.startsWith("return")) {
+            value = line.substring(6).trim();
+        } else if (line.startsWith("retrun")) {
+            value = line.substring(6).trim();
+        } else {
+            return;
+        }
+    
+        // Remove semicolon if present
+        if (value.endsWith(";")) {
+            value = value.substring(0, value.length() - 1).trim();
+        }
+        
+        // void functions shouldn't return a value
+        if (currentFunctionType.equals("void")) {
+            if (!value.isEmpty()) {
+                addError("Void function cannot return a value");
+            }
+            return;
+        }
+    
+        // num functions must return a numeric value
+        if (currentFunctionType.equals("num")) {
+            hasReturnStatement = true;  // Mark that we found a return statement
+            if (value.startsWith("\"")) {
+                addError("Function " + currentFunction + " has return type num but is returning text");
+                return;
+            }
+            String returnType = checkExpression(value);
+            if (!returnType.equals("num")) {
+                addError("Function " + currentFunction + " has return type num but is returning " + returnType);
+            }
+        }
+    }
+    
+    // Also update the checkFunctionBody method to handle both spellings
+    private static void checkFunctionBody(String line) {
+        if (line.equals("{")) {
+            hasReturnStatement = false;  // Reset at start of function
+        } else if (line.equals("}")) {
+            // Check return requirements when function ends
+            if (currentFunctionType != null && currentFunctionType.equals("num") && !hasReturnStatement) {
+                addError("Function " + currentFunction + " must have a return statement");
+            }
+            currentFunction = null;
+            currentFunctionType = null;
+            hasReturnStatement = false;
+        } else if (line.startsWith("return") || line.startsWith("retrun")) {
+            hasReturnStatement = true;
+        }
+    }
+
     private static void checkProgram(String filename) {
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
@@ -51,21 +112,21 @@ public class TypeChecker {
 
     private static void checkLine(String line) {
         line = line.trim();
+        
+        // Add function body checking
+        checkFunctionBody(line);
+        
         if (line.isEmpty() || line.startsWith("main") || line.equals("end") || line.startsWith("begin")) {
-            return; // These lines don't require type checking
+            return;
         }
     
         if (line.matches("^(num|text|void)\\s+F_.*\\(.*\\).*")) {
-            // Extract function type and name more safely
             String[] parts = line.split("\\s+|\\(");
             if (parts.length >= 2) {
                 currentFunction = parts[1];
                 currentFunctionType = parts[0];
             }
             checkFunctionDeclaration(line);
-        } else if (line.equals("}")) {
-            currentFunction = null;
-            currentFunctionType = null;
         } else if (line.contains("<")) {
             checkInput(line);
         } else if (line.contains("=")) {
@@ -77,6 +138,14 @@ public class TypeChecker {
         } else if (line.startsWith("num") || line.startsWith("text") || line.startsWith("void")) {
             checkDeclaration(line);
         } else if (line.contains("(")) {
+            // Check for function calls not in assignments
+            String funcName = line.substring(0, line.indexOf("(")).trim();
+            if (funcName.startsWith("F_")) {
+                String funcType = symbolTable.get(funcName);
+                if (funcType != null && funcType.equals("num")) {
+                    addError("Function " + funcName + " has return type num and must be used in an assignment");
+                }
+            }
             checkFunctionCall(line);
         }
     }
@@ -184,31 +253,7 @@ public class TypeChecker {
     //     }
     // }
 
-    private static void checkReturn(String line) {
-        if (currentFunction == null || currentFunctionType == null) {
-            return; // Not in a function
-        }
     
-        String value = line.substring(line.indexOf(" ") + 1, line.indexOf(";")).trim();
-        
-        // void functions shouldn't return a value
-        if (currentFunctionType.equals("void") && !value.isEmpty()) {
-            addError("Void function cannot return a value");
-            return;
-        }
-    
-        // num functions must return a numeric value
-        if (currentFunctionType.equals("num")) {
-            if (value.startsWith("\"")) {
-                addError("Function " + currentFunction + " has return type num but is returning text");
-                return;
-            }
-            String returnType = checkExpression(value);
-            if (!returnType.equals("num")) {
-                addError("Function " + currentFunction + " has return type num but is returning " + returnType);
-            }
-        }
-    }
 
     private static void checkFunctionCall(String line) {
         String funcName = line.substring(0, line.indexOf("(")).trim();
