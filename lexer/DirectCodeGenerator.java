@@ -137,31 +137,6 @@ public class DirectCodeGenerator {
         code.add(labelEnd + ":");
     }
 
-    private static Expression parseOperatorExpression(String operator) {
-        advance(); // Skip (
-        Expression leftExp = parseExpression();
-        advance(); // Skip ,
-        Expression rightExp = parseExpression();
-        advance(); // Skip )
-
-        String temp = "t" + tempCounter++;
-        String operatorSymbol = translateOperator(operator);
-
-        StringBuilder codeBuilder = new StringBuilder();
-        if (!leftExp.code.isEmpty()) {
-            codeBuilder.append(leftExp.code).append("\n");
-        }
-        if (!rightExp.code.isEmpty()) {
-            codeBuilder.append(rightExp.code).append("\n");
-        }
-        codeBuilder.append(temp).append(" = ")
-                .append(leftExp.place).append(" ")
-                .append(operatorSymbol).append(" ")
-                .append(rightExp.place);
-
-        return new Expression(codeBuilder.toString(), temp);
-    }
-
     private static void printGeneratedCode() {
         System.out.println("\nGenerated Code:");
         for (String line : code) {
@@ -212,9 +187,9 @@ public class DirectCodeGenerator {
                     String opSymbol = translateOperator(token);
 
                     StringBuilder codeBuilder = new StringBuilder();
-                    codeBuilder.append(place1).append(" = ").append(exp1.place).append("\n");
-                    codeBuilder.append(place2).append(" = ").append(exp2.place).append("\n");
-                    codeBuilder.append(place).append(" = ").append(place1)
+                    codeBuilder.append(place1).append(" := ").append(exp1.place).append("\n");
+                    codeBuilder.append(place2).append(" := ").append(exp2.place).append("\n");
+                    codeBuilder.append(place).append(" := ").append(place1)
                             .append(" ").append(opSymbol).append(" ")
                             .append(place2);
 
@@ -346,7 +321,7 @@ public class DirectCodeGenerator {
             }
 
             // Add the assignment
-            assignCode.append(varName).append(" = ").append(exp.place).append("\n");
+            assignCode.append(varName).append(" := ").append(exp.place).append("\n");
 
             return assignCode.toString();
         }
@@ -523,9 +498,9 @@ public class DirectCodeGenerator {
         String opSymbol = translateOperator(op);
 
         StringBuilder codeBuilder = new StringBuilder();
-        codeBuilder.append(place1).append(" = ").append(exp1.place).append("\n");
-        codeBuilder.append(place2).append(" = ").append(exp2.place).append("\n");
-        codeBuilder.append(place).append(" = ").append(place1)
+        codeBuilder.append(place1).append(" := ").append(exp1.place).append("\n");
+        codeBuilder.append(place2).append(" := ").append(exp2.place).append("\n");
+        codeBuilder.append(place).append(" := ").append(place1)
                 .append(" ").append(opSymbol).append(" ")
                 .append(place2);
 
