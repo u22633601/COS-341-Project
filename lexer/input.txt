@@ -1,46 +1,46 @@
 main
-num V_x , num V_y , num V_result ,
+num V_a ,
+num V_b ,
+text V_result ,
+
 begin
+V_a = 5 ;
+V_b = 10 ;
 
-  V_x < input ;
-  V_y < input ;
-
-  if eq ( V_y , 0 ) then
-    begin
-      V_result = F_average ( V_x , V_y , V_result ) ;
-      print V_result ;
-      skip ;
-    end
-  else
-    begin
-      if or ( eq ( V_x , 0 ) , eq ( V_y , 0 ) ) then
+if eq ( V_a , V_b ) then
         begin
-          print "Zero" ;
+          print "True" ;
         end
       else
         begin
-          V_result = mul ( V_x , V_y ) ;
-          return V_result ;
+          print "False" ;
         end ;
-    end ;
-end
 
-num F_average ( V_c , V_b , V_dummy )
-{
-num V_sum , num V_count , num V_a ,
-begin
-  V_sum = add ( V_a , V_b ) ;
-  V_count = 2 ;
-end
-}
-end
+if grt ( V_a , V_b ) then
+        begin
+          print "True" ;
+        end
+      else
+        begin
+          print "False" ;
+        end ;
 
-num F_ave ( V_d , V_e , V_f )
-{
-num V_g , num V_h , num V_i ,
-begin
-  V_i = add ( V_a , V_b ) ;
-  V_f = 2 ;
-end
-}
+ if and ( grt ( V_a , V_b ) , eq ( V_a , V_b ) ) then
+        begin
+          print "True" ;
+        end
+      else
+        begin
+          print "False" ;
+        end ;
+
+if or ( grt ( V_a , V_b ) , eq ( V_a , V_b ) )  then
+        begin
+          print "True" ;
+        end
+      else
+        begin
+          print "False" ;
+        end ;
+
 end
