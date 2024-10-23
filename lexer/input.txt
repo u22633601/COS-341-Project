@@ -1,14 +1,25 @@
 main
-num V_x ,
+num V_x , num V_y , num V_result ,
 begin
+
   V_x < input ;
-  if grt ( V_x , 0 ) then
+  V_y < input ;
+
+  if eq ( V_y , 0 ) then
     begin
-      return "Pos" ;
+      print V_result ;
+      skip ;
     end
   else
     begin
-      return "Npos" ;
-    end
-    ;
+      if and ( grt ( V_x , 0 ) , eq ( V_y , 0 ) ) then
+        begin
+          print "Zero" ;
+        end
+      else
+        begin
+          V_result = mul ( V_x , V_y ) ;
+          return V_result ;
+        end ;
+    end ;
 end
