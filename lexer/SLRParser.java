@@ -181,7 +181,7 @@ private String getAction(int state, Token token) {
                 if (tokenValue.equals("end")) return "r8";
                 if (tokenValue.equals("skip")) return "s20";
                 if (tokenValue.equals("halt")) return "s21";
-                if (tokenValue.equals("return"))
+                if ((tokenValue.equals("return")) || (tokenValue.equals("print")))
                     return "s22";
                 if (tokenValue.equals("if"))
                     return "s28";
@@ -353,7 +353,7 @@ private String getAction(int state, Token token) {
                     return "s20";
                 if (tokenValue.equals("halt"))
                     return "s21";
-                if (tokenValue.equals("return"))
+                if ((tokenValue.equals("return")) || (tokenValue.equals("print")))
                     return "s22";
                 if (tokenValue.equals("if"))
                     return "s28";
