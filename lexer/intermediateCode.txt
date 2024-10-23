@@ -1,13 +1,54 @@
-v103 := 5
-v104 := 10
-t1 := v103
-t2 := v104
-t3 := t1 > t2
+INPUT v111
+INPUT v112
+t1 := v112
+t2 := 0
+t3 := t1 = t2
 IF t3 GOTO L1 ELSE GOTO L2
 L1:
-PRINT "True"
+t4 := CALL_f501(v111,v112,v110)
+v110 := t4
+PRINT v110
+REM DO NOTHING
 GOTO L3
 L2:
-PRINT "False"
+t5 := v111
+t6 := 0
+t7 := t5 = t6
+t8 := v112
+t9 := 0
+t10 := t8 = t9
+t11 := t7
+t12 := t10
+t13 := t11 OR t12
+IF t13 GOTO L4 ELSE GOTO L5
+L4:
+PRINT "Zero"
+GOTO L6
+L5:
+t14 := v111
+t15 := v112
+t16 := t14 * t15
+v110 := t16
+RETURN v110
+L6:
 L3:
 STOP
+REM BEGIN
+t17 := v130
+t18 := v131
+t19 := t17 + t18
+v119 := t19
+v122 := 2
+RETURN v119
+REM END
+STOP
+REM BEGIN
+t20 := v130
+t21 := v131
+t22 := t20 + t21
+v129 := t22
+v132 := 2
+RETURN v129
+REM END
+STOP
+REM END

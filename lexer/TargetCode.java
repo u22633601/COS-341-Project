@@ -97,7 +97,7 @@ public class TargetCode {
     
         String endLabel = findEndLabel(intermediateCode);
         tempVarMap.clear();
-        tempNumVarCounter = 1;
+        tempNumVarCounter = 4;  // Start after the main variables (V1%, V2%, V3%)
     
         // First pass: map all temporary variables in order of appearance
         for (String line : intermediateCode) {
@@ -109,7 +109,8 @@ public class TargetCode {
                 
                 // Map temporary variable
                 if (left.startsWith("t")) {
-                    tempVarMap.putIfAbsent(left, "V" + tempNumVarCounter++ + "%");
+                    String newVar = "V" + tempNumVarCounter++ + "%";
+                    tempVarMap.putIfAbsent(left, newVar);
                 }
             }
         }
@@ -148,21 +149,15 @@ public class TargetCode {
                     String leftOp = translateVariable(operands[0].trim());
                     String rightOp = translateVariable(operands[1].trim());
                     addLine("LET " + translateVariable(left) + " = " + leftOp + " " + operator + " " + rightOp);
-                } else if (left.startsWith("t") || left.startsWith("v")) {
-                    // Skip temporary assignments that just copy variables
-                    if (left.startsWith("t") && right.matches("v\\d+|t\\d+")) {
-                        // Map the temporary variable to the same BASIC variable as the source
-                        tempVarMap.put(left, translateVariable(right));
-                        continue;
-                    }
-                    
-                    // Handle comparison operations
-                    if (right.contains(">") || right.contains("=")) {
-                        addLine("LET " + translateVariable(left) + " = " + translateExpression(right));
-                    } else if (!right.matches("v\\d+|t\\d+")) {
-                        // Only generate assignment for non-variable right hand sides
-                        addLine("LET " + translateVariable(left) + " = " + translateVariable(right));
-                    }
+                } else if (right.contains(">") || right.contains("=")) {
+                    addLine("LET " + translateVariable(left) + " = " + translateExpression(right));
+                } else if (right.contains("*")) {
+                    String[] mulParts = right.split("\\*");
+                    String leftOp = translateVariable(mulParts[0].trim());
+                    String rightOp = translateVariable(mulParts[1].trim());
+                    addLine("LET " + translateVariable(left) + " = " + leftOp + " * " + rightOp);
+                } else {
+                    addLine("LET " + translateVariable(left) + " = " + translateVariable(right));
                 }
             }
             else if (line.startsWith("PRINT")) {
