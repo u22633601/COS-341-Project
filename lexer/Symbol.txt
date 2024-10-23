@@ -1,3 +1,3 @@
-V_y : v110 : num
-V_result : v108 : num
-V_x : v109 : num
+V_result : v102 : text
+V_b : v104 : num
+V_a : v103 : num
