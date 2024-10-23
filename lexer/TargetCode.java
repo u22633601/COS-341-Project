@@ -7,7 +7,7 @@ public class TargetCode {
     private static Map<String, String> variableMap = new HashMap<>();
     private static Map<String, Integer> labelMap = new HashMap<>();
     private static List<String> basicCode = new ArrayList<>();
-    private static Map<String, String> tempVarMap = new HashMap<>();  // Add this field for temporary variables
+    private static Map<String, String> tempVarMap = new HashMap<>();
     private static int tempNumVarCounter = 1;
 
     public static void main(String[] args) {
@@ -76,51 +76,7 @@ public class TargetCode {
         }
     }
 
-    // The translateVariable method needs to be updated to use the new variable format
-    // private static String translateVariable(String var) {
-    //     if (var == null || var.isEmpty()) {
-    //         return "";
-    //     }
-    //     if (var.matches("v\\d+")) {
-    //         return variableMap.getOrDefault(var, var);
-    //     } else if (var.startsWith("M[")) {
-    //         String[] parts = var.split("\\[|\\]");
-    //         return "M(" + parts[1] + ",SP)";
-    //     } else {
-    //         return var;
-    //     }
-    // }
-
-    private static String translateVariable(String var) {
-        if (var == null || var.isEmpty()) {
-            return "";
-        }
-        
-        // Handle temporary variables (t1, t2, t3, etc.)
-        if (var.startsWith("t")) {
-            return tempVarMap.computeIfAbsent(var, k -> "V" + tempNumVarCounter++ + "%");
-        }
-        
-        // Handle regular variables
-        if (var.matches("v\\d+")) {
-            return variableMap.getOrDefault(var, var);
-        } else if (var.startsWith("M[")) {
-            String[] parts = var.split("\\[|\\]");
-            return "M(" + parts[1] + ",SP)";
-        } else if (var.startsWith("\"")) {  // Handle string literals
-            return var;  // Return string literals as-is
-        } else {
-            // Handle numeric literals
-            try {
-                Integer.parseInt(var);
-                return var;
-            } catch (NumberFormatException e) {
-                return variableMap.getOrDefault(var, var);
-            }
-        }
-    }
-
-
+    
     private static List<String> readIntermediateCode() {
         List<String> code = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("intermediateCode.txt"))) {
@@ -137,23 +93,35 @@ public class TargetCode {
     private static void generateBasicCode(List<String> intermediateCode) {
         addLine("DIM M(7," + STACK_SIZE + ")");
         addLine("SP = 0");
-        addLine("DIM R$");  // String variable for return values
+        addLine("DIM R$");
     
-        // First pass: find end label
         String endLabel = findEndLabel(intermediateCode);
+        tempVarMap.clear();
+        tempNumVarCounter = 1;
     
+        // First pass: map all temporary variables in order of appearance
+        for (String line : intermediateCode) {
+            line = line.trim();
+            if (line.contains(":=")) {
+                String[] parts = line.split(":=");
+                String left = parts[0].trim();
+                String right = parts[1].trim();
+                
+                // Map temporary variable
+                if (left.startsWith("t")) {
+                    tempVarMap.putIfAbsent(left, "V" + tempNumVarCounter++ + "%");
+                }
+            }
+        }
+    
+        // Second pass: generate code
         for (String line : intermediateCode) {
             line = line.trim();
             
             if (line.isEmpty()) continue;
             
             if (line.startsWith("LABEL") || line.matches("L\\d+:")) {
-                String label;
-                if (line.startsWith("LABEL")) {
-                    label = line.split(" ")[1];
-                } else {
-                    label = line.split(":")[0];
-                }
+                String label = line.startsWith("LABEL") ? line.split(" ")[1] : line.split(":")[0];
                 labelMap.put(label, lineNumber);
                 addLine("REM " + label);
             }
@@ -162,51 +130,103 @@ public class TargetCode {
                 String condition = parts[1];
                 String thenLabel = parts[3];
                 String elseLabel = parts[6];
-                addLine("IF " + translateCondition(condition) + " THEN GOTO " + thenLabel);
+                addLine("IF " + translateVariable(condition) + " THEN GOTO " + thenLabel);
                 addLine("GOTO " + elseLabel);
             }
             else if (line.startsWith("GOTO")) {
                 String label = line.split(" ")[1];
                 addLine("GOTO " + label);
             }
-            else if (line.contains("=")) {
-                String[] parts = line.split("=");
+            else if (line.contains(":=")) {
+                String[] parts = line.split(":=");
                 String left = parts[0].trim();
                 String right = parts[1].trim();
                 
-                if (right.startsWith("\"")) {
-                    // For string literals, use R$ directly
-                    addLine("LET R$ = " + right);
-                } else {
-                    addLine("LET " + translateVariable(left) + " = " + translateExpression(right));
+                if (right.contains("AND") || right.contains("OR")) {
+                    String operator = right.contains("AND") ? "AND" : "OR";
+                    String[] operands = right.split(operator);
+                    String leftOp = translateVariable(operands[0].trim());
+                    String rightOp = translateVariable(operands[1].trim());
+                    addLine("LET " + translateVariable(left) + " = " + leftOp + " " + operator + " " + rightOp);
+                } else if (left.startsWith("t") || left.startsWith("v")) {
+                    // Skip temporary assignments that just copy variables
+                    if (left.startsWith("t") && right.matches("v\\d+|t\\d+")) {
+                        // Map the temporary variable to the same BASIC variable as the source
+                        tempVarMap.put(left, translateVariable(right));
+                        continue;
+                    }
+                    
+                    // Handle comparison operations
+                    if (right.contains(">") || right.contains("=")) {
+                        addLine("LET " + translateVariable(left) + " = " + translateExpression(right));
+                    } else if (!right.matches("v\\d+|t\\d+")) {
+                        // Only generate assignment for non-variable right hand sides
+                        addLine("LET " + translateVariable(left) + " = " + translateVariable(right));
+                    }
                 }
             }
             else if (line.startsWith("PRINT")) {
-                String var = translateVariable(line.split(" ")[1]);
-                addLine("PRINT " + var);
+                String content = line.substring(6).trim();
+                addLine("PRINT " + (content.startsWith("\"") ? content : translateVariable(content)));
             }
             else if (line.startsWith("INPUT")) {
                 String var = translateVariable(line.split(" ")[1]);
                 addLine("INPUT " + var);
             }
-            else if (line.startsWith("RETURN")) {
-                // Instead of RETURN, use GOTO to end label
-                if (line.length() > 6) {  // Has a return value
-                    String retVal = line.substring(7).trim();
-                    if (retVal.startsWith("\"")) {
-                        addLine("LET R$ = " + retVal);
-                    } else {
-                        addLine("LET M(0,SP) = " + translateVariable(retVal));
-                    }
-                }
-                if (endLabel != null) {
-                    addLine("GOTO " + endLabel);
-                }
-            }
             else if (line.equals("STOP")) {
                 addLine("END");
             }
         }
+    }
+    
+    private static String translateVariable(String var) {
+        if (var == null || var.isEmpty()) {
+            return "";
+        }
+        
+        // Handle temporary variables
+        if (var.matches("t\\d+")) {
+            return tempVarMap.getOrDefault(var, var);
+        }
+        
+        // Handle regular variables
+        if (var.matches("v\\d+")) {
+            return variableMap.getOrDefault(var, var);
+        } else if (var.startsWith("M[")) {
+            String[] parts = var.split("\\[|\\]");
+            return "M(" + parts[1] + ",SP)";
+        } else if (var.startsWith("\"")) {
+            return var;
+        } else {
+            try {
+                Integer.parseInt(var);
+                return var;
+            } catch (NumberFormatException e) {
+                return variableMap.getOrDefault(var, var);
+            }
+        }
+    }
+    
+    
+    
+    private static String translateExpression(String expr) {
+        expr = expr.trim();
+        
+        if (expr.contains("=")) {
+            String[] parts = expr.split("=");
+            String left = translateVariable(parts[0].trim());
+            String right = translateVariable(parts[1].trim());
+            return "-(" + left + " = " + right + ")";
+        }
+        
+        if (expr.contains(">")) {
+            String[] parts = expr.split(">");
+            String left = translateVariable(parts[0].trim());
+            String right = translateVariable(parts[1].trim());
+            return "-(" + left + " > " + right + ")";
+        }
+        
+        return translateVariable(expr);
     }
     
     private static String findEndLabel(List<String> intermediateCode) {
@@ -262,40 +282,6 @@ public class TargetCode {
             default: return left + " " + op + " " + right;
         }
     }
-
-    private static String translateExpression(String expr) {
-        // Handle simple comparison expressions (like t1 > t2)
-        if (expr.contains(">")) {
-            String[] parts = expr.split(">");
-            String left = translateVariable(parts[0].trim());
-            String right = translateVariable(parts[1].trim());
-            return left + " > " + right;
-        }
-        
-        // Handle existing cases
-        if (expr.contains("(")) {
-            String[] parts = expr.split("\\(|,|\\)");
-            String operation = parts[0];
-            String left = translateVariable(parts[1]);
-            String right = translateVariable(parts[2]);
-            
-            switch (operation) {
-                case "add":
-                    return left + " + " + right;
-                case "sub":
-                    return left + " - " + right;
-                case "mul":
-                    return left + " * " + right;
-                case "div":
-                    return left + " / " + right;
-                default:
-                    return expr; 
-            }
-        }
-        return translateVariable(expr);
-    }
-
-    
 
     
 }
