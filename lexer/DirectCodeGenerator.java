@@ -61,21 +61,39 @@ public class DirectCodeGenerator {
         }
     }
 
-    private static void parseStatement() {
+    private static String parseStatement() {
         String token = getCurrentToken();
+        StringBuilder statement = new StringBuilder();
         System.out.println("Parsing statement: " + token);
 
         switch (token) {
             case "if":
-                parseIfStatement();
+                statement.append(parseIfStatement());
                 break;
             case "return":
-                parseReturnStatement();
+                advance();
+                Expression returnExp = parseExpression();
+                if (!returnExp.code.isEmpty()) {
+                    statement.append(returnExp.code).append("\n");
+                }
+                statement.append("RETURN ").append(returnExp.place).append("\n");
+                if (getCurrentToken().equals(";")) {
+                    advance();
+                }
+                break;
             case "print":
-                parsePrintStatement();
+                advance();
+                Expression printExp = parseExpression();
+                if (!printExp.code.isEmpty()) {
+                    statement.append(printExp.code).append("\n");
+                }
+                statement.append("PRINT ").append(printExp.place).append("\n");
+                if (getCurrentToken().equals(";")) {
+                    advance();
+                }
                 break;
             case "skip":
-                code.add("REM DO NOTHING");
+                statement.append("REM DO NOTHING\n");
                 advance();
                 if (getCurrentToken().equals(";")) {
                     advance();
@@ -83,16 +101,45 @@ public class DirectCodeGenerator {
                 break;
             default:
                 if (token.startsWith("V_")) {
-                    parseAssignmentOrInput();
+                    statement.append(parseAssignment());
                 } else {
                     System.out.println("Unexpected token: " + token);
                     advance(); // Skip unknown token
                 }
                 break;
         }
+        return statement.toString();
     }
 
-    private static void parseIfStatement() {
+    private static String parseAssignment() {
+        StringBuilder assignCode = new StringBuilder();
+        String varName = translateVar(getCurrentToken());
+        advance();
+        String nextToken = getCurrentToken();
+
+        if (nextToken.equals("<")) {
+            advance(); // Skip
+            advance(); // Skip input
+            assignCode.append("INPUT ").append(varName).append("\n");
+            if (getCurrentToken().equals(";")) {
+                advance();
+            }
+        } else if (nextToken.equals("=")) {
+            advance(); // Skip =
+            Expression rightSideExp = parseExpression();
+            if (!rightSideExp.code.isEmpty()) {
+                assignCode.append(rightSideExp.code).append("\n");
+            }
+            assignCode.append(varName).append(" := ").append(rightSideExp.place).append("\n");
+            if (getCurrentToken().equals(";")) {
+                advance();
+            }
+        }
+        return assignCode.toString();
+    }
+
+    private static String parseIfStatement() {
+        StringBuilder ifCode = new StringBuilder();
         advance(); // Skip if
         Expression conditionExp = parseExpression();
 
@@ -106,36 +153,88 @@ public class DirectCodeGenerator {
         String labelFalse = "L" + labelCounter++;
         String labelEnd = "L" + labelCounter++;
 
-        StringBuilder ifCode = new StringBuilder();
         // Add any code needed to evaluate the condition
         if (!conditionExp.code.isEmpty()) {
             ifCode.append(conditionExp.code).append("\n");
         }
         ifCode.append("IF ").append(conditionExp.place)
                 .append(" GOTO ").append(labelTrue)
-                .append(" ELSE GOTO ").append(labelFalse);
-        code.add(ifCode.toString());
-        code.add(labelTrue + ":");
+                .append(" ELSE GOTO ").append(labelFalse)
+                .append("\n");
+
+        ifCode.append(labelTrue).append(":\n");
 
         // Parse then block
         while (!getCurrentToken().equals("end") && !getCurrentToken().equals("EOF")) {
-            parseStatement();
+            ifCode.append(parseStatement());
         }
         advance(); // Skip end
 
-        code.add("GOTO " + labelEnd);
-        code.add(labelFalse + ":");
+        ifCode.append("GOTO ").append(labelEnd).append("\n");
+        ifCode.append(labelFalse).append(":\n");
 
         if (getCurrentToken().equals("else")) {
             advance(); // Skip else
-            while (!getCurrentToken().equals("end") && !getCurrentToken().equals("EOF")) {
-                parseStatement();
+            if (getCurrentToken().equals("begin")) {
+                advance(); // Skip begin
+                while (!getCurrentToken().equals("end") && !getCurrentToken().equals("EOF")) {
+                    ifCode.append(parseStatement());
+                }
+                advance(); // Skip end
             }
-            advance(); // Skip end
         }
 
-        code.add(labelEnd + ":");
+        ifCode.append(labelEnd).append(":\n");
+
+        return ifCode.toString();
     }
+    // private static void parseIfStatement() {
+    // advance(); // Skip if
+    // Expression conditionExp = parseExpression();
+
+    // // Skip then
+    // while (!getCurrentToken().equals("then") && !getCurrentToken().equals("EOF"))
+    // {
+    // advance();
+    // }
+    // advance();
+
+    // String labelTrue = "L" + labelCounter++;
+    // String labelFalse = "L" + labelCounter++;
+    // String labelEnd = "L" + labelCounter++;
+
+    // StringBuilder ifCode = new StringBuilder();
+    // // Add any code needed to evaluate the condition
+    // if (!conditionExp.code.isEmpty()) {
+    // ifCode.append(conditionExp.code).append("\n");
+    // }
+    // ifCode.append("IF ").append(conditionExp.place)
+    // .append(" GOTO ").append(labelTrue)
+    // .append(" ELSE GOTO ").append(labelFalse);
+    // code.add(ifCode.toString());
+    // code.add(labelTrue + ":");
+
+    // // Parse then block
+    // while (!getCurrentToken().equals("end") && !getCurrentToken().equals("EOF"))
+    // {
+    // parseStatement();
+    // }
+    // advance(); // Skip end
+
+    // code.add("GOTO " + labelEnd);
+    // code.add(labelFalse + ":");
+
+    // if (getCurrentToken().equals("else")) {
+    // advance(); // Skip else
+    // while (!getCurrentToken().equals("end") && !getCurrentToken().equals("EOF"))
+    // {
+    // parseStatement();
+    // }
+    // advance(); // Skip end
+    // }
+
+    // code.add(labelEnd + ":");
+    // }
 
     private static void printGeneratedCode() {
         System.out.println("\nGenerated Code:");
@@ -198,7 +297,25 @@ public class DirectCodeGenerator {
                     return new Expression(codeBuilder.toString(), place);
                 }
             }
-        } else if (token.startsWith("V_") || token.startsWith("F_")) {
+        } else if (token.startsWith("F_")) {
+            // Handle function call
+            String fnName = translateVar(token);
+            advance(); // Skip (
+            List<String> params = new ArrayList<>();
+            for (int i = 0; i < 3; i++) { // Always 3 parameters
+                if (i > 0)
+                    advance(); // Skip comma
+                Expression param = parseExpression();
+                params.add(param.place);
+            }
+            advance(); // Skip )
+
+            // Generate temp variable for result and assign function call directly
+            String resultPlace = "t" + tempCounter++;
+            String callCode = resultPlace + " := CALL_" + fnName + "(" + String.join(",", params) + ")";
+
+            return new Expression(callCode, resultPlace);
+        } else if (token.startsWith("V_")) {
             return new Expression("", translateVar(token));
         } else {
             return new Expression("", token); // Constants are translated to themselves
@@ -237,6 +354,77 @@ public class DirectCodeGenerator {
         return currentToken >= tokens.size();
     }
 
+    private static void parseProg() {
+        StringBuilder mainCode = new StringBuilder();
+        StringBuilder functionCode = new StringBuilder();
+
+        // Skip main declarations until begin
+        while (!getCurrentToken().equals("begin") && !isEOF()) {
+            advance();
+        }
+
+        if (getCurrentToken().equals("begin")) {
+            advance();
+            System.out.println("DEBUG: Processing main code");
+            while (!getCurrentToken().equals("end") && !isEOF()) {
+                String statement = parseStatement();
+                mainCode.append(statement);
+            }
+            code.add(mainCode.toString());
+            code.add("STOP");
+
+            advance(); // Skip end
+
+            System.out.println("DEBUG: Processing functions");
+            // Process functions after main
+            while (!isEOF()) {
+                String token = getCurrentToken();
+                if (token.equals("num") || token.equals("void")) {
+                    functionCode.append(parseFunctionDeclaration());
+                }
+                advance();
+            }
+            // Add REM END after all functions
+            functionCode.append("REM END\n");
+            code.add(functionCode.toString());
+        }
+    }
+
+    private static String parseFunctionDeclaration() {
+        StringBuilder funcCode = new StringBuilder();
+        advance(); // Skip num/void
+        String funcName = translateVar(getCurrentToken());
+        advance(); // Skip function name
+        advance(); // Skip (
+
+        // Skip parameters (HEADER will vanish)
+        for (int i = 0; i < 3; i++) {
+            if (i > 0)
+                advance(); // Skip comma
+            advance(); // Skip parameter
+        }
+        advance(); // Skip )
+
+        // Skip until begin (skip LOCVARS)
+        while (!getCurrentToken().equals("begin") && !isEOF()) {
+            advance();
+        }
+
+        if (getCurrentToken().equals("begin")) {
+            advance();
+            // BODY only
+            funcCode.append("\n");
+            funcCode.append("REM BEGIN\n"); // PROLOG
+            while (!getCurrentToken().equals("end") && !isEOF()) {
+                String statement = parseStatement();
+                funcCode.append(statement);
+            }
+            funcCode.append("REM END\n"); // EPILOG
+            funcCode.append("STOP\n");
+        }
+
+        return funcCode.toString();
+    }
     private static String parseFunctions() {
         StringBuilder functionCode = new StringBuilder();
         while (!isEOF()) {
@@ -419,24 +607,6 @@ public class DirectCodeGenerator {
         }
     }
 
-    private static void parseProg() {
-        // Skip 'main' and variable declarations until 'begin'
-        while (!getCurrentToken().equals("begin") && !isEOF()) {
-            advance();
-        }
-
-        if (getCurrentToken().equals("begin")) {
-            advance();
-            String algoCode = parseAlgo();
-            String functionCode = parseFunctions();
-            code.add(algoCode);
-            code.add("STOP");
-            if (!functionCode.isEmpty()) {
-                code.add(functionCode);
-            }
-        }
-    }
-
     private static String parseAlgo() {
         StringBuilder algoCode = new StringBuilder();
         while (!getCurrentToken().equals("end") && !isEOF()) {
@@ -444,6 +614,110 @@ public class DirectCodeGenerator {
         }
         advance(); // Skip 'end'
         return algoCode.toString();
+    }
+
+    private static String parseMainBlock() {
+        StringBuilder mainCode = new StringBuilder();
+        while (!getCurrentToken().equals("end") && !isEOF()) {
+            if (getCurrentToken().equals("begin")) {
+                advance();
+                continue;
+            }
+            String statement = parseStatement();
+            mainCode.append(statement);
+            if (getCurrentToken().equals(";")) {
+                advance();
+            }
+        }
+        return mainCode.toString();
+    }
+
+    private static String parseFunctionBlock() {
+        StringBuilder funcCode = new StringBuilder();
+        advance(); // Skip num/void
+
+        String funcName = getCurrentToken();
+        String translatedName = translateVar(funcName);
+        System.out.println("DEBUG: Processing function: " + translatedName);
+
+        advance(); // Skip function name
+        advance(); // Skip (
+
+        // Get parameters
+        List<String> params = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            if (i > 0)
+                advance(); // Skip comma
+            params.add(translateVar(getCurrentToken()));
+            advance();
+        }
+
+        funcCode.append("\n").append(translatedName).append(" ")
+                .append(String.join(",", params)).append("\n");
+
+        // Skip to function body
+        while (!getCurrentToken().equals("begin") && !isEOF()) {
+            advance();
+        }
+
+        if (getCurrentToken().equals("begin")) {
+            advance();
+            // Parse function body
+            while (!getCurrentToken().equals("end") && !isEOF()) {
+                String statement = parseStatement();
+                funcCode.append(statement);
+                if (getCurrentToken().equals(";")) {
+                    advance();
+                }
+            }
+        }
+
+        return funcCode.toString();
+    }
+
+    private static String handleFunctionDeclaration(String funcName) {
+        StringBuilder funcCode = new StringBuilder();
+        String fName = translateVar(funcName);
+        System.out.println("DEBUG: Translating function: " + funcName + " to " + fName);
+
+        // Build function header
+        funcCode.append("\n").append(fName).append(" ");
+
+        advance(); // Skip (
+        // Get parameters
+        List<String> params = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            if (i > 0) {
+                advance(); // Skip comma
+            }
+            String param = translateVar(getCurrentToken());
+            params.add(param);
+            advance();
+        }
+        funcCode.append(String.join(",", params)).append("\n");
+
+        // Skip until begin
+        System.out.println("DEBUG: Skipping to function body");
+        while (!getCurrentToken().equals("begin") && !isEOF()) {
+            advance();
+        }
+
+        if (getCurrentToken().equals("begin")) {
+            advance();
+            System.out.println("DEBUG: Processing function body");
+            String body = parseAlgo();
+            funcCode.append(body);
+        }
+
+        return funcCode.toString();
+    }
+
+    // Helper method to peek next token
+    private static String peekNextToken() {
+        if (currentToken + 1 < tokens.size()) {
+            return tokens.get(currentToken + 1);
+        }
+        return "EOF";
     }
 
     private static String parseInstruc() {
@@ -506,7 +780,6 @@ public class DirectCodeGenerator {
 
         // Generate temporary variables and code for both operands
         StringBuilder codeBuilder = new StringBuilder();
-        // Add code from nested operations if any
         if (!exp1.code.isEmpty()) {
             codeBuilder.append(exp1.code).append("\n");
         }
@@ -514,7 +787,6 @@ public class DirectCodeGenerator {
             codeBuilder.append(exp2.code).append("\n");
         }
 
-        // Always create temp variables for operands
         String place1 = "t" + tempCounter++;
         String place2 = "t" + tempCounter++;
         String resultPlace = "t" + tempCounter++;
@@ -523,7 +795,7 @@ public class DirectCodeGenerator {
         codeBuilder.append(place1).append(" := ").append(exp1.place).append("\n");
         codeBuilder.append(place2).append(" := ").append(exp2.place).append("\n");
 
-        // Add the operation
+        // Use proper operator translation
         String opSymbol = translateOperator(op);
         codeBuilder.append(resultPlace).append(" := ").append(place1)
                 .append(" ").append(opSymbol).append(" ")
