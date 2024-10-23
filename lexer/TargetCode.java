@@ -211,14 +211,14 @@ public class TargetCode {
             String[] parts = expr.split("=");
             String left = translateVariable(parts[0].trim());
             String right = translateVariable(parts[1].trim());
-            return "-(" + left + " = " + right + ")";
+            return "(" + left + " = " + right + ")";
         }
         
         if (expr.contains(">")) {
             String[] parts = expr.split(">");
             String left = translateVariable(parts[0].trim());
             String right = translateVariable(parts[1].trim());
-            return "-(" + left + " > " + right + ")";
+            return "(" + left + " > " + right + ")";
         }
         
         return translateVariable(expr);
