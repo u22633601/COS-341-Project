@@ -393,35 +393,40 @@ public class DirectCodeGenerator {
     private static String parseFunctionDeclaration() {
         StringBuilder funcCode = new StringBuilder();
         advance(); // Skip num/void
+
+        // Get function name and parameters (HEADER)
         String funcName = translateVar(getCurrentToken());
         advance(); // Skip function name
         advance(); // Skip (
 
-        // Skip parameters (HEADER will vanish)
+        List<String> params = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             if (i > 0)
                 advance(); // Skip comma
-            advance(); // Skip parameter
+            params.add(translateVar(getCurrentToken()));
+            advance();
         }
-        advance(); // Skip )
 
-        // Skip until begin (skip LOCVARS)
+        // Start BODY
+        funcCode.append("\n"); // Spacing before function
+        funcCode.append("REM BEGIN\n"); // PROLOG
+        funcCode.append(funcName).append(" ").append("\n");
+
+        // Skip to function body (ALGO)
         while (!getCurrentToken().equals("begin") && !isEOF()) {
             advance();
         }
 
         if (getCurrentToken().equals("begin")) {
             advance();
-            // BODY only
-            funcCode.append("\n");
-            funcCode.append("REM BEGIN\n"); // PROLOG
             while (!getCurrentToken().equals("end") && !isEOF()) {
                 String statement = parseStatement();
                 funcCode.append(statement);
             }
-            funcCode.append("REM END\n"); // EPILOG
-            funcCode.append("STOP\n");
         }
+
+        funcCode.append("REM END\n"); // EPILOG
+        funcCode.append("STOP\n"); // Stop before next function
 
         return funcCode.toString();
     }
