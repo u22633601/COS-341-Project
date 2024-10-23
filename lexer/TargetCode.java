@@ -8,64 +8,34 @@ public class TargetCode {
     private static Map<String, Integer> labelMap = new HashMap<>();
     private static List<String> basicCode = new ArrayList<>();
     private static Map<String, String> tempVarMap = new HashMap<>();
+    private static Map<String, String> valueTracker = new HashMap<>(); // Tracks current value of each variable
     private static int tempNumVarCounter = 1;
 
     public static void main(String[] args) {
-        loadSymbolTable();  // Add this call to main
+        loadSymbolTable();
         List<String> intermediateCode = readIntermediateCode();
         generateBasicCode(intermediateCode);
         updateGotoLines();
         printBasicCode();
     }
 
-    // private static void loadSymbolTable() {
-    //     try (BufferedReader reader = new BufferedReader(new FileReader("Symbol.txt"))) {
-    //         String line;
-    //         int numVarCounter = 1;  // Counter for numeric variables (V1%, V2%, etc.)
-    //         char textVarCounter = 'A';  // Counter for text variables (A$, B$, etc.)
-            
-    //         while ((line = reader.readLine()) != null) {
-    //             String[] parts = line.split(" : ");
-    //             if (parts.length == 3) {
-    //                 String originalName = parts[0];  // V_x, V_y, etc.
-    //                 String generatedName = parts[1]; // v101, v102, etc.
-    //                 String type = parts[2].trim();   // num or text
-                    
-    //                 if (type.equals("num")) {
-    //                     // Create numeric variable (V1%, V2%, etc.)
-    //                     variableMap.put(generatedName, "V" + numVarCounter + "%");
-    //                     numVarCounter++;
-    //                 } else if (type.equals("text")) {
-    //                     // Create text variable (A$, B$, etc.)
-    //                     variableMap.put(generatedName, textVarCounter + "$");
-    //                     textVarCounter++;
-    //                 }
-    //             }
-    //         }
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
-
     private static void loadSymbolTable() {
         try (BufferedReader reader = new BufferedReader(new FileReader("Symbol.txt"))) {
             String line;
-            int numVarCounter = 1;  // Counter for numeric variables (V1%, V2%, etc.)
-            char textVarCounter = 'A';  // Counter for text variables (A$, B$, etc.)
+            int numVarCounter = 1;
+            char textVarCounter = 'A';
                 
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" : ");
                 if (parts.length == 3) {
-                    String originalName = parts[0];  // V_x, V_y, etc.
-                    String generatedName = parts[1]; // v101, v102, etc.
-                    String type = parts[2].trim();   // num or text
+                    String originalName = parts[0];
+                    String generatedName = parts[1];
+                    String type = parts[2].trim();
                         
                     if (type.equals("num")) {
-                        // Create numeric variable (V1%, V2%, etc.)
                         variableMap.put(generatedName, "V" + numVarCounter + "%");
                         numVarCounter++;
                     } else if (type.equals("text")) {
-                        // Create text variable (A$, B$, etc.)
                         variableMap.put(generatedName, textVarCounter + "$");
                         textVarCounter++;
                     }
@@ -76,7 +46,6 @@ public class TargetCode {
         }
     }
 
-    
     private static List<String> readIntermediateCode() {
         List<String> code = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("intermediateCode.txt"))) {
@@ -97,25 +66,23 @@ public class TargetCode {
     
         String endLabel = findEndLabel(intermediateCode);
         tempVarMap.clear();
-        tempNumVarCounter = 4;  // Start after the main variables (V1%, V2%, V3%)
+        valueTracker.clear();
+        tempNumVarCounter = 4;
     
-        // First pass: map all temporary variables in order of appearance
+        // First pass: map all temporary variables
         for (String line : intermediateCode) {
             line = line.trim();
             if (line.contains(":=")) {
                 String[] parts = line.split(":=");
                 String left = parts[0].trim();
-                String right = parts[1].trim();
                 
-                // Map temporary variable
                 if (left.startsWith("t")) {
-                    String newVar = "V" + tempNumVarCounter++ + "%";
-                    tempVarMap.putIfAbsent(left, newVar);
+                    tempVarMap.putIfAbsent(left, "V" + tempNumVarCounter++ + "%");
                 }
             }
         }
     
-        // Second pass: generate code
+        // Second pass: generate code with optimization
         for (String line : intermediateCode) {
             line = line.trim();
             
@@ -125,6 +92,7 @@ public class TargetCode {
                 String label = line.startsWith("LABEL") ? line.split(" ")[1] : line.split(":")[0];
                 labelMap.put(label, lineNumber);
                 addLine("REM " + label);
+                valueTracker.clear(); // Clear value tracking at labels as flow control might change
             }
             else if (line.startsWith("IF")) {
                 String[] parts = line.split(" ");
@@ -133,10 +101,12 @@ public class TargetCode {
                 String elseLabel = parts[6];
                 addLine("IF " + translateVariable(condition) + " THEN GOTO " + thenLabel);
                 addLine("GOTO " + elseLabel);
+                valueTracker.clear(); // Clear value tracking after control flow statements
             }
             else if (line.startsWith("GOTO")) {
                 String label = line.split(" ")[1];
                 addLine("GOTO " + label);
+                valueTracker.clear(); // Clear value tracking after GOTO
             }
             else if (line.contains(":=")) {
                 String[] parts = line.split(":=");
@@ -148,16 +118,18 @@ public class TargetCode {
                     String[] operands = right.split(operator);
                     String leftOp = translateVariable(operands[0].trim());
                     String rightOp = translateVariable(operands[1].trim());
-                    addLine("LET " + translateVariable(left) + " = " + leftOp + " " + operator + " " + rightOp);
+                    String result = leftOp + " " + operator + " " + rightOp;
+                    addAssignmentIfNeeded(left, result);
                 } else if (right.contains(">") || right.contains("=")) {
-                    addLine("LET " + translateVariable(left) + " = " + translateExpression(right));
+                    addAssignmentIfNeeded(left, translateExpression(right));
                 } else if (right.contains("*")) {
                     String[] mulParts = right.split("\\*");
                     String leftOp = translateVariable(mulParts[0].trim());
                     String rightOp = translateVariable(mulParts[1].trim());
-                    addLine("LET " + translateVariable(left) + " = " + leftOp + " * " + rightOp);
+                    addAssignmentIfNeeded(left, leftOp + " * " + rightOp);
                 } else {
-                    addLine("LET " + translateVariable(left) + " = " + translateVariable(right));
+                    String translatedRight = translateVariable(right);
+                    addAssignmentIfNeeded(left, translatedRight);
                 }
             }
             else if (line.startsWith("PRINT")) {
@@ -167,9 +139,26 @@ public class TargetCode {
             else if (line.startsWith("INPUT")) {
                 String var = translateVariable(line.split(" ")[1]);
                 addLine("INPUT " + var);
+                valueTracker.clear(); // Clear value tracking after input as we don't know the new value
             }
             else if (line.equals("STOP")) {
                 addLine("END");
+            }
+        }
+    }
+
+    private static void addAssignmentIfNeeded(String left, String right) {
+        String translatedLeft = translateVariable(left);
+        
+        // Check if this assignment is redundant
+        String currentValue = valueTracker.get(translatedLeft);
+        if (currentValue == null || !currentValue.equals(right)) {
+            addLine("LET " + translatedLeft + " = " + right);
+            valueTracker.put(translatedLeft, right);
+            
+            // If this is a temporary variable, also track its value
+            if (tempVarMap.containsValue(translatedLeft)) {
+                valueTracker.put(left, right);
             }
         }
     }
@@ -177,6 +166,12 @@ public class TargetCode {
     private static String translateVariable(String var) {
         if (var == null || var.isEmpty()) {
             return "";
+        }
+        
+        // First check if we have a tracked value for this variable
+        String trackedValue = valueTracker.get(var);
+        if (trackedValue != null) {
+            return trackedValue;
         }
         
         // Handle temporary variables
@@ -201,8 +196,6 @@ public class TargetCode {
             }
         }
     }
-    
-    
     
     private static String translateExpression(String expr) {
         expr = expr.trim();
@@ -232,7 +225,6 @@ public class TargetCode {
         }
         return null;
     }
-
     
     private static void updateGotoLines() {
         for (int i = 0; i < basicCode.size(); i++) {
@@ -258,25 +250,4 @@ public class TargetCode {
             System.out.println(line);
         }
     }
-
-    private static String translateCondition(String condition) {
-        // Check if condition is just a variable
-        if (!condition.contains("(") && !condition.contains(",")) {
-            return translateVariable(condition);
-        }
-    
-        // Handle complex conditions
-        String[] parts = condition.split("\\(|,|\\)");
-        String op = parts[0];
-        String left = translateVariable(parts[1]);
-        String right = translateVariable(parts[2]);
-        
-        switch (op) {
-            case "grt": return left + " > " + right;
-            case "eq": return left + " = " + right;
-            default: return left + " " + op + " " + right;
-        }
-    }
-
-    
 }
