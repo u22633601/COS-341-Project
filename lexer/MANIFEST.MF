@@ -1,1 +1,0 @@
-echo -e "Manifest-Version: 1.0\nMain-Class: Compiler\n" > MANIFEST.MF
