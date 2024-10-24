@@ -17,10 +17,10 @@ public class Compiler {
         Scanner scanner = new Scanner(System.in);
 
         
-        System.out.print("Enter the name of the input file (e.g., input.txt): ");
+        System.out.print("Enter the name of the input program file (e.g., input.txt): ");
         String inputFile = scanner.nextLine();
         
-        System.out.print("Enter the name of the target .bas file (e.g., tc.bas): ");
+        System.out.print("Enter the name of the target .bas file (e.g., TargetCode.bas): ");
         String targetFile = scanner.nextLine();
 
         // 1. Run Lexer
@@ -43,7 +43,7 @@ public class Compiler {
                         // 3. Run Scope Analyzer
                         System.out.println(BLUE + "Running Scope Analyzer..." + RESET);
                         
-                        if (runCommand("java DualScopeAnalyzer", "Symbol table has been written to Symbol.txt", "ScopeAnalyzer encountered an error")) {
+                        if (runCommand("java ScopeAnalyzer", "Symbol table has been written to Symbol.txt", "ScopeAnalyzer encountered an error")) {
                             System.out.println(GREEN + "Scope Analyzer completed successfully." + RESET);
                             System.out.println("Do you want to continue with Type Checker? (y/n)");
 
@@ -61,7 +61,7 @@ public class Compiler {
                                         // 5. Run Intermediate Code Generator
                                         System.out.println(LIGHT_GREEN + "Running Intermediate Code Generator..." + RESET);
                                         
-                                        if (runCommand("java DirectCodeGenerator " + inputFile, "Generated Code", "Error during code generation")) {
+                                        if (runCommand("java IntermediateCodeGenerator " + inputFile, "Generated Code", "Error during code generation")) {
                                             System.out.println(GREEN + "Intermediate Code Generator completed successfully." + RESET);
                                             System.out.println("Do you want to continue with Target Code Generator? (y/n)");
 

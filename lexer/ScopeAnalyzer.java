@@ -5,7 +5,7 @@ import java.util.*;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 
-public class DualScopeAnalyzer {
+public class ScopeAnalyzer {
     public static void main(String[] args) {
         try {
             // Parse the XML file
