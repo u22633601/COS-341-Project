@@ -28,7 +28,7 @@ public class DirectCodeGenerator {
             // Start parsing from PROG rule
             parseProg();
 
-            writeOutput("output.txt");
+            writeOutput("intermediateCode.txt");
             printGeneratedCode();
         } catch (Exception e) {
             e.printStackTrace();
@@ -263,65 +263,91 @@ public class DirectCodeGenerator {
     }
 
     private static Expression parseExpression() {
-        String token = getCurrentToken();
-        System.out.println("Parsing expression: " + token);
-        advance();
+    String token = getCurrentToken();
+    System.out.println("DEBUG: parseExpression - Starting with token: " + token);
 
-        if (isOperator(token)) {
-            System.out.println("DEBUG: parseExpression - found operator: " + token);
-            if (token.equals("grt") || token.equals("eq") || token.equals("and") || token.equals("or")) {
-                return parseBinaryOp(); // Keep existing comparison operator handling
-            } else {
-                // For arithmetic operators (add, sub, mul, div)
-                if (getCurrentToken().equals("(")) {
-                    advance(); // Skip (
-                    String place1 = "t" + tempCounter++;
-                    Expression exp1 = parseExpression();
-                    advance(); // Skip ,
-                    String place2 = "t" + tempCounter++;
-                    Expression exp2 = parseExpression();
-                    advance(); // Skip )
+    if (isOperator(token)) {
+        System.out.println("DEBUG: parseExpression - Found operator: " + token);
+        if (token.equals("grt") || token.equals("eq") || token.equals("and") || token.equals("or")) {
+            return parseBinaryOp(); // Don't advance here as parseBinaryOp handles it
+        } else if (token.equals("not") || token.equals("sqrt")) {
+            // Handle unary operators
+            advance(); // Skip operator
+            String opSymbol = translateOperator(token);
 
-                    String place = "t" + tempCounter++;
-                    String opSymbol = translateOperator(token);
-
-                    StringBuilder codeBuilder = new StringBuilder();
-                    codeBuilder.append(place1).append(" := ").append(exp1.place).append("\n");
-                    codeBuilder.append(place2).append(" := ").append(exp2.place).append("\n");
-                    codeBuilder.append(place).append(" := ").append(place1)
-                            .append(" ").append(opSymbol).append(" ")
-                            .append(place2);
-
-                    System.out
-                            .println("DEBUG: parseExpression - arithmetic operation code:\n" + codeBuilder.toString());
-                    return new Expression(codeBuilder.toString(), place);
-                }
-            }
-        } else if (token.startsWith("F_")) {
-            // Handle function call
-            String fnName = translateVar(token);
             advance(); // Skip (
-            List<String> params = new ArrayList<>();
-            for (int i = 0; i < 3; i++) { // Always 3 parameters
-                if (i > 0)
-                    advance(); // Skip comma
-                Expression param = parseExpression();
-                params.add(param.place);
-            }
+            Expression exp = parseExpression();
             advance(); // Skip )
 
-            // Generate temp variable for result and assign function call directly
-            String resultPlace = "t" + tempCounter++;
-            String callCode = resultPlace + " := CALL_" + fnName + "(" + String.join(",", params) + ")";
+            String place = "t" + tempCounter++;
+            StringBuilder codeBuilder = new StringBuilder();
 
-            return new Expression(callCode, resultPlace);
-        } else if (token.startsWith("V_")) {
-            return new Expression("", translateVar(token));
+            if (!exp.code.isEmpty()) {
+                codeBuilder.append(exp.code).append("\n");
+            }
+
+            // Add the unary operation with operator at front
+            codeBuilder.append(place).append(" := ")
+                    .append(opSymbol).append(" ")
+                    .append(exp.place);
+
+            return new Expression(codeBuilder.toString(), place);
         } else {
-            return new Expression("", token); // Constants are translated to themselves
+            // For arithmetic operators (add, sub, mul, div)
+            advance(); // Advance here for arithmetic operators
+            if (getCurrentToken().equals("(")) {
+                advance(); // Skip (
+                String place1 = "t" + tempCounter++;
+                Expression exp1 = parseExpression();
+                advance(); // Skip ,
+                String place2 = "t" + tempCounter++;
+                Expression exp2 = parseExpression();
+                advance(); // Skip )
+
+                String place = "t" + tempCounter++;
+                String opSymbol = translateOperator(token);
+
+                StringBuilder codeBuilder = new StringBuilder();
+                codeBuilder.append(place1).append(" := ").append(exp1.place).append("\n");
+                codeBuilder.append(place2).append(" := ").append(exp2.place).append("\n");
+                codeBuilder.append(place).append(" := ").append(place1)
+                        .append(" ").append(opSymbol).append(" ")
+                        .append(place2);
+
+                System.out.println("DEBUG: parseExpression - arithmetic operation code:\n" + codeBuilder.toString());
+                return new Expression(codeBuilder.toString(), place);
+            }
         }
-        return new Expression("", "");
+    } else if (token.startsWith("F_")) {
+        String fnName = translateVar(token);
+        advance(); // Skip function name
+        advance(); // Skip (
+        List<String> params = new ArrayList<>();
+        for (int i = 0; i < 3; i++) { // Always 3 parameters
+            if (i > 0) {
+                advance(); // Skip comma
+            }
+            Expression param = parseExpression();
+            params.add(param.place);
+        }
+        advance(); // Skip )
+
+        // Generate temp variable for result
+        String resultPlace = "t" + tempCounter++;
+        String callCode = resultPlace + " := CALL_" + fnName + "(" + String.join(",", params) + ")";
+        System.out.println("DEBUG: Function call generated: " + callCode);
+        return new Expression(callCode, resultPlace);
+    } else if (token.startsWith("V_")) {
+        advance(); 
+        return new Expression("", translateVar(token));
+    } else {
+        advance(); 
+        return new Expression("", token); 
     }
+    return new Expression("", "");
+}
+
+
 
     private static String translateOperator(String op) {
         return switch (op) {
@@ -393,35 +419,40 @@ public class DirectCodeGenerator {
     private static String parseFunctionDeclaration() {
         StringBuilder funcCode = new StringBuilder();
         advance(); // Skip num/void
+
+        // Get function name and parameters (HEADER)
         String funcName = translateVar(getCurrentToken());
         advance(); // Skip function name
         advance(); // Skip (
 
-        // Skip parameters (HEADER will vanish)
+        List<String> params = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             if (i > 0)
                 advance(); // Skip comma
-            advance(); // Skip parameter
+            params.add(translateVar(getCurrentToken()));
+            advance();
         }
-        advance(); // Skip )
 
-        // Skip until begin (skip LOCVARS)
+        // Start BODY
+        funcCode.append("\n"); // Spacing before function
+        funcCode.append("REM BEGIN\n"); // PROLOG
+        funcCode.append(funcName).append(" ").append("\n");
+
+        // Skip to function body (ALGO)
         while (!getCurrentToken().equals("begin") && !isEOF()) {
             advance();
         }
 
         if (getCurrentToken().equals("begin")) {
             advance();
-            // BODY only
-            funcCode.append("\n");
-            funcCode.append("REM BEGIN\n"); // PROLOG
             while (!getCurrentToken().equals("end") && !isEOF()) {
                 String statement = parseStatement();
                 funcCode.append(statement);
             }
-            funcCode.append("REM END\n"); // EPILOG
-            funcCode.append("STOP\n");
         }
+
+        funcCode.append("REM END\n"); // EPILOG
+        funcCode.append("STOP\n"); // Stop before next function
 
         return funcCode.toString();
     }

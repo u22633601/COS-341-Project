@@ -133,7 +133,7 @@ public class TypeChecker {
             checkAssignment(line);
         } else if (line.startsWith("if")) {
             checkCondition(line);
-        } else if (line.startsWith("return")) {
+        } else if ((line.startsWith("return")) || (line.startsWith("print"))) {
             checkReturn(line);
         } else if (line.startsWith("num") || line.startsWith("text") || line.startsWith("void")) {
             checkDeclaration(line);
@@ -314,7 +314,7 @@ public class TypeChecker {
             if (isBuiltInFunction(funcName)) {
                 checkBuiltInFunction(funcName, args);
                 if (funcName.equals("grt") || funcName.equals("eq") || 
-                    funcName.equals("and") || funcName.equals("or")) {
+                    funcName.equals("and") || funcName.equals("or") || funcName.equals("not")) {
                     return "bool";
                 }
                 return "num";
