@@ -26,7 +26,6 @@ def popTab(n):
     pass
 
 def getTabs():
-    # global tabs
     return '----'
 
 def PROG(n):
@@ -34,7 +33,7 @@ def PROG(n):
     
 
     global output
-    output += "main\n"
+    output += "main\n "
     GLOBVARS(n+1)
     ALGO(n+1)
     FUNCTIONS(n+1)
@@ -51,7 +50,7 @@ def GLOBVARS(n):
     elif rule == "2":
         VTYP(n+1)
         VNAME(n+1)
-        output += ',\n'
+        output += ',\n '
         GLOBVARS(n+1)
     
     
@@ -72,16 +71,16 @@ def VNAME(n):
     print(getTabs()* n + "> " + "VNAME")
     
     global output, tokenClassVRegularExpression
-    output += getUserInput("Enter variable name: ", tokenClassVRegularExpression)
+    output += getUserInput("Enter variable name: ", tokenClassVRegularExpression) + " "
     
 
 def ALGO(n):
     print(getTabs()* n + "> " + "ALGO")
     
     global output
-    output += "\nbegin\n"
+    output += "\nbegin\n "
     INSTRUC(n+1)
-    output += "\nend\n"
+    output += "\nend\n "
     
 
 def INSTRUC(n):
@@ -106,9 +105,9 @@ def COMMAND(n):
     rule = getUserInput("Enter COMMAND rule: ", r"^[1-7]$")
 
     if rule == "1":
-        output += "skip"
+        output += "skip "
     elif rule == "2":
-        output += "halt"
+        output += "halt "
     elif rule == "3":
         output += "print "
         ATOMIC(n+1)
@@ -155,7 +154,7 @@ def ASSIGN(n):
 
     if rule == "1":
         VNAME(n+1)
-        output += " <input"
+        output += " <input "
     elif rule == "2":
         VNAME(n+1)
         output += " = "
@@ -213,14 +212,14 @@ def OP(n):
         UNOP(n+1)
         output += "("
         ARG(n+1)
-        output += ")"
+        output += ") "
     elif rule == "2":
         BINOP(n+1)
         output += "("
         ARG(n+1)
         output += ", "
         ARG(n+1)
-        output += ")"
+        output += ") "
     
 
 def ARG(n):
@@ -255,7 +254,7 @@ def SIMPLE(n):
     ATOMIC(n+1)
     output += ", "
     ATOMIC(n+1)
-    output += ")"
+    output += ") "
     
 
 def COMPOSIT(n):
@@ -271,12 +270,12 @@ def COMPOSIT(n):
         ATOMIC(n+1)
         output += ", "
         ATOMIC(n+1)
-        output += ")"
+        output += ") "
     elif rule == "2":
         UNOP(n+1)
         output += "("
         SIMPLE(n+1)
-        output += ")"
+        output += ") "
     
 
 def UNOP(n):
@@ -287,9 +286,9 @@ def UNOP(n):
     rule = getUserInput("Enter UNOP rule: ", r"^[1-2]$")
 
     if rule == "1":
-        output += "not"
+        output += "not "
     elif rule == "2":
-        output += "sqrt"
+        output += "sqrt "
     
 
 def BINOP(n):
@@ -300,21 +299,21 @@ def BINOP(n):
     rule = getUserInput("Enter BINOP rule: ", r"^[1-8]$")
 
     if rule == "1":
-        output += "or"
+        output += "or "
     elif rule == "2":
-        output += "and"
+        output += "and "
     elif rule == "3":
-        output += "eq"
+        output += "eq "
     elif rule == "4":
-        output += "grt"
+        output += "grt "
     elif rule == "5":
-        output += "add"
+        output += "add "
     elif rule == "6":
-        output += "sub"
+        output += "sub "
     elif rule == "7":
-        output += "mul"
-    elif rule == "2":
-        output += "div"
+        output += "mul "
+    elif rule == "8":
+        output += "div "
     
 
 def FNAME(n):
@@ -322,7 +321,7 @@ def FNAME(n):
     
     global output, tokenClassFRegularExpression
 
-    output += getUserInput("Enter function name: ", tokenClassFRegularExpression)
+    output += getUserInput("Enter function name: ", tokenClassFRegularExpression) + " "
     
 
 def FUNCTIONS(n):
@@ -357,7 +356,7 @@ def HEADER(n):
     VNAME(n+1)
     output += ", "
     VNAME(n+1)
-    output += ")"
+    output += ") "
     
 
 def FTYP(n):
@@ -383,21 +382,21 @@ def BODY(n):
     ALGO(n+1)
     EPILOG(n+1)
     SUBFUNCS(n+1)
-    output += "\nend"
+    output += "\nend "
     
 
 def PROLOG(n):
     print(getTabs()* n + "> " + "PROLOG")
     
     global output
-    output += "{\n"
+    output += "{\n "
     
 
 def EPILOG(n):
     print(getTabs()* n + "> " + "EPILOG")
     
     global output
-    output += "\n}\n"
+    output += "\n}\n "
     
 
 def LOCVARS(n):
@@ -407,13 +406,13 @@ def LOCVARS(n):
 
     VTYP(n+1)
     VNAME(n+1)
-    output += ",\n"
+    output += ",\n "
     VTYP(n+1)
     VNAME(n+1)
-    output += ",\n"
+    output += ",\n "
     VTYP(n+1)
     VNAME(n+1)
-    output += ",\n"
+    output += ",\n "
     
 
 def SUBFUNCS(n):

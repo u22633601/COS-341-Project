@@ -1,7 +1,0 @@
-main
-num V_x,
-num V_y,
-
-begin
-V_a = F_fun(2 , Hello , V_x) ;  
-end
