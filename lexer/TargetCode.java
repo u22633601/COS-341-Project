@@ -298,7 +298,7 @@ public class TargetCode {
         List<String> intermediateCode = readIntermediateCode();
         generateBasicCode(intermediateCode);
         updateGotoLines();
-        printBasicCode();
+        writeBasicCodeToFile();
     }
 
     private static void loadSymbolTable() {
@@ -576,9 +576,15 @@ public class TargetCode {
         }
     }
 
-    private static void printBasicCode() {
-        for (String line : basicCode) {
-            System.out.println(line);
+    private static void writeBasicCodeToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("TargetCode.bas"))) {
+            for (String line : basicCode) {
+                writer.write(line);
+                writer.newLine();
+            }
+            System.out.println("BASIC code has been written to TargetCode.bas");
+        } catch (IOException e) {
+            System.err.println("Error writing to TargetCode.bas: " + e.getMessage());
         }
     }
 }
