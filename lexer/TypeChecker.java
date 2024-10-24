@@ -5,7 +5,7 @@ public class TypeChecker {
     private static Map<String, String> symbolTable = new HashMap<>();
     private static List<String> errors = new ArrayList<>();
     private static int currentLine = 0;
-    private static boolean debug = true; // Set to true for detailed output
+    private static boolean debug = true; //set false for less detailed output
     private static String currentFunction = null;
     private static String currentFunctionType = null;
     private static boolean hasReturnStatement = false;
@@ -20,13 +20,13 @@ public class TypeChecker {
 
         String inputFile = args[0];
 
-        // Verify input file exists
+        //check input file
         if (!new File(inputFile).exists()) {
             System.err.println("Error: Input file '" + inputFile + "' not found");
             System.exit(1);
         }
 
-        // Load symbol table and run type checker
+        // load st and type checker
         if (loadSymbolTable(SYMBOL_FILE)) {
             checkProgram(inputFile);
             printErrors();
@@ -35,7 +35,7 @@ public class TypeChecker {
         }
     }
 
-    private static boolean loadSymbolTable(String filename) {
+    private static boolean loadSymbolTable(String filename) { //load the symbol table
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
             int lineCount = 0;
@@ -66,59 +66,56 @@ public class TypeChecker {
 
     private static void checkReturn(String line) {
         if (currentFunction == null || currentFunctionType == null) {
-            return; // Not in a function
+            return; 
         }
-    
-        // Handle both spellings of return
+
         String value;
         if (line.startsWith("return")) {
             value = line.substring(6).trim();
-        } else if (line.startsWith("retrun")) {
-            value = line.substring(6).trim();
+        // } else if (line.startsWith("retrun")) { //
+        //     value = line.substring(6).trim();
         } else {
             return;
         }
     
-        // Remove semicolon if present
         if (value.endsWith(";")) {
             value = value.substring(0, value.length() - 1).trim();
         }
-        
-        // void functions shouldn't return a value
+    
         if (currentFunctionType.equals("void")) {
             if (!value.isEmpty()) {
-                addError("Void function cannot return a value");
+                addError("Void function cannot return a value"); //no return value for void functions
             }
             return;
         }
     
-        // num functions must return a numeric value
+        
         if (currentFunctionType.equals("num")) {
-            hasReturnStatement = true;  // Mark that we found a return statement
+            hasReturnStatement = true;  //function must have numeric return
             if (value.startsWith("\"")) {
                 addError("Function " + currentFunction + " has return type num but is returning text");
                 return;
             }
-            String returnType = checkExpression(value);
+            String returnType = checkExpression(value); //num
             if (!returnType.equals("num")) {
                 addError("Function " + currentFunction + " has return type num but is returning " + returnType);
             }
         }
     }
     
-    // Also update the checkFunctionBody method to handle both spellings
+   
     private static void checkFunctionBody(String line) {
         if (line.equals("{")) {
-            hasReturnStatement = false;  // Reset at start of function
+            hasReturnStatement = false; 
         } else if (line.equals("}")) {
-            // Check return requirements when function ends
+            
             if (currentFunctionType != null && currentFunctionType.equals("num") && !hasReturnStatement) {
-                addError("Function " + currentFunction + " must have a return statement");
+                addError("Function " + currentFunction + " must have a return statement"); //num function must have a return 
             }
             currentFunction = null;
             currentFunctionType = null;
             hasReturnStatement = false;
-        } else if (line.startsWith("return") || line.startsWith("retrun")) {
+        } else if (line.startsWith("return") ) { //check num fuction has a return statement
             hasReturnStatement = true;
         }
     }
@@ -142,7 +139,6 @@ public class TypeChecker {
     private static void checkLine(String line) {
         line = line.trim();
         
-        // Add function body checking
         checkFunctionBody(line);
         
         if (line.isEmpty() || line.startsWith("main") || line.equals("end") || line.startsWith("begin")) {
@@ -156,20 +152,19 @@ public class TypeChecker {
                 currentFunctionType = parts[0];
             }
             checkFunctionDeclaration(line);
-        } else if (line.contains("<")) {
+        } else if (line.contains("<")) { //input
             checkInput(line);
-        } else if (line.contains("=")) {
+        } else if (line.contains("=")) { //asignment
             checkAssignment(line);
-        } else if (line.startsWith("if")) {
+        } else if (line.startsWith("if")) { // if else 
             checkCondition(line);
         } else if ((line.startsWith("return")) || (line.startsWith("print"))) {
             checkReturn(line);
-        } else if (line.startsWith("num") || line.startsWith("text") || line.startsWith("void")) {
+        } else if (line.startsWith("num") || line.startsWith("text") || line.startsWith("void")) { //decl
             checkDeclaration(line);
         } else if (line.contains("(")) {
-            // Check for function calls not in assignments
             String funcName = line.substring(0, line.indexOf("(")).trim();
-            if (funcName.startsWith("F_")) {
+            if (funcName.startsWith("F_")) { //user def function
                 String funcType = symbolTable.get(funcName);
                 if (funcType != null && funcType.equals("num")) {
                     addError("Function " + funcName + " has return type num and must be used in an assignment");
@@ -180,7 +175,7 @@ public class TypeChecker {
     }
 
     private static void checkFunctionDeclaration(String line) {
-        line = line.replace("{", "").trim(); // Remove opening brace if present
+        line = line.replace("{", "").trim(); 
         String[] parts = line.split("\\(", 2);
         if (parts.length != 2) {
             addError("Invalid function declaration");
@@ -213,7 +208,7 @@ public class TypeChecker {
             }
             String paramType = symbolTable.get(paramName);
             if (paramType == null || !paramType.equals("num")) {
-                addError("Function parameter must be of type num: " + paramName);
+                addError("Function parameter must be of type num: " + paramName);//all user defined function parameters are num
             }
         }
         
@@ -221,7 +216,7 @@ public class TypeChecker {
         if (declaredType == null) {
             addError("Function " + funcName + " is not declared in the symbol table");
         } else if (!declaredType.equals(returnType)) {
-            addError("Return type mismatch for function " + funcName + ": declared as " + declaredType + ", but defined as " + returnType);
+            addError("return type mismatch for function " + funcName + ": declared as " + declaredType + ", but defined as " + returnType);
         }
     }
 
@@ -232,27 +227,24 @@ public class TypeChecker {
     }
 
     private static void checkCondition(String line) {
-        // Remove the 'if' keyword
+        
         String conditionPart = line.substring(2).trim();
         
-        // Find the 'then' keyword and extract everything before it
         int thenIndex = conditionPart.lastIndexOf("then");
         if (thenIndex == -1) {
             addError("Invalid if statement: missing 'then' keyword");
             return;
         }
         
-        // Extract the condition
         String condition = conditionPart.substring(0, thenIndex).trim();
         
         if (debug) {
             System.out.println("Checking condition: " + condition);
         }
         
-        // Check if the condition is a valid boolean expression
         String conditionType = checkExpression(condition);
         if (!conditionType.equals("bool")) {
-            addError("Condition must be a boolean expression (grt, eq, and, or)");
+            addError("condition must be a boolean expression (grt, eq, and, or)");
         }
     }
 
@@ -265,11 +257,11 @@ public class TypeChecker {
         String rightType = checkExpression(right);
 
         if (debug) {
-            System.out.println("Checking assignment: " + left + " (" + leftType + ") = " + right + " (" + rightType + ")");
+            System.out.println("checking assignment: " + left + " (" + leftType + ") = " + right + " (" + rightType + ")");
         }
 
         if (!leftType.equals(rightType)) {
-            addError("Type mismatch in assignment: " + left + " (" + leftType + ") = " + right + " (" + rightType + ")");
+            addError("type mismatch in assignment: " + left + " (" + leftType + ") = " + right + " (" + rightType + ")");
         }
     }
 
@@ -290,7 +282,7 @@ public class TypeChecker {
         String[] paramList = params.split(",");
 
         if (debug) {
-            System.out.println("Checking function call: " + funcName + " with params: " + Arrays.toString(paramList));
+            System.out.println("checking function call: " + funcName + " with params: " + Arrays.toString(paramList));
         }
 
         if (isBuiltInFunction(funcName)) {
@@ -298,7 +290,7 @@ public class TypeChecker {
         } else if (funcName.startsWith("F_")) {
             checkUserDefinedFunction(funcName, paramList);
         } else {
-            addError("Unknown function: " + funcName);
+            addError("unknown function: " + funcName);
         }
     }
 
@@ -317,12 +309,11 @@ public class TypeChecker {
             } else if (symbolTable.containsKey(name)) {
                 String declaredType = symbolTable.get(name);
                 if (!declaredType.equals(type)) {
-                    addError("Type mismatch in declaration: " + name + " declared as " + type + ", but symbol table says " + declaredType);
+                    addError("type mismatch in declaration: " + name + " declared as " + type + ", but symbol table says " + declaredType);
                 }
             } else {
-                // Variable is not in the symbol table, which is fine for local variables
                 if (debug) {
-                    System.out.println("Declared local variable: " + name + " of type " + type);
+                    System.out.println("declared local variable: " + name + " of type " + type);
                 }
             }
         }
@@ -364,7 +355,6 @@ public class TypeChecker {
             return false;
         }
         
-        // Split the expression to handle nested calls
         String outerFunc = expression.substring(0, expression.indexOf("(")).trim();
         return outerFunc.equals("grt") || outerFunc.equals("eq") || 
                outerFunc.equals("and") || outerFunc.equals("or");
@@ -432,8 +422,6 @@ public class TypeChecker {
         }
     }
 
-    
-
     private static void addError(String message) {
         errors.add("Line " + currentLine + ": Type Error: " + message);
     }
@@ -457,7 +445,7 @@ public class TypeChecker {
         String funcType = symbolTable.get(funcName);
 
         if (paramList.length != 3) {
-            addError("Function " + funcName + " must have exactly 3 parameters");
+            addError("Function " + funcName + " must have exactly 3 parameters"); //user def functions have 3 parameters
             return funcType;
         }
 
@@ -473,7 +461,7 @@ public class TypeChecker {
 
     private static void checkUnaryOperation(String op, String[] args) {
         if (args.length != 1) {
-            addError("Operator " + op + " requires exactly 1 argument");
+            addError("Operator " + op + " needs exactly 1 argument");
             return;
         }
 
@@ -485,14 +473,13 @@ public class TypeChecker {
 
     private static void checkBinaryOperation(String op, String[] args) {
         if (args.length != 2) {
-            addError("Operator " + op + " requires exactly 2 arguments");
+            addError("Operator " + op + " needs exactly 2 arguments");
             return;
         }
     
         for (String arg : args) {
             String argType;
             if (arg.contains("(")) {
-                // This is a nested function call, which has already been checked
                 argType = "num";
             } else {
                 argType = inferType(arg.trim());
@@ -507,13 +494,13 @@ public class TypeChecker {
         switch (funcName) {
             case "grt":
                 if (args.length != 2) {
-                    addError("Operator grt requires exactly 2 arguments");
+                    addError("operator GRT needs exactly 2 arguments");
                     return;
                 }
                 for (String arg : args) {
                     String type = checkExpression(arg.trim());
                     if (!type.equals("num")) {
-                        addError("Arguments of grt must be numeric, found type: " + type);
+                        addError("Arguments of GRT must be numeric, found type: " + type);
                     }
                 }
                 break;
@@ -523,13 +510,13 @@ public class TypeChecker {
             case "mul":
             case "div":
                 if (args.length != 2) {
-                    addError("Operator " + funcName + " requires exactly 2 arguments");
+                    addError("operator " + funcName + " needs exactly 2 arguments");
                     return;
                 }
                 for (String arg : args) {
                     String type = checkExpression(arg.trim());
                     if (!type.equals("num")) {
-                        addError("Arguments of " + funcName + " must be numeric, found type: " + type);
+                        addError("arguments of " + funcName + " must be numeric, found type: " + type);
                     }
                 }
                 break;
@@ -537,43 +524,43 @@ public class TypeChecker {
             case "and":
             case "or":
                 if (args.length != 2) {
-                    addError("Operator " + funcName + " requires exactly 2 arguments");
+                    addError("operator " + funcName + " needs exactly 2 arguments");
                     return;
                 }
                 for (String arg : args) {
                     String type = checkExpression(arg.trim());
                     if (!type.equals("bool")) {
-                        addError("Arguments of " + funcName + " must be boolean expressions (grt, eq, and, or)");
+                        addError("arguments of " + funcName + " must be boolean expressions (grt, eq, and, or)");
                     }
                 }
                 break;
                     
             case "eq":
                 if (args.length != 2) {
-                    addError("Operator eq requires exactly 2 arguments");
+                    addError("Operator EQ needs exactly 2 arguments");
                     return;
                 }
                 String type1 = checkExpression(args[0].trim());
                 String type2 = checkExpression(args[1].trim());
                 if (!type1.equals(type2)) {
-                    addError("Arguments of eq must be of the same type");
+                    addError("Arguments of EQ must be of the same type"); //must bot be num or both text
                 }
                 break;
                     
             case "not":
                 if (args.length != 1) {
-                    addError("Operator not requires exactly 1 argument");
+                    addError("operator NOT needs exactly 1 argument");
                     return;
                 }
                 String type = checkExpression(args[0].trim());
                 if (!type.equals("bool")) {
-                    addError("Argument of not must be a boolean expression");
+                    addError("Argument of NOT must be a boolean expression"); //
                 }
                 break;
         }
     }
     
-    private static boolean isNumeric(String str) {
+    private static boolean isNumeric(String str) { //check if a value is numeric
         if (str == null || str.trim().isEmpty()) {
             return false;
         }
@@ -585,7 +572,7 @@ public class TypeChecker {
         }
     }
     
-    private static String inferType(String expression) {
+    private static String inferType(String expression) { //get num/text type
         expression = expression.trim();
         if (expression.isEmpty()) {
             return "unknown";
@@ -597,7 +584,7 @@ public class TypeChecker {
             return "num";
         }
         if (expression.startsWith("V_")) {
-            return symbolTable.getOrDefault(expression, "bool");
+            return symbolTable.getOrDefault(expression, "bool"); //default 
         }
         return "unknown";
     }
