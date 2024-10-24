@@ -1,0 +1,39 @@
+main
+num V_x , num V_y , num V_result ,
+begin
+
+  V_x < input ;
+  V_y < input ;
+
+  if eq ( V_y , 0 ) then
+    begin
+      V_result = F_average ( V_x , V_y , V_result ) ;
+      print V_result ;
+      skip ;
+    end
+  else
+    begin
+      if or ( eq ( V_x , 0 ) , eq ( V_y , 0 ) ) then
+        begin
+          print "Zero" ;
+        end
+      else
+        begin
+          V_result = mul ( V_x , V_y ) ;
+          return V_result ;
+        end ;
+    end ;
+end
+
+num F_average ( V_c , V_b , V_dummy )
+{
+num V_sum , num V_count , num V_cap ,
+
+begin
+  V_sum = 5 ;
+  V_count = 6 ;
+  V_sum = add ( V_sum , V_count ) ;
+  return V_count ;
+end
+}
+end
