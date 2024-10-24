@@ -1,0 +1,5 @@
+main
+num V_x , num V_y , num V_result
+begin
+  V_x < input;
+  V_y < input ;
