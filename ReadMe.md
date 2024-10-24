@@ -1,112 +1,65 @@
-# Simple Programming Language Compiler
-
-A robust compiler that translates custom programming language code into BASIC. This project implements a complete compilation pipeline with multiple phases of analysis and code generation.
+# COS 341 Compiler 
 
 ## Table of Contents
-- [Features](#features)
+- [Authors](#authors)
 - [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Compilation Process](#compilation-process)
-- [Input Format](#input-format)
+- [Running the Compiler](#running-the-compiler)
+- [Input File Format](#input-file-format)
+- [Running Tests](#running-tests-optional)
+- [Testing BASIC Output](#testing-basic-output)
 
-
-## Features
-
-- Complete compilation pipeline
-- Interactive phase-by-phase execution
-- Detailed error reporting
-- BASIC code generation
-- Support for custom programming syntax
+## Authors
+- Tessa Engelbrecht u22633601
+- Teresa Park u22556908
 
 ## Prerequisites
-
 - Java JDK 8 or higher
 - Terminal/Command Prompt
 
-## Installation
+## Running the Compiler
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/compiler-project.git
-   ```
-
-2. Navigate to the project directory:
-   ```bash
-   cd compiler-project
-   ```
-
-3. Compile the source code:
-   ```bash
-   javac Compiler.java
-   ```
-
-
-### Basic Operation
-
-1. Run the compiler:
-   ```bash
-   java Compiler
-   ```
+1. Run the JAR file: to run the compiler enter this command in the terminal
+```bash
+java -jar Compiler.jar
+```
 
 2. When prompted:
-   - Enter the input file path (e.g., `input.txt`)
-   - Enter the output file path (e.g., `output.bas`)
+   - Enter the input program file path (e.g., `input.txt`)
+   - Enter the output file path (e.g., `targetcode.bas`)
+   - Follow the prompts to proceed through each compilation phase
 
-### Command-line Arguments (Optional)
+## Input File Format
 
-```bash
-java Compiler [input_file] [output_file]
-```
-
-Example:
-```bash
-java Compiler input.txt output.bas
-```
-
-## Compilation Process
-
-The compiler executes the following phases in order:
-
-1. **Lexical Analysis**
-   - Tokenizes the input program
-   - Identifies lexical errors
-
-2. **Parsing**
-   - Builds Abstract Syntax Tree (AST)
-   - Validates syntax structure
-
-3. **Scope Analysis**
-   - Manages variable scope
-   - Checks variable declarations
-
-4. **Type Checking**
-   - Validates type compatibility
-   - Ensures type safety
-
-5. **Intermediate Code Generation**
-   - Creates intermediate representation
-   - Optimizes code structure
-
-6. **Target Code Generation**
-   - Produces final BASIC code
-   - Handles code optimization
-
-## Input Format
-
-### Syntax Requirements
+The input program must be in a `.txt` file with the following requirements:
 
 - All tokens must be separated by spaces
 - Each statement must end with a semicolon
 - Variable names must start with 'V_'
+- User defined function names must start with 'F_'
 
-### Correct Format Example
-
+### Example Input Format (input.txt):
+```txt
 V_counter = 5 ;
 V_result = V_counter + 10 ;
+```
 
-### Incorrect Format Example
-
+### Incorrect Format:
+```txt
 V_counter=5;         # Missing spaces
 V_result= V_counter+10;  # Inconsistent spacing
+```
 
+## Running Tests (Optional)
+
+To run the test suite run the following commands in the terminal:
+```bash
+javac CompilerTestRunner.java
+java CompilerTestRunner
+```
+This will execute all test cases and display the results.
+
+## Testing BASIC Output
+
+The generated BASIC code has been tested using the AppleSoft BASIC emulator.
+https://www.calormen.com/jsbasic/
+- Paste the generated BASIC code in the window and then press Run
