@@ -12,8 +12,25 @@
 - Tessa Engelbrecht u22633601
 - Teresa Park u22556908
 
+# PLEASE NOTE
+- Our Lexer only accepts input strings that have spaces at the end of each token.
+### Example Input Format (input.txt):
+```txt
+V_counter = 5 ;
+V_result = V_counter + 10 ;
+```
+
+### Incorrect Format:
+```txt
+V_counter=5;         # Missing spaces
+V_result= V_counter+10;  # Inconsistent spacing
+```
+
+### Example input
+- We have included an example input for your reference called input.txt. 
+
 ## Prerequisites
-- Java JDK 8 or higher
+- Java SE Development Kit (JDK) 22.0.2 or compatible version
 - Terminal/Command Prompt
 
 ## Running the Compiler
@@ -37,28 +54,18 @@ The input program must be in a `.txt` file with the following requirements:
 - Variable names must start with 'V_'
 - User defined function names must start with 'F_'
 
-### Example Input Format (input.txt):
-```txt
-V_counter = 5 ;
-V_result = V_counter + 10 ;
-```
-
-### Incorrect Format:
-```txt
-V_counter=5;         # Missing spaces
-V_result= V_counter+10;  # Inconsistent spacing
-```
 
 ## Running Tests (Optional)
 
 To run the test suite run the following commands in the terminal:
 ```bash
-javac CompilerTestRunner.java
-java CompilerTestRunner
+java -jar Testing.jar
 ```
 This will execute all test cases and display the results.
 
-## Testing BASIC Output
+The test_resources has the testing files used in the 6 different tests.
+
+# Testing BASIC Output
 
 The generated BASIC code has been tested using the AppleSoft BASIC emulator.
 https://www.calormen.com/jsbasic/
