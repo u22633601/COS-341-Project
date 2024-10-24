@@ -8,6 +8,8 @@ public class DirectCodeGenerator {
     private static int tempCounter = 1;
     private static int labelCounter = 1;
     private static List<String> code = new ArrayList<>();
+    private static final String SYMBOL_FILE = "Symbol.txt";
+    private static final String OUTPUT_FILE = "intermediateCode.txt";
 
     static class Expression {
         String code;
@@ -20,18 +22,56 @@ public class DirectCodeGenerator {
     }
 
     public static void main(String[] args) {
-        try {
-            loadSymbolTable("Symbol.txt");
-            String input = readInputFile("input.txt");
-            tokenize(input);
+        if (args.length != 1) {
+            System.err.println("Usage: java DirectCodeGenerator <input-file>");
+            System.exit(1);
+        }
 
-            // Start parsing from PROG rule
+        String inputFile = args[0];
+
+        // Verify input file exists
+        if (!new File(inputFile).exists()) {
+            System.err.println("Error: Input file '" + inputFile + "' not found");
+            System.exit(1);
+        }
+
+        try {
+            // Load symbol table first
+            try {
+                loadSymbolTable(SYMBOL_FILE);
+            } catch (IOException e) {
+                System.err.println("Error: Could not read symbol table file '" + SYMBOL_FILE + "'");
+                System.err.println("Make sure " + SYMBOL_FILE + " exists in the current directory");
+                System.exit(1);
+            }
+
+            // Read and process input file
+            String input;
+            try {
+                input = readInputFile(inputFile);
+            } catch (IOException e) {
+                System.err.println("Error reading input file: " + e.getMessage());
+                System.exit(1);
+                return;
+            }
+
+            // Generate code
+            tokenize(input);
             parseProg();
 
-            writeOutput("intermediateCode.txt");
-            printGeneratedCode();
+            // Write output
+            try {
+                writeOutput(OUTPUT_FILE);
+                System.out.println("Code generated successfully to " + OUTPUT_FILE);
+                printGeneratedCode();
+            } catch (IOException e) {
+                System.err.println("Error writing output file: " + e.getMessage());
+                System.exit(1);
+            }
+
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error during code generation: " + e.getMessage());
+            System.exit(1);
         }
     }
 

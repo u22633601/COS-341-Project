@@ -13,6 +13,8 @@ public class SLRParser {
     private int currentTokenIndex = 0;
     private int nodeId = 1;
     private Document doc;
+    private static final String INPUT_FILE = "lexer.xml";
+    private static final String OUTPUT_FILE = "parser.xml";
 
     private static class Token {
         int id;
@@ -26,11 +28,28 @@ public class SLRParser {
         }
     }
 
-    public void parse(String inputFile, String outputFile) throws Exception {
-        readTokens(inputFile);
-        initializeParser();
-        Element root = parseTokens();
-        writeOutput(root, outputFile);
+    public void parse() {
+        try {
+            System.out.println("Starting parsing process...");
+            System.out.println("Reading tokens from " + INPUT_FILE);
+            readTokens(INPUT_FILE);
+
+            System.out.println("Initializing parser...");
+            initializeParser();
+
+            System.out.println("Parsing tokens...");
+            Element root = parseTokens();
+
+            System.out.println("Writing output to " + OUTPUT_FILE);
+            writeOutput(root, OUTPUT_FILE);
+
+            System.out.println("Parsing completed successfully!");
+
+        } catch (Exception e) {
+            System.err.println("\nParsing failed:");
+            System.err.println("→ " + e.getMessage());
+            System.exit(1);
+        }
     }
 
     private void readTokens(String inputFile) throws Exception {
@@ -1517,18 +1536,7 @@ private String getAction(int state, Token token) {
     }
 
     public static void main(String[] args) {
-        if (args.length != 2) {
-            System.out.println("Usage: java SLRParser <input_file> <output_file>");
-            return;
-        }
-
-        try {
-            SLRParser parser = new SLRParser();
-            parser.parse(args[0], args[1]);
-            System.out.println("Parsing completed successfully. Output written to " + args[1]);
-        } catch (Exception e) {
-            System.err.println("Error during parsing: " + e.getMessage());
-           // e.printStackTrace();  took this out so the error looks more cute ;)
-        }
+        SLRParser parser = new SLRParser();
+        parser.parse();
     }
 }

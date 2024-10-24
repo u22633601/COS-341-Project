@@ -10,28 +10,57 @@ public class TypeChecker {
     private static String currentFunctionType = null;
     private static boolean hasReturnStatement = false;
     private static Set<String> currentFunctionCalls = new HashSet<>();
+    private static final String SYMBOL_FILE = "Symbol.txt";
 
     public static void main(String[] args) {
-        loadSymbolTable("Symbol.txt");
-        checkProgram("input.txt");
-        printErrors();
+        if (args.length != 1) {
+            System.err.println("Usage: java TypeChecker <input-file>");
+            System.exit(1);
+        }
+
+        String inputFile = args[0];
+
+        // Verify input file exists
+        if (!new File(inputFile).exists()) {
+            System.err.println("Error: Input file '" + inputFile + "' not found");
+            System.exit(1);
+        }
+
+        // Load symbol table and run type checker
+        if (loadSymbolTable(SYMBOL_FILE)) {
+            checkProgram(inputFile);
+            printErrors();
+        } else {
+            System.exit(1);
+        }
     }
 
-    private static void loadSymbolTable(String filename) {
+    private static boolean loadSymbolTable(String filename) {
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
+            int lineCount = 0;
             while ((line = br.readLine()) != null) {
+                lineCount++;
                 String[] parts = line.split(":");
                 if (parts.length == 3) {
                     symbolTable.put(parts[0].trim(), parts[2].trim());
+                } else {
+                    System.err.println("Error in " + filename + " line " + lineCount + ": Invalid format");
+                    System.err.println("Expected format: identifier:scope:type");
+                    return false;
                 }
             }
+            if (symbolTable.isEmpty()) {
+                System.err.println("Error: Symbol table is empty");
+                return false;
+            }
+            return true;
+        } catch (FileNotFoundException e) {
+            System.err.println("Error: Could not find " + filename);
+            return false;
         } catch (IOException e) {
-            System.err.println("Error reading symbol table: " + e.getMessage());
-            System.exit(1);
-        }
-        if (debug) {
-            System.out.println("Symbol Table: " + symbolTable);
+            System.err.println("Error reading " + filename + ": " + e.getMessage());
+            return false;
         }
     }
 

@@ -10,7 +10,7 @@ public class Main {
         Lexer lexer = new Lexer();
         try {
             lexer.tokenizeFile(args[0]);
-            lexer.writeTokensToXML("output.xml");
+            lexer.writeTokensToXML("lexer.xml");
             System.out.println("Tokenization complete. Output written to output.xml.");
         } catch (IOException e) {
             System.err.println("Error processing file: " + e.getMessage());
