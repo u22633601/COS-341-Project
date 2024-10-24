@@ -29,6 +29,8 @@ public class Lexer {
             if (type != TokenType.INVALID) {
                 tokens.add(new Token(tokenId++, type, word));
             } else {
+                System.err.println("Please ensure the input file has a space after each token");
+                System.err.println("For example V_a=5; should be V_a = 5 ;");
                 System.err.println("Invalid token encountered: " + word);
                 System.exit(1);
             }

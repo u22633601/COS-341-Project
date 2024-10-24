@@ -370,7 +370,7 @@ public class CompilerTestRunner {
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(
                     "java",
-                    "DirectCodeGenerator",
+                    "IntermediateCodeGenerator",
                     inputFile);
             processBuilder.redirectErrorStream(true);
 
@@ -442,7 +442,7 @@ public class CompilerTestRunner {
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(
                     "java",
-                    "DualScopeAnalyzer");
+                    "ScopeAnalyzer");
             processBuilder.redirectErrorStream(true);
 
             Process process = processBuilder.start();

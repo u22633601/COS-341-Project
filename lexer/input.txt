@@ -5,9 +5,10 @@ begin
   V_x < input ;
   V_y < input ;
 
-  if eq ( V_y , 0 ) then
+  if not ( eq ( V_y , 0 ) ) then
     begin
       V_result = F_average ( V_x , V_y , V_result ) ;
+      V_result = sqrt ( V_result ) ;
       print V_result ;
       skip ;
     end
@@ -27,13 +28,24 @@ end
 
 num F_average ( V_c , V_b , V_dummy )
 {
-num V_sum , num V_count , num V_cap ,
-
+num V_sum , num V_count , num V_a ,
 begin
-  V_sum = 5 ;
-  V_count = 6 ;
-  V_sum = add ( V_sum , V_count ) ;
-  return V_count ;
+  V_sum = add ( V_x , V_y ) ;
+  V_count = 2 ;
+  V_a = div ( V_sum , V_count ) ;
+  return V_a ;
 end
 }
+
+num F_ave ( V_d , V_e , V_f )
+{
+num V_g , num V_h , num V_i ,
+begin
+  V_i = add ( V_x , V_y ) ;
+  V_f = 2 ;
+  return V_i ;
+end
+}
+end
+
 end
