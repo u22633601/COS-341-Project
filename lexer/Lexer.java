@@ -9,7 +9,7 @@ public class Lexer {
     private static final String FUNCTION_REGEX = "F_[a-z]([a-z]|[0-9])*";
     private static final String TEXT_REGEX = "\"[^\"]*\"";
     private static final String NUMBER_REGEX = "-?\\d+(\\.\\d+)?";
-    private static final String RESERVED_KEYWORDS_REGEX = "\\b(main|begin|end|skip|halt|return|if|then|else|input|num|text|void|not|sqrt|or|and|eq|grt|add|sub|mul|div)\\b";
+    private static final String RESERVED_KEYWORDS_REGEX = "\\b(main|begin|end|skip|halt|return|print|if|then|else|input|num|text|void|not|sqrt|or|and|eq|grt|add|sub|mul|div)\\b";
     private static final String OPERATORS_REGEX = "[=+\\-*/<>!;,\\$\\(\\){}]";
     
     public void tokenizeFile(String filePath) throws IOException {
