@@ -1,47 +1,63 @@
-INPUT v111
-INPUT v112
-t1 := v112
+INPUT v131
+INPUT v132
+t1 := v132
 t2 := 0
 t3 := t1 = t2
-IF t3 GOTO L1 ELSE GOTO L2
+t4 := NOT t3
+IF t4 GOTO L1 ELSE GOTO L2
 L1:
-t4 := CALL_f501(v111,v112,v110)
-v110 := t4
+t5 := CALL_f501(v131,v132,v110)
+v110 := t5
+t6 := SQR v110
+v110 := t6
 PRINT v110
 REM DO NOTHING
 GOTO L3
 L2:
-t5 := v111
-t6 := 0
-t7 := t5 = t6
-t8 := v112
-t9 := 0
-t10 := t8 = t9
-t11 := t7
-t12 := t10
-t13 := t11 OR t12
-IF t13 GOTO L4 ELSE GOTO L5
+t7 := v131
+t8 := 0
+t9 := t7 = t8
+t10 := v132
+t11 := 0
+t12 := t10 = t11
+t13 := t9
+t14 := t12
+t15 := t13 OR t14
+IF t15 GOTO L4 ELSE GOTO L5
 L4:
 PRINT "Zero"
 GOTO L6
 L5:
-t14 := v111
-t15 := v112
-t16 := t14 * t15
-v110 := t16
+t16 := v131
+t17 := v132
+t18 := t16 * t17
+v110 := t18
 RETURN v110
 L6:
 L3:
 STOP
 REM BEGIN
 f501
-v119 := 5
-v120 := 6
-t17 := v119
-t18 := v120
-t19 := t17 + t18
-v119 := t19
-RETURN v120
+t19 := v131
+t20 := v132
+t21 := t19 + t20
+v119 := t21
+v122 := 2
+t22 := v119
+t23 := v122
+t24 := t22 / t23
+v123 := t24
+RETURN v123
+REM END
+STOP
+REM BEGIN
+f502
+t25 := v131
+t26 := v132
+t27 := t25 + t26
+v130 := t27
+v133 := 2
+RETURN v130
 REM END
 STOP
 REM END
