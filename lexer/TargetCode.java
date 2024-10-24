@@ -21,7 +21,7 @@ public class TargetCode {
         String outputFile = args[0];
 
         try {
-            // Check if input files exist
+            
             if (!new File(SYMBOL_FILE).exists()) {
                 System.err.println("Error: Symbol table file '" + SYMBOL_FILE + "' not found");
                 System.exit(1);
@@ -31,20 +31,20 @@ public class TargetCode {
                 System.exit(1);
             }
 
-            // Load symbol table
+            //load st
             System.out.println("Loading symbol table from " + SYMBOL_FILE + "...");
             loadSymbolTable();
 
-            // Read intermediate code
+            //read ic
             System.out.println("Reading intermediate code from " + INTERMEDIATE_FILE + "...");
             List<String> intermediateCode = readIntermediateCode();
 
-            // Generate BASIC code
+            // gen basic
             System.out.println("Generating BASIC code...");
             generateBasicCode(intermediateCode);
             updateGotoLines();
 
-            // Write output
+            // write tc
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
                 for (String line : basicCode) {
                     writer.write(line);
